@@ -1,14 +1,25 @@
 {
   "name": "drakov",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Mock server that implements the API Blueprint specification",
   "main": "./lib/drakov.js",
   "bin": {
     "drakov": "drakov"
   },
-  "author": "Yakov Khalinsky <ykhalinsky@aconex.com>",
+  "homepage": "https://github.com/aconex/drakov",
+  "author": {
+      "name": "Yakov Khalinsky",
+      "email": "ykhalinsky@aconex.com"
+  },
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/Aconex/drakov.git"
+  },
+  "bugs": {
+      "url": "https://github.com/aconex/drakov/issues"
+  },
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "async": "0.9.0",
     "colors": "0.6.2",
     "express": "4.6.1",

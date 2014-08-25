@@ -50,6 +50,17 @@ With glob expression and specified server port
 `./drakov -f ../com/foo/contracts/*.md -p 4007`
 
 
+## Using as a Node.js module
+
+    var drakov = require('drakov');
+    
+    var argv = {
+        sourceFiles: 'path/to/files/**.md',
+        serverPort: 3000,
+        staticPaths: '/path/to/static/files,/another/path/to/static/files'
+    };
+    
+    drakov.run(argv);
 
 ## FAQ
 
@@ -61,3 +72,11 @@ With glob expression and specified server port
 **Q:** If I have multiple responses on a single request, which response will I get?
 
 **A:** Drakov will respond with the first response.
+
+
+
+## CONTRIBUTORS
+
+Yakov Khalinsky <ykhalinsky@aconex.com>
+
+Marcelo Oliveira <moliveira@aconex.com>

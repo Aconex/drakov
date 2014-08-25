@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title>All The Things</title>
+        <script>
+            (function() {
+                function generateThing( spec ) {
+                    var el = document.createElement("DIV");
+                    el.textContent = spec.text;
+                    el.id = "thing-" + spec.id;
+                    document.body.appendChild( el );
+                }
+
+                document.addEventListener("DOMContentLoaded", function() {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("GET", "/api/things");
+                    xhr.responseType = "json";
+                    xhr.onreadystatechange = function() {
+                        if( xhr.readyState === 4 ) {
+                            xhr.response.forEach( generateThing );
+                        }
+                    };
+                    xhr.send();
+                });
+            })();
+        </script>
+        <style>
+            DIV {
+                float: left;
+                height: 172px;
+                width: 250px;
+                text-align: center;
+                font-family: Impact, sans-serif;
+                font-weight: 900;
+                font-size: 32px;
+                color: white;
+                text-shadow: 3px 3px 1px black;
+                line-height: 306px;
+                background-image: url(/allthethings.png);
+                background-size: cover;
+            }
+        </style>
+    </head>
+    <body>
+    </body>
+</html>
