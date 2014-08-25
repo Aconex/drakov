@@ -7,4 +7,6 @@ var argv = {
     staticPaths: 'example/static'
 };
 
-drakov.run(argv);
+drakov.run(argv, function() {
+    console.log('Completed Meming All The Things!');
+});
