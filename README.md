@@ -1,5 +1,7 @@
 # Drakov API Blueprint Mock Server
 
+![Drakov](drakov.png)
+
 Mock server that implements the [API Blueprint](http://apiblueprint.org/) specification:
 
 
@@ -42,8 +44,15 @@ With glob expression and single static path
 
 With glob expression and multiple static paths (must be comma delimited with no spaces)
 
-`./drakov -f ../com/foo/contracts/*.md -s ../path/to/static/files,../second/path/to/static/files`
+`./drakov -f ../com/foo/contracts/*.md -s ../path/to/static/files -s ../second/path/to/static/files`
 
+With globa expression and static path that has a specific mount point
+
+`./drakov -f ../com/foo/contracts/*.md -s ../path/to/static/files=/www/path`
+
+With globa expression and static path that has a specific mount point with different path mount delimiter
+
+`./drakov -f ../com/foo/contracts/*.md -s ../path/to/static/files:/www/path -d :`
 
 With glob expression and specified server port
 
@@ -57,7 +66,11 @@ With glob expression and specified server port
     var argv = {
         sourceFiles: 'path/to/files/**.md',
         serverPort: 3000,
-        staticPaths: '/path/to/static/files,/another/path/to/static/files'
+        staticPaths: [
+            '/path/to/static/files',
+            '/another/path/to/static/files',
+            '/path/to/more/files=/mount/it/here'
+        ]
     };
     
     drakov.run(argv);
@@ -79,4 +92,6 @@ With glob expression and specified server port
 
 Yakov Khalinsky <ykhalinsky@aconex.com>
 
-Marcelo Oliveira <moliveira@aconex.com>
+Marcelo Garcia de Oliveira <moliveira@aconex.com>
+
+*Huge thanks to Eva Mansk for the funky logo!*
