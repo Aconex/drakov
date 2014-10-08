@@ -51,3 +51,17 @@ Lists all the things from the API
                    "id": "1"
                 }
             ]
+
+
+## Clicks [/api/things/{thingId}/click]
+
++ Parameters
+    + thingId (string, `12345`) ... ID of the desired thing.
+
+### Register a click on a thing [PUT]
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+            { "click": true }

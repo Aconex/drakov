@@ -3,23 +3,36 @@
         <title>All The Things</title>
         <script>
             (function() {
+                function ajax( method, url, success ) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open( method, url );
+                    xhr.responseType = "json";
+                    xhr.onreadystatechange = function() {
+                        if( xhr.readyState === 4 ) {
+                            success( xhr.response );
+                        }
+                    };
+                    xhr.send();
+                }
+
+                function clickHandler( ev ) {
+                    ajax( "PUT", "/api/things/" + ev.target.dataset.id + "/click" , function( result ) {
+                        alert( "click registered: " + result.click );
+                    });
+                }
+
                 function generateThing( spec ) {
                     var el = document.createElement("DIV");
                     el.textContent = spec.text;
-                    el.id = "thing-" + spec.id;
+                    el.dataset.id = spec.id;
+                    el.addEventListener( "click", clickHandler );
                     document.body.appendChild( el );
                 }
 
                 document.addEventListener("DOMContentLoaded", function() {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("GET", "/api/things");
-                    xhr.responseType = "json";
-                    xhr.onreadystatechange = function() {
-                        if( xhr.readyState === 4 ) {
-                            xhr.response.forEach( generateThing );
-                        }
-                    };
-                    xhr.send();
+                    ajax("GET", "/api/things", function( results ) {
+                        results.forEach( generateThing );
+                    });
                 });
             })();
         </script>
