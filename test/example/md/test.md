@@ -52,16 +52,36 @@ Lists all the things from the API
                 }
             ]
 
+### Update thing by it's id [POST]
 
-## Clicks [/api/things/{thingId}/click]
++ Request ( application/json)
+Update the text of the thing
+
+    + Body
+
+        {
+            "text": "Hyperspeed jet",
+            "id": "1"
+        }
+
++ Response 200 (application/json;chatset=UTF-8)
+
+    + Body
+
+        {
+            "text": "Hyperspeed jet",
+            "id": "1"
+        }
+
+## Likes [/api/things/{thingId}/like]
 
 + Parameters
     + thingId (string, `12345`) ... ID of the desired thing.
 
-### Register a click on a thing [PUT]
+### Register a like on a thing [PUT]
 
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
 
-            { "click": true }
+            { "like": true }
