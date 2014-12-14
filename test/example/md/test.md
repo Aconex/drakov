@@ -84,6 +84,8 @@ Check Authorization header
 
 + Response 200
 
++ Response 401
+
 ## Likes [/api/things/{thingId}/like]
 
 + Parameters
