@@ -73,6 +73,25 @@ Update the text of the thing
             "id": "1"
         }
 
+### Delete the thing [DELETE]
+Check Authorization header
+
++ Request
+
+    + Headers
+
+        Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200
+
++ Request
+
+    + Headers
+
+        Authorization: Basic foo
+
++ Response 401
+
 ## Likes [/api/things/{thingId}/like]
 
 + Parameters
