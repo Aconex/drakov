@@ -1,0 +1,17 @@
+{
+  "curly": true,
+  "eqnull": true,
+  "eqeqeq": true,
+  "undef": true,
+  "unused": true,
+  "smarttabs": false,
+  "quotmark": "single",
+  "node": true,
+  "globals": {
+    "it": false,
+    "console": false,
+    "describe": false,
+    "expect": false,
+    "beforeEach": false
+  }
+}

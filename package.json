@@ -30,6 +30,7 @@
     "protagonist": "0.12.0"
   },
   "devDependencies": {
+    "grunt-contrib-jshint": "^0.10.0",
     "grunt-simple-mocha": "^0.4.0",
     "supertest": "^0.15.0"
   }

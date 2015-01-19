@@ -6,7 +6,7 @@ describe('Static content', function(){
         request.get('/things.txt')
         .expect(200)
         .expect('Content-type', 'text/plain; charset=UTF-8')
-        .expect("Zip2\nX.com\nSpaceX\nSolar City\nHyperloop\n")
+        .expect('Zip2\nX.com\nSpaceX\nSolar City\nHyperloop\n')
         .end(endCB(done));
     });
 });

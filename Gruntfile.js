@@ -2,38 +2,54 @@ var drakov = require('./lib/drakov');
 
 module.exports = function (grunt) {
 
-  var properties = {
-    drakov: {
-        sourceFiles: 'test/example/**/*.md',
-        serverPort: 3000,
-        staticPaths: 'test/example/static'
-      }
-  };
+    var properties = {
+        drakov: {
+            sourceFiles: 'test/example/**/*.md',
+            serverPort: 3000,
+            staticPaths: 'test/example/static',
+            stealthmode: true
+        }
+    };
 
-  grunt.initConfig({
-    simplemocha: {
-      options: {
-        globals: ['should'],
-        timeout: 3000,
-        ignoreLeaks: false,
-        //grep: '*-test',
-        ui: 'bdd',
-        reporter: 'tap'
-      },
+    grunt.initConfig({
 
-      all: { src: 'test/*.js' }
-    }
-  });
+        jshint: {
+            options: {
+                jshintrc: true,
+                ignores: [
+                    'describe',
+                    'it'
+                ]
+            },
+            files: [
+                'lib/**/*.js',
+                'test/**/*.js',
+                'index.js'
+            ]
+        },
 
-  // For this to work, you need to have run `npm install grunt-simple-mocha`
-  grunt.loadNpmTasks('grunt-simple-mocha');
+        simplemocha: {
+            options: {
+                globals: ['should'],
+                timeout: 3000,
+                ignoreLeaks: false,
+                ui: 'bdd',
+                reporter: 'tap'
+            },
 
-  grunt.task.registerTask('functional-test', 'Log stuff.', function() {
-    drakov.run(properties.drakov, this.async());
-    grunt.task.run('simplemocha');
-  });
+            all: {src: 'test/*.js'}
+        }
+    });
 
-  grunt.task.registerTask('test', ['functional-test']);
+    // For this to work, you need to have run `npm install grunt-simple-mocha`
+    grunt.loadNpmTasks('grunt-simple-mocha');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  grunt.task.registerTask('default', ['test']);
+    grunt.task.registerTask('functional-test', 'Log stuff.', function () {
+        drakov.run(properties.drakov, this.async());
+        grunt.task.run('simplemocha');
+    });
+
+    grunt.task.registerTask('test', ['functional-test']);
+    grunt.task.registerTask('default', ['jshint', 'test']);
 };
