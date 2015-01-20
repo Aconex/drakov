@@ -6,16 +6,20 @@ Lists all the things from the API
 ## Things [/headers]
 
 ### Retrieve a dummy object [GET]
+Check Authorization header
 
-+ Response 200 (application/json;charset=UTF-8)
++ Request
 
     + Headers
 
-        Authorization: Basic YmFieWxvbjpPdjJIRWowd1hwUWJXbjNPQ1R6YmRnQlhtcGZaaEw5ZVNic2VDR0c=
+        Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
 
-    + Body
++ Response 200
 
-           {
-              "text":"Zip2",
-              "id": "1"
-            }
++ Request
+
+    + Headers
+
+        Authorization: Basic foo
+
++ Response 401
