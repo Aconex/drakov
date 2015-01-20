@@ -1,5 +1,7 @@
 # Drakov API Blueprint Mock Server
 
+[![Build Status](https://travis-ci.org/Aconex/drakov.svg)](https://travis-ci.org/Aconex/drakov)
+
 ![Drakov](drakov.png)
 
 Mock server that implements the [API Blueprint](http://apiblueprint.org/) specification:
