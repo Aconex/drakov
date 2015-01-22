@@ -1,0 +1,79 @@
+FORMAT: 1A
+
+# Return all the things
+Lists all the things from the API
+
+## Things [/api/multiple]
+
+### Retrieve from GET [GET]
+First GET example with header 
+
++ Request
+
+    + Headers
+
+        Custom-header: First
+        
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+            {"first": "response"}
+            
+
+
+### Retrieve from GET [GET]
+Second GET example with header 
+
++ Request
+
+    + Headers
+
+        Custom-header: Second
+        
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+            {"second": "response"}
+            
+
+### Post to the first example [POST]
+
++ Request (application/json)
+First POST example with body 
+
+    + Body
+
+        {"first": "example"}
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+        {
+            "first": "example",
+            "status": "ok"
+        }
+
+### Post to the second example [POST]
+
++ Request (application/json)
+Second POST example with body 
+
+    + Body
+
+        {"second": "example"}
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+        {
+            "second": "example",
+            "status": "ok"
+        }
+
+

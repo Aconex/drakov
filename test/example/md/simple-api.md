@@ -64,7 +64,7 @@ Update the text of the thing
             "id": "1"
         }
 
-+ Response 200 (application/json;chatset=UTF-8)
++ Response 200 (application/json;charset=UTF-8)
 
     + Body
 

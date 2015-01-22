@@ -37,6 +37,7 @@ describe('/api/things/{thingId}', function(){
             .set('Content-type', 'application/json')
             .send({text: 'Hyperspeed jet', id: '1'})
             .expect(200)
+            .expect('Content-type', 'application/json; charset=utf-8')
             .expect({text: 'Hyperspeed jet', id: '1'})
             .end(endCB(done));
         });
