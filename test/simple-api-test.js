@@ -16,6 +16,20 @@ describe('/api/things', function(){
             ])
             .end(endCB(done));
         });
+        it('should respond with json when content type is set', function(done){
+            request.get('/api/things')
+            .set('Content-type', 'application/json')
+            .expect(200)
+            .expect('Content-type', 'application/json; charset=utf-8')
+            .expect([
+                {text:'Zip2',id: '1'},
+                {text: 'X.com', id: '2'},
+                {text: 'SpaceX', id: '3'},
+                {text: 'Solar City', id: '4'},
+                {text: 'Hyperloop', id: '5'}
+            ])
+            .end(endCB(done));
+        });
     });
 });
 
