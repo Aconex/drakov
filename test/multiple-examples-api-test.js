@@ -8,7 +8,7 @@ describe('/api/multiple', function(){
             .set('Custom-header', 'First')
             .expect(200)
             .expect('Content-type', 'application/json; charset=utf-8')
-            .expect({"first": "response"})
+            .expect({'first': 'response'})
             .end(endCB(done));
         });
 
@@ -17,7 +17,7 @@ describe('/api/multiple', function(){
                 .set('Custom-header', 'Second')
                 .expect(200)
                 .expect('Content-type', 'application/json; charset=utf-8')
-                .expect({"second": "response"})
+                .expect({'second': 'response'})
                 .end(endCB(done));
         });
     });
@@ -27,20 +27,20 @@ describe('/api/multiple', function(){
         it('should respond with json object from the first body example', function(done){
             request.post('/api/multiple')
                 .set('Content-type', 'application/json')
-                .send({"first": "example"})
+                .send({'first': 'example'})
                 .expect(200)
                 .expect('Content-type', 'application/json; charset=utf-8')
-                .expect({"first": "example","status": "ok"})
+                .expect({'first': 'example','status': 'ok'})
                 .end(endCB(done));
         });
 
         it('should respond with json object from the second body example', function(done){
             request.post('/api/multiple')
                 .set('Content-type', 'application/json')
-                .send({"second": "example"})
+                .send({'second': 'example'})
                 .expect(200)
                 .expect('Content-type', 'application/json; charset=utf-8')
-                .expect({"second": "example","status": "ok"})
+                .expect({'second': 'example','status': 'ok'})
                 .end(endCB(done));
         });
     });
