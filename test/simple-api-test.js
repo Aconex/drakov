@@ -1,5 +1,5 @@
-var request = require('supertest')('http://localhost:3000');
-var endCB = require('./lib/final-callback.js');
+var helper = require('./lib');
+var request = require('supertest')('http://localhost:' + helper.port);
 
 describe('/api/things', function(){
     describe('GET', function(){
@@ -14,7 +14,7 @@ describe('/api/things', function(){
                 {text: 'Solar City', id: '4'},
                 {text: 'Hyperloop', id: '5'}
             ])
-            .end(endCB(done));
+            .end(helper.endCb(done));
         });
     });
 });
@@ -27,7 +27,7 @@ describe('/api/things/{thingId}', function(){
             .expect('Content-type', 'application/json; charset=utf-8')
             .expect([{text: 'Zip2', id: '1'}
                 ])
-            .end(endCB(done));
+            .end(helper.endCb(done));
         });
     });
 
@@ -39,7 +39,7 @@ describe('/api/things/{thingId}', function(){
             .expect(200)
             .expect('Content-type', 'application/json; charset=utf-8')
             .expect({text: 'Hyperspeed jet', id: '1'})
-            .end(endCB(done));
+            .end(helper.endCb(done));
         });
     });
 });

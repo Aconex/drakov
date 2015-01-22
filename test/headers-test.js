@@ -1,5 +1,5 @@
-var request = require('supertest')('http://localhost:3000');
-var endCB = require('./lib/final-callback.js');
+var helper = require('./lib');
+var request = require('supertest')('http://localhost:' + helper.port);
 
 describe('/headers', function(){
     describe('GET', function(){
@@ -7,7 +7,7 @@ describe('/headers', function(){
             request.get('/headers')
             .set('Authorization', 'Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==')
             .expect(200)
-            .end(endCB(done));
+            .end(helper.endCb(done));
         });
     });
 
@@ -16,7 +16,7 @@ describe('/headers', function(){
             request.get('/headers')
                 .set('Authorization', 'Basic foo')
                 .expect(401)
-                .end(endCB(done));
+                .end(helper.endCb(done));
         });
     });
 

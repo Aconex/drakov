@@ -1,5 +1,5 @@
-var request = require('supertest')('http://localhost:3000');
-var endCB = require('./lib/final-callback.js');
+var helper = require('./lib');
+var request = require('supertest')('http://localhost:' + helper.port);
 
 describe('Static content', function(){
     it('should be able to GET things.txt', function(done){
@@ -7,6 +7,6 @@ describe('Static content', function(){
         .expect(200)
         .expect('Content-type', 'text/plain; charset=UTF-8')
         .expect('Zip2\nX.com\nSpaceX\nSolar City\nHyperloop\n')
-        .end(endCB(done));
+        .end(helper.endCb(done));
     });
 });

@@ -1,11 +1,12 @@
 var drakov = require('./lib/drakov');
+var drakovPort = require('./test/lib').port;
 
 module.exports = function (grunt) {
 
     var properties = {
         drakov: {
             sourceFiles: 'test/example/**/*.md',
-            serverPort: 3000,
+            serverPort: drakovPort,
             staticPaths: 'test/example/static',
             stealthmode: true
         }

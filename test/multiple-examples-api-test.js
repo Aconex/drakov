@@ -1,5 +1,5 @@
-var request = require('supertest')('http://localhost:3000');
-var endCB = require('./lib/final-callback.js');
+var helper = require('./lib');
+var request = require('supertest')('http://localhost:' + helper.port);
 
 describe('/api/multiple', function(){
     describe('GET', function(){
@@ -9,7 +9,7 @@ describe('/api/multiple', function(){
             .expect(200)
             .expect('Content-type', 'application/json; charset=utf-8')
             .expect({'first': 'response'})
-            .end(endCB(done));
+            .end(helper.endCb(done));
         });
 
         it('should respond with json object from the second header example', function(done){
@@ -18,7 +18,7 @@ describe('/api/multiple', function(){
                 .expect(200)
                 .expect('Content-type', 'application/json; charset=utf-8')
                 .expect({'second': 'response'})
-                .end(endCB(done));
+                .end(helper.endCb(done));
         });
     });
 
@@ -31,7 +31,7 @@ describe('/api/multiple', function(){
                 .expect(200)
                 .expect('Content-type', 'application/json; charset=utf-8')
                 .expect({'first': 'example','status': 'ok'})
-                .end(endCB(done));
+                .end(helper.endCb(done));
         });
 
         it('should respond with json object from the second body example', function(done){
@@ -41,7 +41,7 @@ describe('/api/multiple', function(){
                 .expect(200)
                 .expect('Content-type', 'application/json; charset=utf-8')
                 .expect({'second': 'example','status': 'ok'})
-                .end(endCB(done));
+                .end(helper.endCb(done));
         });
     });
 
