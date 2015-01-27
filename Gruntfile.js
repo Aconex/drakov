@@ -8,7 +8,8 @@ module.exports = function (grunt) {
             sourceFiles: 'test/example/**/*.md',
             serverPort: drakovPort,
             staticPaths: 'test/example/static',
-            stealthmode: true
+            stealthmode: true,
+            disableCORS: false
         }
     };
 
