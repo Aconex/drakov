@@ -30,6 +30,7 @@ You will need to have `g++` and `make` installed on your system so `npm install`
 - Glob expression is required
 - If a list of static file paths are provided, then Drakov will proxy the static files
 - Server port is optional and defaults to **3000**
+- CORS headers are sent by default, you need to use the --disableCORS switch/property
 
 
 **Examples**
@@ -38,11 +39,9 @@ With only a glob expression
 
 `drakov -f "../com/foo/contracts/*.md"`
 
-
 With glob expression and single static path
 
 `drakov -f "../com/foo/contracts/*.md" -s "../path/to/static/files"`
-                                                                  
 
 With glob expression and multiple static paths (must be comma delimited with no spaces)
 
@@ -60,6 +59,11 @@ With glob expression and specified server port
 
 `drakov -f "../com/foo/contracts/*.md" -p 4007`
 
+## CORS Header
+
+By default a CORS header is sent, you can disable it with the --disableCORS switch.
+
+`drakov -f "../com/foo/contracts/*.md" --disableCORS`
 
 ## Stealth Mode
 
@@ -80,7 +84,8 @@ In some cases you may wish to suppress the logging output of Drakov. To do so, r
             '/another/path/to/static/files',
             '/path/to/more/files=/mount/it/here'
         ],
-        stealthmode: true
+        stealthmode: true,
+        disableCORS: true
     };
     
     drakov.run(argv);
