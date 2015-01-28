@@ -1,5 +1,5 @@
 var helper = require('./lib');
-var request = require('supertest')('http://localhost:' + helper.port);
+var request = helper.request;
 
 describe('CORS', function(){
 

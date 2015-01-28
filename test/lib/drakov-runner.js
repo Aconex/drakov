@@ -1,11 +1,9 @@
 var drakov = require('../../lib/drakov');
 var _ = require('lodash');
 
-var drakovPort = require('./port');
-
 var drakovDefault =  {
     sourceFiles: 'test/example/**/*.md',
-    serverPort: drakovPort,
+    serverPort: require('./port'),
     stealthmode: true,
     disableCORS: false
 };
