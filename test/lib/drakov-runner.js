@@ -1,6 +1,8 @@
 var drakov = require('../../lib/drakov');
 var _ = require('lodash');
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 var drakovDefault =  {
     sourceFiles: 'test/example/**/*.md',
     serverPort: require('./port'),

@@ -1,5 +1,5 @@
 var helper = require('./lib');
-var request = helper.request;
+var request = helper.getRequest();
 
 describe('Simple-API', function(){
     before(function (done) {
