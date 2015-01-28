@@ -63,7 +63,12 @@ With glob expression and specified server port
 
 By default a CORS header is sent, you can disable it with the --disableCORS switch.
 
-`drakov -f "../com/foo/contracts/*.md" --disableCORS`
+## SSL Support
+
+To enable SSL you must provide both key and certificate. Use parameters --sslKeyFile and --sslCrtFile to specify the path to your key and certificate files.
+Once SSL is enabled Drakov will only respond to HTTPS requests.
+
+`drakov -f "../com/foo/contracts/*.md" --sslKeyFile="./ssl/server.key" --sslCrtFile="./ssl/server.crt"`
 
 ## Stealth Mode
 
