@@ -2,6 +2,15 @@ var helper = require('./lib');
 var request = require('supertest')('http://localhost:' + helper.port);
 
 describe('/api/multiple', function(){
+
+    before(function (done) {
+        helper.drakov.run({sourceFiles: 'test/example/md/multiple-examples-api.md'}, done);
+    });
+
+    after(function (done) {
+        helper.drakov.stop(done);
+    });
+
     describe('GET', function(){
         it('should respond with json object from the first header example', function(done){
             request.get('/api/multiple')
@@ -21,7 +30,6 @@ describe('/api/multiple', function(){
                 .end(helper.endCb(done));
         });
     });
-
 
     describe('POST', function(){
         it('should respond with json object from the first body example', function(done){

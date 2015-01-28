@@ -2,6 +2,15 @@ var helper = require('./lib');
 var request = require('supertest')('http://localhost:' + helper.port);
 
 describe('/headers', function(){
+
+    before(function (done) {
+        helper.drakov.run({sourceFiles: 'test/example/md/headers.md'}, done);
+    });
+
+    after(function (done) {
+        helper.drakov.stop(done);
+    });
+
     describe('GET', function(){
         it('should respond with HTTP 200', function(done){
             request.get('/headers')

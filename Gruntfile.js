@@ -1,17 +1,4 @@
-var drakov = require('./lib/drakov');
-var drakovPort = require('./test/lib').port;
-
 module.exports = function (grunt) {
-
-    var properties = {
-        drakov: {
-            sourceFiles: 'test/example/**/*.md',
-            serverPort: drakovPort,
-            staticPaths: 'test/example/static',
-            stealthmode: true,
-            disableCORS: false
-        }
-    };
 
     grunt.initConfig({
 
@@ -39,7 +26,7 @@ module.exports = function (grunt) {
                 reporter: 'tap'
             },
 
-            all: {src: 'test/*.js'}
+            all: {src: 'test/*-test.js'}
         }
     });
 
@@ -47,11 +34,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-simple-mocha');
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
-    grunt.task.registerTask('functional-test', 'Log stuff.', function () {
-        drakov.run(properties.drakov, this.async());
-        grunt.task.run('simplemocha');
-    });
-
-    grunt.task.registerTask('test', ['functional-test']);
+    grunt.task.registerTask('test', ['simplemocha']);
     grunt.task.registerTask('default', ['jshint', 'test']);
 };

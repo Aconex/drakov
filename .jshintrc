@@ -11,7 +11,10 @@
     "it": false,
     "console": false,
     "describe": false,
+    "before": false,
+    "after": false,
     "expect": false,
-    "beforeEach": false
+    "beforeEach": false,
+    "afterEach": false
   }
 }
