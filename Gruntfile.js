@@ -25,8 +25,8 @@ module.exports = function (grunt) {
                 ui: 'bdd',
                 reporter: 'tap'
             },
-
-            all: {src: 'test/*-test.js'}
+            api: {src: 'test/api/*-test.js'},
+            unit: {src: 'test/unit/*-test.js'}
         }
     });
 
@@ -34,6 +34,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-simple-mocha');
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
-    grunt.task.registerTask('test', ['simplemocha']);
+    grunt.task.registerTask('test', ['simplemocha:api', 'simplemocha:unit']);
     grunt.task.registerTask('default', ['jshint', 'test']);
 };

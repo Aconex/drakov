@@ -1,4 +1,4 @@
-var helper = require('./lib');
+var helper = require('../lib');
 var request = helper.getRequest();
 
 describe('/api/multiple', function(){
