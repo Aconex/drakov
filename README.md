@@ -162,6 +162,10 @@ If you have any ideas or questions you are welcome to post an issue.
 * All test specification files must end in `-test.js`
 * Always run `npm test` before you submit your build request
 
+## CHANGELOG
+
+A history of changes with a list of contributors can be found at https://github.com/Aconex/drakov/blob/master/CHANGELOG.md
+
 ## MAINTAINERS
 
 Yakov Khalinsky <ykhalinsky@aconex.com>
