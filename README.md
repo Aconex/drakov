@@ -115,6 +115,30 @@ For HTTP methods such as DELETE, you may want Drakov to return them in the appro
     
     drakov.run(argv);
 
+
+## Using as a Express middleware
+
+    var drakovMiddleware = require('drakov').middleware;
+
+    var argv = {
+        sourceFiles: 'path/to/files/**.md',
+        serverPort: 3000,
+        staticPaths: [
+            '/path/to/static/files',
+            '/another/path/to/static/files',
+            '/path/to/more/files=/mount/it/here'
+        ],
+        stealthmode: true,
+        disableCORS: true,
+        sslKeyFile: '/path/to/ssl/key.key',
+        sslCrtFile: '/path/to/ssl/cert.crt',
+        delay: 2000,
+        method: ['DELETE','OPTIONS']
+    };
+
+    var app = express();
+    app.use(drakovMiddleware(app, argv));
+
 ## FAQ
 
 **Q:** If I have multiple requests/responses on the same API endpoint, which response will I get?
