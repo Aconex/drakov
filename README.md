@@ -113,12 +113,19 @@ For HTTP methods such as DELETE, you may want Drakov to return them in the appro
         method: ['DELETE','OPTIONS']
     };
     
-    drakov.run(argv);
+    drakov.run(argv, function(){
+        // started Drakov
+        drakov.stop(function() {
+            // stopped Drakov
+        });
+    });
 
 
 ## Using as an Express middleware
 
-    var drakovMiddleware = require('drakov').middleware;
+Due to protagonist parsing being async, we need to setup the middleware with an init function
+
+    var drakovMiddleware = require('drakov');
 
     var argv = {
         sourceFiles: 'path/to/files/**.md',
@@ -137,7 +144,13 @@ For HTTP methods such as DELETE, you may want Drakov to return them in the appro
     };
 
     var app = express();
-    app.use(drakovMiddleware(app, argv));
+    middleware.init(app, argv, function(err, middlewareFunction) {
+        if (err) {
+            throw err;
+        }
+        app.use(middlewareFunction);
+        app.listen(argv.serverPort);
+    });
 
 ## FAQ
 
