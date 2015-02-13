@@ -2,6 +2,7 @@
 
 #### Changes
 
+* Can use Drakov as express middleware
 * Compare headers in the request to find the right response
 * CORS header support
 * Support for deliberate response delay
@@ -16,6 +17,8 @@
 
 
 #### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
 
 * Rostislav https://github.com/galkinrost
 * Pedro Teixeira https://github.com/pedro-teixeira
