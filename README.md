@@ -116,7 +116,7 @@ For HTTP methods such as DELETE, you may want Drakov to return them in the appro
     drakov.run(argv);
 
 
-## Using as a Express middleware
+## Using as an Express middleware
 
     var drakovMiddleware = require('drakov').middleware;
 
