@@ -70,4 +70,17 @@ describe('URL Parser', function() {
         });
     });
 
+    describe('JSON to Form Encoded String', function() {
+        it('should encode JSON Object as a form data for POST request', function() {
+
+            var formObj = {
+                test1: 'foo',
+                test2: 'bar'
+            };
+
+            var expectedData = urlParser.jsonToFormEncodedString(formObj);
+            assert.equal(expectedData, 'test1=foo&test2=bar');
+        });
+    });
+
 });
