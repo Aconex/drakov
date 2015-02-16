@@ -51,6 +51,16 @@ describe('/api/multiple', function(){
                 .expect({'second': 'example','status': 'ok'})
                 .end(helper.endCb(done));
         });
+
+        it('should respond with json object from the third body example', function(done){
+            request.post('/api/multiple')
+                .set('Content-type', 'application/x-www-form-urlencoded')
+                .send({third: 'example'})
+                .expect(200)
+                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect({third: 'example',status: 'ok'})
+                .end(helper.endCb(done));
+        });
     });
 
 });
