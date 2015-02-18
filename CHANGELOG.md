@@ -1,4 +1,25 @@
-### Version 0.1.0, February 11, 2015
+### [0.1.1], February 19, 2015
+
+#### Changes
+
+* Support for x-www--form-urlencoded content type [link](https://github.com/Aconex/drakov/pull/34)
+* Support for request/responses based on query parameters [link](https://github.com/Aconex/drakov/issues/11)
+
+
+#### Fixes
+
+* Fix to guarantee only one route handler executes
+* Fix to bring back route setup logging
+
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Mohit Suman https://github.com/mohitjee15
+
+
+### [0.1.0], February 11, 2015
 
 #### Changes
 
