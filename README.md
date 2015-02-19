@@ -144,7 +144,7 @@ Due to protagonist parsing being async, we need to setup the middleware with an 
     };
 
     var app = express();
-    middleware.init(app, argv, function(err, middlewareFunction) {
+    drakovMiddleware.init(app, argv, function(err, middlewareFunction) {
         if (err) {
             throw err;
         }
