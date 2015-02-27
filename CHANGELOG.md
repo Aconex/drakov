@@ -1,4 +1,12 @@
-### [0.1.1], February 19, 2015
+### [0.1.2] February 27, 2015
+
+#### Fixes
+
+* Fix stop() killing Drakov when called before start()
+* Add unit tests to main Drakov module
+
+
+### [0.1.1] February 19, 2015
 
 #### Changes
 
@@ -19,7 +27,7 @@ A quick thank you to all the people in the community who contributed code to thi
 * Mohit Suman https://github.com/mohitjee15
 
 
-### [0.1.0], February 11, 2015
+### [0.1.0] February 11, 2015
 
 #### Changes
 
