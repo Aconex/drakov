@@ -26,7 +26,8 @@ module.exports = function (grunt) {
                 reporter: 'tap'
             },
             api: {src: 'test/api/*-test.js'},
-            unit: {src: 'test/unit/*-test.js'}
+            unit: {src: 'test/unit/*-test.js'},
+            watcher: {src: 'test/watcher/*-test.js'}
         }
     });
 

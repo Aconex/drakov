@@ -11,6 +11,7 @@ var drakovDefault =  {
 };
 
 module.exports = {
+    argv: null,
     run: function(args, cb){
         var asyncCb = function() {
             //prevents async args
@@ -18,7 +19,8 @@ module.exports = {
                 cb();
             }
         };
-        drakov.run(_.extend({}, drakovDefault, args), asyncCb);
+        this.argv = _.extend({}, drakovDefault, args);
+        drakov.run(this.argv, asyncCb);
     },
     stop: function(cb) {
         drakov.stop(cb);
