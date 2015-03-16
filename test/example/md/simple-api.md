@@ -85,3 +85,17 @@ Update the text of the thing
     + Body
 
             { "like": true }
+
+
+## Things undefined charset [/api/charsetless]
+
+### Retrieve all the things and not add charset on the response [GET]
+
++ Response 200 (application/json)
+
+    + Body
+
+           {
+              "charset":"not present",
+              "id": "1"
+            }

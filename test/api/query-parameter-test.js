@@ -14,7 +14,7 @@ describe('Query Parameters', function(){
         it('should respond with response specified in a endpoint with no parameters', function(done){
             request.get('/api/query')
             .expect(200)
-            .expect('Content-type', 'application/json; charset=utf-8')
+            .expect('Content-type', 'application/json;charset=UTF-8')
             .expect({id: 'raw'})
             .end(helper.endCb(done));
         });
@@ -24,7 +24,7 @@ describe('Query Parameters', function(){
         it('should respond with response specified in a endpoint with "param1" parameter', function(done){
             request.get('/api/query?param1=1')
             .expect(200)
-            .expect('Content-type', 'application/json; charset=utf-8')
+            .expect('Content-type', 'application/json;charset=UTF-8')
             .expect({id: 'parameter1'})
             .end(helper.endCb(done));
         });
@@ -34,7 +34,7 @@ describe('Query Parameters', function(){
         it('should respond with response specified in a endpoint with "param2" parameter', function(done){
             request.get('/api/query?param2=2')
                 .expect(200)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json;charset=UTF-8')
                 .expect({id: 'parameter2'})
                 .end(helper.endCb(done));
         });
@@ -42,7 +42,7 @@ describe('Query Parameters', function(){
         it('should respond with response specified in a endpoint with "param2" parameter - scenario 2', function(done){
             request.get('/api/query?param2=2&param7=7')
                 .expect(200)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json;charset=UTF-8')
                 .expect({id: 'parameter2'})
                 .end(helper.endCb(done));
         });
@@ -52,14 +52,14 @@ describe('Query Parameters', function(){
         it('should respond with response specified in a endpoint with "param1" and "param2" parameters - scenario 1', function(done){
             request.get('/api/query?param1=1&param2=2')
                 .expect(200)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json;charset=UTF-8')
                 .expect({id: 'parameter1_parameter2'})
                 .end(helper.endCb(done));
         });
         it('should respond with response specified in a endpoint with "param1" and "param2" parameters  - scenario 2 (inverted position)', function(done){
             request.get('/api/query?param2=2&param1=1')
                 .expect(200)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json;charset=UTF-8')
                 .expect({id: 'parameter1_parameter2'})
                 .end(helper.endCb(done));
         });
@@ -69,7 +69,7 @@ describe('Query Parameters', function(){
         it('should respond with response specified in a endpoint with "param2" and "param3" parameters', function(done){
             request.get('/api/query?param2=2&param3=3')
                 .expect(200)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json;charset=UTF-8')
                 .expect({id: 'parameter2_parameter3'})
                 .end(helper.endCb(done));
         });
