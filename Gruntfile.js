@@ -36,5 +36,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
     grunt.task.registerTask('test', ['simplemocha:api', 'simplemocha:unit']);
+    grunt.task.registerTask('watcher', ['simplemocha:watcher']);
     grunt.task.registerTask('default', ['jshint', 'test']);
 };
