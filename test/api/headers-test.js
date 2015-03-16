@@ -48,7 +48,7 @@ describe('HEADERS', function(){
                 request.get('/things')
                     .set('Content-Type', 'application/json')
                     .expect(200)
-                    .expect('Content-type', 'application/json; charset=utf-8')
+                    .expect('Content-type', 'application/json;charset=UTF-8')
                     .expect({'header':'json'})
                     .end(helper.endCb(done));
             });
