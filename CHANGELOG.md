@@ -1,3 +1,11 @@
+### [0.1.3] April 8, 2015
+
+#### Fixes
+
+* Dredd fails because of setting encoding  [link](https://github.com/Aconex/drakov/issues/44)
+* Fix body content comparison [link](https://github.com/Aconex/drakov/issues/49)
+
+
 ### [0.1.2] February 27, 2015
 
 #### Fixes
