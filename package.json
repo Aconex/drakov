@@ -30,7 +30,7 @@
     "lodash": "^3.1.0",
     "optimist": "0.6.1",
     "path-to-regexp": "^1.0.3",
-    "protagonist": "^0.17.1"
+    "protagonist": "^0.19.0-rc"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
