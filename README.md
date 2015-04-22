@@ -2,7 +2,7 @@
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Aconex/drakov?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Build Status](https://travis-ci.org/Aconex/drakov.svg)](https://travis-ci.org/Aconex/drakov)
+[![npm version](https://badge.fury.io/js/drakov.svg)](http://badge.fury.io/js/drakov) [![Build Status](https://travis-ci.org/Aconex/drakov.svg)](https://travis-ci.org/Aconex/drakov)
 
 ![Drakov](drakov.png)
 
@@ -63,6 +63,8 @@ With glob expression and specified server port
 
 By default a CORS header is sent, you can disable it with the --disableCORS switch.
 
+`drakov -f "../com/foo/contracts/*.md" --disableCORS`
+
 ## SSL Support
 
 To enable SSL you must provide both key and certificate. Use parameters --sslKeyFile and --sslCrtFile to specify the path to your key and certificate files.
@@ -75,6 +77,20 @@ Once SSL is enabled Drakov will only respond to HTTPS requests.
 In some cases you may wish to suppress the logging output of Drakov. To do so, run is with the `--stealthmode` options.
 
 `drakov -f "../com/foo/contracts/*.md" --stealthmode`
+
+## Response Delay
+
+In some case you may want to force Drakov to delay sending a response. To do this simple use the `--delay` argument followed by a number (ms).
+
+`drakov -f "../com/foo/contracts/*.md" --delay 2000`
+
+## Allow Methods Header
+
+For HTTP methods such as DELETE, you may want Drakov to return them in the appropriate methods allow header. You can do this using the `--method` argument
+
+`drakov -f "../com/foo/contracts/*.md" --method DELETE`
+
+`drakov -f "../com/foo/contracts/*.md" --method DELETE --method OPTIONS`
 
 
 ## Using as a Node.js module
@@ -90,10 +106,51 @@ In some cases you may wish to suppress the logging output of Drakov. To do so, r
             '/path/to/more/files=/mount/it/here'
         ],
         stealthmode: true,
-        disableCORS: true
+        disableCORS: true,
+        sslKeyFile: '/path/to/ssl/key.key',
+        sslCrtFile: '/path/to/ssl/cert.crt',
+        delay: 2000,
+        method: ['DELETE','OPTIONS']
     };
     
-    drakov.run(argv);
+    drakov.run(argv, function(){
+        // started Drakov
+        drakov.stop(function() {
+            // stopped Drakov
+        });
+    });
+
+
+## Using as an Express middleware
+
+Due to protagonist parsing being async, we need to setup the middleware with an init function
+
+    var drakovMiddleware = require('drakov');
+
+    var argv = {
+        sourceFiles: 'path/to/files/**.md',
+        serverPort: 3000,
+        staticPaths: [
+            '/path/to/static/files',
+            '/another/path/to/static/files',
+            '/path/to/more/files=/mount/it/here'
+        ],
+        stealthmode: true,
+        disableCORS: true,
+        sslKeyFile: '/path/to/ssl/key.key',
+        sslCrtFile: '/path/to/ssl/cert.crt',
+        delay: 2000,
+        method: ['DELETE','OPTIONS']
+    };
+
+    var app = express();
+    drakovMiddleware.init(app, argv, function(err, middlewareFunction) {
+        if (err) {
+            throw err;
+        }
+        app.use(middlewareFunction);
+        app.listen(argv.serverPort);
+    });
 
 ## FAQ
 
@@ -112,11 +169,48 @@ In some cases you may wish to suppress the logging output of Drakov. To do so, r
 **A:** You can suppress all but the startup output of Drakov with `--stealthmode`.
 
 
+## CONTRIBUTING
 
-## CONTRIBUTORS
+Pull requests with patches for fixes and enhancements are very welcome. We have a few requirements that will help us to quickly assess your contributions.
+
+If you have any ideas or questions you are welcome to post an issue.
+
+### Code conventions
+* Setup your editor to use the `.editorconfig` and `.jshintrc` files included in the project
+* We use 4 spaces for tabs
+* Most of the style issues should be resolve as long as you run `npm test` and run against the jshinting rules
+* We prefer readability over compact code
+
+### Logging in your code
+* Include the `lib/logger` module and use `logger.log()`, this allows your logging be properly disabled in Drakov's stealth mode
+* Always have a type qualifier in square brackets in from of your message in white, `logger.log('[TYPE]'.white`, 'Something is happening');`
+* We don't have any guidelines for how to log, except that you should have your type a different colour from your actual message (better logging is in our roadmap)
+
+### Functionality that adds CLI arguments
+* Make sure you add the new argument property to the `optimistOptions` object in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments.js#L3)
+
+### Middleware functionality
+* For functionality that does something with the request object add code to the [request module](https://github.com/Aconex/drakov/blob/master/lib/request.js)
+* For functionality that does something with the response object add code to the [response module](https://github.com/Aconex/drakov/blob/master/lib/response.js)
+
+### Testing
+* If your contribution deals with API Blueprint request/response behaviour add an example into an existing or new markdown file in the `test/example/md` directory
+* Always add a test in `test/api` for request/response behaviour tests, or `test/unit` if it is a unit test
+* All test specification files must end in `-test.js`
+* Always run `npm test` before you submit your build request
+
+## CHANGELOG
+
+A history of changes with a list of contributors can be found at https://github.com/Aconex/drakov/blob/master/CHANGELOG.md
+
+## MAINTAINERS
 
 Yakov Khalinsky <ykhalinsky@aconex.com>
 
 Marcelo Garcia de Oliveira <moliveira@aconex.com>
 
+## Drakov Logo
+
 *Huge thanks to Eva Mansk for the funky logo!*
+
+You are welcome to use the Drakov logo as long it is to refer to this project and you provide acknowledgement and a link back to our project.

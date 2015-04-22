@@ -24,6 +24,12 @@ Check Authorization header
 
 + Response 401
 
+### Delete a dummy object [DELETE]
+Respond to deletion of object
+
++ Request
+
++ Response 200
 
 ## Things [/things]
 

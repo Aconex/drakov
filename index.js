@@ -1,3 +1,7 @@
 var drakov = require('./lib/drakov');
 
-exports.run = drakov.run;
+module.exports = {
+    run: drakov.run,
+    stop: drakov.stop,
+    middleware: require('./lib/middleware')
+};

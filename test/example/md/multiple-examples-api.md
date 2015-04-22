@@ -76,4 +76,26 @@ Second POST example with body
             "status": "ok"
         }
 
+### Post to the third example [POST]
 
++ Request
+Second POST example with body
+
+    + Headers
+
+        content-type: application/x-www-form-urlencoded
+
+    + Body
+
+        {
+            "third": "example"
+        }
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+        {
+            "third": "example",
+            "status": "ok"
+        }

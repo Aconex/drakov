@@ -16,7 +16,7 @@ describe('/api/multiple', function(){
             request.get('/api/multiple')
             .set('Custom-header', 'First')
             .expect(200)
-            .expect('Content-type', 'application/json; charset=utf-8')
+            .expect('Content-type', 'application/json;charset=UTF-8')
             .expect({'first': 'response'})
             .end(helper.endCb(done));
         });
@@ -25,7 +25,7 @@ describe('/api/multiple', function(){
             request.get('/api/multiple')
                 .set('Custom-header', 'Second')
                 .expect(200)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json;charset=UTF-8')
                 .expect({'second': 'response'})
                 .end(helper.endCb(done));
         });
@@ -37,7 +37,7 @@ describe('/api/multiple', function(){
                 .set('Content-type', 'application/json')
                 .send({'first': 'example'})
                 .expect(200)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json;charset=UTF-8')
                 .expect({'first': 'example','status': 'ok'})
                 .end(helper.endCb(done));
         });
@@ -47,8 +47,18 @@ describe('/api/multiple', function(){
                 .set('Content-type', 'application/json')
                 .send({'second': 'example'})
                 .expect(200)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json;charset=UTF-8')
                 .expect({'second': 'example','status': 'ok'})
+                .end(helper.endCb(done));
+        });
+
+        it('should respond with json object from the third body example', function(done){
+            request.post('/api/multiple')
+                .set('Content-type', 'application/x-www-form-urlencoded')
+                .send({third: 'example'})
+                .expect(200)
+                .expect('Content-type', 'application/json;charset=UTF-8')
+                .expect({third: 'example',status: 'ok'})
                 .end(helper.endCb(done));
         });
     });
