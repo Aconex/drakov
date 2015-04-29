@@ -4,6 +4,16 @@ process.title = 'drakov';
 
 var drakov = require('./lib/drakov');
 var args = require('./lib/arguments');
+var watcher = require('./lib/watcher');
 
 var argv = args.getArgv();
-drakov.run(argv);
+if (argv.watch) {
+    watcher.watch(argv, function(err) {
+        if (err) {
+            throw err;
+        }
+        drakov.run(argv);
+    });
+} else {
+    drakov.run(argv);
+}
