@@ -1,3 +1,24 @@
+### [0.1.5] May 7, 2015
+
+#### Changes
+
+* Updated version of Protaganist so Drakov can build on 0.12 of node.js [link](https://github.com/Aconex/drakov/pull/52)
+* Updated dependencies
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Rostislav https://github.com/galkinrost
+
+
+### [0.1.4] April 27, 2015
+
+#### Changes
+
+* Added support for JSON schema for request/response pair matching [link](https://github.com/Aconex/drakov/pull/50)
+
+
 ### [0.1.3] April 8, 2015
 
 #### Fixes
