@@ -59,6 +59,9 @@ With glob expression and specified server port
 
 `drakov -f "../com/foo/contracts/*.md" -p 4007`
 
+When running drakov and binding to a public IP
+`drakov -f "../com/foo/contracts/*.md" --public
+
 ## CORS Header
 
 By default a CORS header is sent, you can disable it with the --disableCORS switch.
