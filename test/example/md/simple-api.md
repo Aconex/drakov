@@ -33,6 +33,33 @@ Lists all the things from the API
                   "id": "5"
                 }
             ]
+            
+### Create a new thing [POST]
+
++ Request (application/json)
+Create a new thing
+
+    + Body
+
+            {
+                "text": "Hyperspeed jet",
+            }
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+            {
+                "text": "Hyperspeed jet",
+                "id": "1"
+            }
+            
+### Allow cross site origin [OPTIONS]
+
++ Response 200
+    + Headers
+
+            Access-Control-Allow-Origin: custom-domain.com
 
 ## Things [/api/things/{thingId}]
 
@@ -59,19 +86,19 @@ Update the text of the thing
 
     + Body
 
-        {
-            "text": "Hyperspeed jet",
-            "id": "1"
-        }
+            {
+                "text": "Hyperspeed jet",
+                "id": "1"
+            }
 
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
 
-        {
-            "text": "Hyperspeed jet",
-            "id": "1"
-        }
+            {
+                "text": "Hyperspeed jet",
+                "id": "1"
+            }
 
 ## Likes [/api/things/{thingId}/like]
 
@@ -95,7 +122,7 @@ Update the text of the thing
 
     + Body
 
-           {
-              "charset":"not present",
-              "id": "1"
+            {
+                "charset":"not present",
+                "id": "1"
             }
