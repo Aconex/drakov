@@ -38,7 +38,15 @@ Second GET example with header
     + Body
 
             {"second": "response"}
-            
+
+### Retrieve from GET [GET]
+Get examples with a specific status code (eg. 400)
+
++ Response 400 (application/json;charset=UTF-8)
+
+    + Body
+
+            {"error": "Bad request"}
 
 ### Post to the first example [POST]
 

@@ -29,6 +29,15 @@ describe('/api/multiple', function(){
                 .expect({'second': 'response'})
                 .end(helper.endCb(done));
         });
+
+        it('should respond with preferred status code', function(done) {
+            request.get('/api/multiple')
+                .set('Prefer', 'status=400')
+                .expect(400)
+                .expect('Content-type', 'application/json;charset=UTF-8')
+                .expect({'error': 'Bad request'})
+                .end(helper.endCb(done));
+        });
     });
 
     describe('POST', function(){
