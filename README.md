@@ -71,7 +71,8 @@ By default a CORS header is sent, you can disable it with the --disableCORS swit
 
 ## Automatic response to OPTIONS requests
 
-When you run server for testing API on different port than your app is it's handy to allow cross origin resource sharing (CORS). For this working you need also to listen on every route for OPTIONS requests.
+When you run server for testing API on different port than your app it's handy to allow cross origin resource sharing (CORS). 
+For this to work you need also to listen on every route for OPTIONS requests.
 
 `drakov -f "../com/foo/contracts/*.md" --autoOptions`
 
@@ -141,7 +142,7 @@ For HTTP methods such as DELETE, you may want Drakov to return them in the appro
 
 Due to protagonist parsing being async, we need to setup the middleware with an init function
 
-    var drakovMiddleware = require('drakov');
+    var drakovMiddleware = require('drakov').middleware;
 
     var argv = {
         sourceFiles: 'path/to/files/**.md',
