@@ -1,0 +1,41 @@
+{
+    "name": "",
+    "description": "",
+    "method": "OPTIONS",
+    "parameters": [],
+    "attributes": {
+        "relation": "",
+        "uriTemplate": ""
+    },
+    "content": [],
+    "examples": [
+        {
+            "name": "",
+            "description": "",
+            "requests": [],
+            "responses": [
+                {
+                    "name": "200",
+                    "description": "",
+                    "headers": [
+                        {
+                            "name": "Content-Type",
+                            "value": "text/plain"
+                        }
+                    ],
+                    "body": "",
+                    "schema": "",
+                    "content": [
+                        {
+                            "element": "asset",
+                            "attributes": {
+                                "role": "bodyExample"
+                            },
+                            "content": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

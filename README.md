@@ -69,6 +69,12 @@ By default a CORS header is sent, you can disable it with the --disableCORS swit
 
 `drakov -f "../com/foo/contracts/*.md" --disableCORS`
 
+## Automatic response to OPTIONS requests
+
+When you run server for testing API on different port than your app is it's handy to allow cross origin resource sharing (CORS). For this working you need also to listen on every route for OPTIONS requests.
+
+`drakov -f "../com/foo/contracts/*.md" --autoOptions`
+
 ## Run on Public Interface
 
 By default Drakov only binds to localhost, to run on the public IP interface use the --public switch.
