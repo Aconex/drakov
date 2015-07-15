@@ -9,6 +9,13 @@
 Mock server that implements the [API Blueprint](http://apiblueprint.org/) specification:
 
 
+## Community
+
+We have setup a google group to assist with the answering of questions any users of Drakov may have.
+
+It can be found at [https://groups.google.com/forum/?hl=en#!forum/drakov-api-server](https://groups.google.com/forum/?hl=en#!forum/drakov-api-server)
+
+
 ## Note on Dependencies
 
 You will need to have `g++` and `make` installed on your system so `npm install` can compile the [Snow Crash](https://github.com/apiaryio/snowcrash) library.
