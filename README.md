@@ -26,7 +26,6 @@ You will need to have `g++` and `make` installed on your system so `npm install`
 `npm install -g drakov`
 
 
-
 ## Running
 
 `drakov -f <glob expression to your md files> -s <comma delimited list of static file paths> -p <server port>`
@@ -40,7 +39,20 @@ You will need to have `g++` and `make` installed on your system so `npm install`
 - CORS headers are sent by default, you need to use the --disableCORS switch/property
 
 
-**Examples**
+## Running with configuration file
+
+`drakov --config config.js`
+
+**Important**
+
+This mode of operation will load your configuration from a Javascript file that must export an object of arguments as 
+supported in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments/arguments.js).
+
+All command line arguments asside from `--config` will be ignored, and the defaults will be merged in.
+
+
+
+## Examples with command line arguments
 
 With only a glob expression
 
