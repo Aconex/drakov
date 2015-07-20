@@ -9,6 +9,13 @@
 Mock server that implements the [API Blueprint](http://apiblueprint.org/) specification:
 
 
+## Community
+
+We have setup a google group to assist with the answering of questions any users of Drakov may have.
+
+It can be found at [https://groups.google.com/forum/?hl=en#!forum/drakov-api-server](https://groups.google.com/forum/?hl=en#!forum/drakov-api-server)
+
+
 ## Note on Dependencies
 
 You will need to have `g++` and `make` installed on your system so `npm install` can compile the [Snow Crash](https://github.com/apiaryio/snowcrash) library.
@@ -17,7 +24,6 @@ You will need to have `g++` and `make` installed on your system so `npm install`
 ## Installation instructions
 
 `npm install -g drakov`
-
 
 
 ## Running
@@ -33,7 +39,20 @@ You will need to have `g++` and `make` installed on your system so `npm install`
 - CORS headers are sent by default, you need to use the --disableCORS switch/property
 
 
-**Examples**
+## Running with configuration file
+
+`drakov --config config.js`
+
+**Important**
+
+This mode of operation will load your configuration from a Javascript file that must export an object of arguments as 
+supported in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments/arguments.js).
+
+All command line arguments asside from `--config` will be ignored, and the defaults will be merged in.
+
+
+
+## Examples with command line arguments
 
 With only a glob expression
 
@@ -68,6 +87,13 @@ When running drakov and binding to a public IP
 By default a CORS header is sent, you can disable it with the --disableCORS switch.
 
 `drakov -f "../com/foo/contracts/*.md" --disableCORS`
+
+## Automatic response to OPTIONS requests
+
+When you run server for testing API on different port than your app it's handy to allow cross origin resource sharing (CORS). 
+For this to work you need also to listen on every route for OPTIONS requests.
+
+`drakov -f "../com/foo/contracts/*.md" --autoOptions`
 
 ## Run on Public Interface
 
@@ -135,7 +161,7 @@ For HTTP methods such as DELETE, you may want Drakov to return them in the appro
 
 Due to protagonist parsing being async, we need to setup the middleware with an init function
 
-    var drakovMiddleware = require('drakov');
+    var drakovMiddleware = require('drakov').middleware;
 
     var argv = {
         sourceFiles: 'path/to/files/**.md',
@@ -166,7 +192,7 @@ Due to protagonist parsing being async, we need to setup the middleware with an 
 
 **Q:** If I have multiple requests/responses on the same API endpoint, which response will I get?
 
-**A:** Drakov will respond first with any responses that have a JSON schema with the first response matching the request body for that API endpoint.
+**A:** Drakov will respond first with any responses that have a JSON schema with the first response matching the request body for that API endpoint. You can request a specific response by adding a `Prefer` header to the request in the form `Prefer:status=XXX` where `XXX` is the status code of the desired response.
 
 
 **Q:** If I have multiple responses on a single request, which response will I get?

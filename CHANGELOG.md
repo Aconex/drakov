@@ -1,3 +1,37 @@
+### [0.1.8] July 2, 2015
+
+#### Changes
+
+* Support preflight response on OPTIONS for routes [link](https://github.com/Aconex/drakov/pull/59)
+* Add support for Prefer header to coerce response by status [link](https://github.com/Aconex/drakov/pull/61)
+
+#### Fixes
+
+* Fix export of middleware when using Drakov as a node module dependencies in another project
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Martin Nuc https://github.com/MartinNuc
+* Simon Adcock https://github.com/SiCurious
+
+
+### [0.1.6 - 0.1.7] ~June 2, 2015
+
+#### Changes
+
+* Adding flag to allow users to open the drakov server to external host [link](https://github.com/Aconex/drakov/pull/55)
+* Add support for multi-part [link](https://github.com/Aconex/drakov/pull/56)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Jeffrey Hann https://github.com/obihann
+* Subin Varghese https://github.com/subinvarghesein
+
+
 ### [0.1.5] May 7, 2015
 
 #### Changes
