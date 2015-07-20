@@ -1,3 +1,10 @@
+### [0.1.9] July 21, 2015
+
+#### Changes
+
+* Add support for loading configuration from a file [link](https://github.com/Aconex/drakov/pull/71)
+
+
 ### [0.1.8] July 2, 2015
 
 #### Changes
