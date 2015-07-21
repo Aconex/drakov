@@ -1,3 +1,16 @@
+### [0.1.10] July 21, 2015
+
+#### Fixes
+
+* Refactor code using substack pattern [link](https://github.com/Aconex/drakov/pull/73)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Marek Stasikowski https://github.com/kosmotaur
+
+
 ### [0.1.9] July 21, 2015
 
 #### Changes
