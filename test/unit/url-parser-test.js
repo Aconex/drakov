@@ -83,4 +83,29 @@ describe('URL Parser', function() {
         });
     });
 
+    describe('Form Encoded string to JSON', function() {
+        it('should parse a string into key-value pairs', function() {
+            assert.deepEqual(urlParser.formEncodedStringToJson(''), {});
+            assert.deepEqual(urlParser.formEncodedStringToJson('simple=pair'), {simple: 'pair'});
+            assert.deepEqual(urlParser.formEncodedStringToJson('first=1&second=2'), {first: '1', second: '2'});
+            assert.deepEqual(urlParser.formEncodedStringToJson('escaped%20key=escaped%20value'), {'escaped key': 'escaped value'});
+            assert.deepEqual(urlParser.formEncodedStringToJson('emptyKey='), {emptyKey: ''});
+            assert.deepEqual(urlParser.formEncodedStringToJson('flag1&key=value&flag2'), {flag1: true, key: 'value', flag2: true});
+        });
+        it('should ignore key values that are not valid URI components', function() {
+            assert.doesNotThrow(function() { urlParser.formEncodedStringToJson('%'); });
+            assert.deepEqual(urlParser.formEncodedStringToJson('%'), {});
+            assert.deepEqual(urlParser.formEncodedStringToJson('invalid=%'), { invalid: undefined });
+            assert.deepEqual(urlParser.formEncodedStringToJson('invalid=%&valid=good'), { invalid: undefined, valid: 'good' });
+        });
+        it('should parse a string into key-value pairs with duplicates grouped in an array', function() {
+            assert.deepEqual(urlParser.formEncodedStringToJson(''), {});
+            assert.deepEqual(urlParser.formEncodedStringToJson('duplicate=pair'), {duplicate: 'pair'});
+            assert.deepEqual(urlParser.formEncodedStringToJson('first=1&first=2'), {first: ['1','2']});
+            assert.deepEqual(urlParser.formEncodedStringToJson('escaped%20key=escaped%20value&&escaped%20key=escaped%20value2'), {'escaped key': ['escaped value','escaped value2']});
+            assert.deepEqual(urlParser.formEncodedStringToJson('flag1&key=value&flag1'), {flag1: [true,true], key: 'value'});
+            assert.deepEqual(urlParser.formEncodedStringToJson('flag1&flag1=value&flag1=value2&flag1'), {flag1: [true,'value','value2',true]});
+        });
+    });
+
 });
