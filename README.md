@@ -48,7 +48,7 @@ You will need to have `g++` and `make` installed on your system so `npm install`
 This mode of operation will load your configuration from a Javascript file that must export an object of arguments as 
 supported in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments/arguments.js).
 
-All command line arguments asside from `--config` will be ignored, and the defaults will be merged in.
+All command line arguments aside from `--config` will be ignored, and the defaults will be merged in.
 
 
 
@@ -66,11 +66,11 @@ With glob expression and multiple static paths (must be comma delimited with no 
 
 `drakov -f "../com/foo/contracts/*.md" -s "../path/to/static/files" -s "../second/path/to/static/files"`
 
-With globa expression and static path that has a specific mount point
+With glob expression and static path that has a specific mount point
 
 `drakov -f "../com/foo/contracts/*.md" -s "../path/to/static/files=/www/path"`
 
-With globa expression and static path that has a specific mount point with different path mount delimiter
+With glob expression and static path that has a specific mount point with different path mount delimiter
 
 `drakov -f "../com/foo/contracts/*.md" -s "../path/to/static/files:/www/path" -d ":"`
 
