@@ -51,6 +51,12 @@ supported in the [arguments module](https://github.com/Aconex/drakov/blob/master
 All command line arguments aside from `--config` will be ignored, and the defaults will be merged in.
 
 
+## API discovery
+
+`drakov -f <glob expression to your md files> --discover`
+
+Enableds the `/drakov` endpoint, which lists all the available endpoints currently being served by Drakov
+
 
 ## Examples with command line arguments
 

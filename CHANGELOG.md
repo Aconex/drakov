@@ -1,3 +1,23 @@
+### [0.1.11] July 21, 2015
+
+#### Changes
+
+* Add support for matching form-urlencoded http request body with schema mentioned in spec [link](https://github.com/Aconex/drakov/pull/76)
+* API discoverability [link](https://github.com/Aconex/drakov/pull/74)
+
+#### Fixes
+
+* Fix some typos in README [link](https://github.com/Aconex/drakov/pull/77)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Ilya Baryshev https://github.com/coagulant
+* Subin Varghese https://github.com/subinvarghesein
+* Marek Stasikowski https://github.com/kosmotaur
+
+
 ### [0.1.10] July 21, 2015
 
 #### Fixes
