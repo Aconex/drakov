@@ -35,8 +35,8 @@ Accept form urlencoded request type
                     }
                 },
                 "required": [
-                    "random_number",
-                    "static"
+                "random_number",
+                "static"
                 ]
             }
 
