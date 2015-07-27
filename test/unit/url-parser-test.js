@@ -1,5 +1,5 @@
 var assert = require ('assert');
-var urlParser = require('../../lib/url-parser');
+var urlParser = require('../../lib/parse/url');
 
 describe('URL Parser', function() {
 
