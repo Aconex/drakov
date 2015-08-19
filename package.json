@@ -32,6 +32,7 @@
     "optimist": "0.6.1",
     "path-to-regexp": "^1.0.3",
     "protagonist": "^0.19.0",
+    "restify": "^4.0.0",
     "tv4": "^1.1.9"
   },
   "devDependencies": {
