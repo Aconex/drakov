@@ -1,3 +1,16 @@
+### [0.1.12] August 27, 2015
+
+#### Changes
+
+* Add support for Attributes [link](https://github.com/Aconex/drakov/pull/84)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Peleg Rosenthal https://github.com/PelegR
+
+
 ### [0.1.11] July 21, 2015
 
 #### Changes
