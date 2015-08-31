@@ -24,33 +24,17 @@ describe('UrlEncoded Requests', function() {
             });
         });
 
-        describe('if request body does not match with spec request body', function() {
-            describe('but schema matches', function() {
-                it('should respond with success response', function(done) {
-                    request.post('/api/urlencoded')
-                        .set('Content-type', 'application/x-www-form-urlencoded')
-                        .send('random_number=100&static=not_random')
+        describe('if http request body does not matches exactly with spec request body', function() {
+            it('should respond with 404 error response', function(done) {
+                request.post('/api/urlencoded')
+                    .set('Content-type', 'application/x-www-form-urlencoded')
+                    .send('random_number=555&static=magic')
 
-                        .expect(200)
-                        .expect('Content-type', 'application/json;charset=UTF-8')
-                        .expect({success: true})
-                            .end(helper.endCb(done));
-                });
-            });
-
-            describe('and schema also does not match', function() {
-                it('should respond with error response', function(done) {
-                    request.post('/api/urlencoded')
-                        .set('Content-type', 'application/x-www-form-urlencoded')
-                        .send('test=false')
-
-                        .expect(404)
-                        .expect('Content-type', 'text/html; charset=utf-8')
-                            .end(helper.endCb(done));
-                });
+                    .expect(404)
+                    .expect('Content-type', 'text/html; charset=utf-8')
+                    .end(helper.endCb(done));
             });
         });
-
     });
 
 });
