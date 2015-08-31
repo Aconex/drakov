@@ -41,34 +41,48 @@ describe('/api/multiple', function(){
     });
 
     describe('POST', function(){
-        it('should respond with json object from the first body example', function(done){
-            request.post('/api/multiple')
-                .set('Content-type', 'application/json')
-                .send({'first': 'example'})
-                .expect(200)
-                .expect('Content-type', 'application/json;charset=UTF-8')
-                .expect({'first': 'example','status': 'ok'})
-                .end(helper.endCb(done));
+        describe('Json content-type', function() {
+            it('should respond with json object from the first body example', function (done) {
+                request.post('/api/multiple')
+                    .set('Content-type', 'application/json')
+                    .send({'first': 'example'})
+                    .expect(200)
+                    .expect('Content-type', 'application/json;charset=UTF-8')
+                    .expect({'first': 'example', 'status': 'ok'})
+                    .end(helper.endCb(done));
+            });
+
+            it('should respond with json object from the second body example', function (done) {
+                request.post('/api/multiple')
+                    .set('Content-type', 'application/json')
+                    .send({'second': 'example'})
+                    .expect(200)
+                    .expect('Content-type', 'application/json;charset=UTF-8')
+                    .expect({'second': 'example', 'status': 'ok'})
+                    .end(helper.endCb(done));
+            });
         });
 
-        it('should respond with json object from the second body example', function(done){
-            request.post('/api/multiple')
-                .set('Content-type', 'application/json')
-                .send({'second': 'example'})
-                .expect(200)
-                .expect('Content-type', 'application/json;charset=UTF-8')
-                .expect({'second': 'example','status': 'ok'})
-                .end(helper.endCb(done));
-        });
+        describe('Non-Json content-type', function() {
+            it('should respond with json object from the first body example', function (done) {
+                request.post('/api/multiple')
+                    .set('Content-type', 'application/x-www-form-urlencoded')
+                    .send('first=non-json')
+                    .expect(200)
+                    .expect('Content-type', 'application/json;charset=UTF-8')
+                    .expect({first: 'non-json', status: 'ok'})
+                    .end(helper.endCb(done));
+            });
 
-        it('should respond with json object from the third body example', function(done){
-            request.post('/api/multiple')
-                .set('Content-type', 'application/x-www-form-urlencoded')
-                .send({third: 'example'})
-                .expect(200)
-                .expect('Content-type', 'application/json;charset=UTF-8')
-                .expect({third: 'example',status: 'ok'})
-                .end(helper.endCb(done));
+            it('should respond with json object from the second body example', function (done) {
+                request.post('/api/multiple')
+                    .set('Content-type', 'application/x-www-form-urlencoded')
+                    .send('second=non-json')
+                    .expect(200)
+                    .expect('Content-type', 'application/json;charset=UTF-8')
+                    .expect({second: 'non-json', status: 'ok'})
+                    .end(helper.endCb(done));
+            });
         });
     });
 

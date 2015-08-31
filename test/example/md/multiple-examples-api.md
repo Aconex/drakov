@@ -84,7 +84,30 @@ Second POST example with body
             "status": "ok"
         }
 
-### Post to the third example [POST]
+### Post to the first non-json example [POST]
+
++ Request 
+Second POST example with body
+
+    + Headers
+
+        content-type: application/x-www-form-urlencoded
+
+    + Body
+
+        first=non-json
+        
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+        {
+            "first": "non-json",
+            "status": "ok"
+        }
+
+
+### Post to the second non-json example [POST]
 
 + Request
 Second POST example with body
@@ -95,15 +118,13 @@ Second POST example with body
 
     + Body
 
-        {
-            "third": "example"
-        }
+        second=non-json
 
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
 
         {
-            "third": "example",
+            "second": "non-json",
             "status": "ok"
         }
