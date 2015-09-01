@@ -9,7 +9,7 @@ describe('URL Parser', function() {
             var parsed = urlParser.parse(url);
 
             assert.equal(parsed.url, url);
-            assert.deepEqual(parsed.queryParams, []);
+            assert.deepEqual(parsed.queryParams, {});
 
         });
     });
@@ -20,7 +20,7 @@ describe('URL Parser', function() {
             var parsed = urlParser.parse(url);
 
             assert.equal(parsed.url, '/api/:meow/:woof/things');
-            assert.deepEqual(parsed.queryParams, []);
+            assert.deepEqual(parsed.queryParams, {});
 
         });
     });
@@ -31,7 +31,7 @@ describe('URL Parser', function() {
             var parsed = urlParser.parse(url);
 
             assert.equal(parsed.url, '/api/things');
-            assert.deepEqual(parsed.queryParams, ['param']);
+            assert.deepEqual(parsed.queryParams, {'param': ''});
         });
 
         it('Should get path and query parameters: scenario 2', function(){
@@ -39,7 +39,7 @@ describe('URL Parser', function() {
             var parsed = urlParser.parse(url);
 
             assert.equal(parsed.url, '/api/things');
-            assert.deepEqual(parsed.queryParams, ['param','param2']);
+            assert.deepEqual(parsed.queryParams, {'param': '', 'param2': ''});
         });
 
         it('Should get path and query parameters: scenario 3', function(){
@@ -47,7 +47,7 @@ describe('URL Parser', function() {
             var parsed = urlParser.parse(url);
 
             assert.equal(parsed.url, '/api/things');
-            assert.deepEqual(parsed.queryParams, ['param','param2','param3']);
+            assert.deepEqual(parsed.queryParams, {'param': '','param2': '','param3': ''});
         });
 
         it('Should get path and query parameters: scenario 4', function(){
@@ -55,7 +55,31 @@ describe('URL Parser', function() {
             var parsed = urlParser.parse(url);
 
             assert.equal(parsed.url, '/api/things');
-            assert.deepEqual(parsed.queryParams, ['param1','param2']);
+            assert.deepEqual(parsed.queryParams, {'param1': '','param2': ''});
+        });
+
+        it('Should get path and query parameters: scenario 5', function(){
+            var url = '/api/things?param1=12345{&param2}';
+            var parsed = urlParser.parse(url);
+
+            assert.equal(parsed.url, '/api/things');
+            assert.deepEqual(parsed.queryParams, {'param1': '12345','param2': ''});
+        });
+
+        it('Should get path and query parameters: scenario 6', function(){
+            var url = '/api/things?param1=12345&param1=6789{&param2}';
+            var parsed = urlParser.parse(url);
+
+            assert.equal(parsed.url, '/api/things');
+            assert.deepEqual(parsed.queryParams, {'param1': ['12345','6789'],'param2': ''});
+        });
+
+        it('Should get path and query parameters: scenario 7', function(){
+            var url = '/api/things?param1[key1]=12345&param1[key2]=6789{&param2}';
+            var parsed = urlParser.parse(url);
+
+            assert.equal(parsed.url, '/api/things');
+            assert.deepEqual(parsed.queryParams, {'param1': { 'key1': '12345','key2': '6789'},'param2': ''});
         });
 
     });
@@ -66,7 +90,7 @@ describe('URL Parser', function() {
             var parsed = urlParser.parse(url);
 
             assert.equal(parsed.url, '/api/:meow/things');
-            assert.deepEqual(parsed.queryParams, ['param']);
+            assert.deepEqual(parsed.queryParams, {'param': ''});
         });
     });
 
