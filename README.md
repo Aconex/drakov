@@ -203,7 +203,7 @@ Due to protagonist parsing being async, we need to setup the middleware with an 
 
 **Q:** If I have multiple requests/responses on the same API endpoint, which response will I get?
 
-**A:** Drakov will respond first with any responses that have a JSON schema with the first response matching the request body for that API endpoint. You can request a specific response by adding a `Prefer` header to the request in the form `Prefer:status=XXX` where `XXX` is the status code of the desired response.
+**A:** Drakov will respond first with any responses that have a JSON schema with the first response matching the request body for that API endpoint. You can request a specific response by adding a `Prefer` header to the request in the form `Prefer:status=XXX` where `XXX` is the status code of the desired response.  See [issue #88](https://github.com/Aconex/drakov/issues/88) for details.
 
 
 **Q:** If I have multiple responses on a single request, which response will I get?
