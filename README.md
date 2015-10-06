@@ -234,7 +234,7 @@ If you have any ideas or questions you are welcome to post an issue.
 * We don't have any guidelines for how to log, except that you should have your type a different colour from your actual message (better logging is in our roadmap)
 
 ### Functionality that adds CLI arguments
-* Make sure you add the new argument property to the `optimistOptions` object in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments.js#L3)
+* Make sure you add the new argument property to the `yargsConfigOptions` object in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments.js#L3)
 
 ### Middleware functionality
 * For functionality that does something with the request object add code to the [request module](https://github.com/Aconex/drakov/blob/master/lib/request.js)
