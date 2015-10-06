@@ -237,8 +237,8 @@ If you have any ideas or questions you are welcome to post an issue.
 * Make sure you add the new argument property to the `yargsConfigOptions` object in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments.js#L3)
 
 ### Middleware functionality
-* For functionality that does something with the request object add code to the [request module](https://github.com/Aconex/drakov/blob/master/lib/request.js)
-* For functionality that does something with the response object add code to the [response module](https://github.com/Aconex/drakov/blob/master/lib/response.js)
+* For functionality that does something with the request object add code to the [request module](https://github.com/Aconex/drakov/blob/master/lib/middleware/request.js)
+* For functionality that does something with the response object add code to the [response module](https://github.com/Aconex/drakov/blob/master/lib/middleware/response.js)
 
 ### Testing
 * If your contribution deals with API Blueprint request/response behaviour add an example into an existing or new markdown file in the `test/example/md` directory
