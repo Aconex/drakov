@@ -1,4 +1,19 @@
-### [0.1.13] July 21, 2015
+### [0.1.14] October 10, 2015
+
+#### Changes
+
+* Replacing optimist with yargs [link](https://github.com/Aconex/drakov/pull/93)
+* Compatibility with credentialed requests [link](https://github.com/Aconex/drakov/pull/94)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* mrsanz https://github.com/mrsanz
+* Kingson-de https://github.com/Kingson-de
+
+
+### [0.1.13] October 7, 2015
 
 #### Changes
 

@@ -252,7 +252,7 @@ A history of changes with a list of contributors can be found at https://github.
 
 ## MAINTAINERS
 
-Yakov Khalinsky <ykhalinsky@aconex.com>
+Yakov Khalinsky <yakov@therocketsurgeon.com>
 
 Marcelo Garcia de Oliveira <moliveira@aconex.com>
 
