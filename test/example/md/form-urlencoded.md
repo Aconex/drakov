@@ -13,12 +13,6 @@ Accept form urlencoded request type
 
             random_number=4&static=not_random
 
-    + Schema
-
-            {
-                "type": "string"
-            }
-
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
