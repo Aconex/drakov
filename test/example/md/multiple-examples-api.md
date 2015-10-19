@@ -20,11 +20,6 @@ First GET example with header
     + Body
 
             {"first": "response"}
-            
-
-
-### Retrieve from GET [GET]
-Second GET example with header 
 
 + Request
 
@@ -39,14 +34,64 @@ Second GET example with header
 
             {"second": "response"}
 
-### Retrieve from GET [GET]
-Get examples with a specific status code (eg. 400)
++ Request
+
+    + Headers
+
+        Prefer: status=400
 
 + Response 400 (application/json;charset=UTF-8)
-
+Get examples with a specific status code (eg. 400)
+        
     + Body
 
             {"error": "Bad request"}
+            
+### Put to the first example [PUT]
+            
++ Request (application/json)
+
+    + Body
+
+        {
+            "id": 1,
+            "title": "hello"
+        }
+
+    + Schema
+
+        {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+                "id": {"type": "number"},
+                "title": {"type": "string" }
+            }
+        } 
+            
++ Response 201 (application/json)
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "id": 2,
+                "title": "hello"
+            }
+
+    + Schema
+
+            {
+                "type": "object",
+                "required": ["id"],
+                "properties": {
+                    "id": {"type": "number"},
+                    "title": {"type": "string" }
+                }
+            }
+
++ Response 400 (application/json)
 
 ### Post to the first example [POST]
 
@@ -66,8 +111,6 @@ First POST example with body
             "status": "ok"
         }
 
-### Post to the second example [POST]
-
 + Request (application/json)
 Second POST example with body 
 
@@ -83,8 +126,6 @@ Second POST example with body
             "second": "example",
             "status": "ok"
         }
-
-### Post to the first non-json example [POST]
 
 + Request 
 Second POST example with body
@@ -106,8 +147,6 @@ Second POST example with body
             "status": "ok"
         }
 
-
-### Post to the second non-json example [POST]
 
 + Request
 Second POST example with body

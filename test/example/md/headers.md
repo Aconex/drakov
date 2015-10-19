@@ -44,9 +44,6 @@ Respond to deletion of object
               "header":"absent"
             }
             
-
-
-### Retrieve all the things with specific header [GET]
 + Request JSON Message
     
     + Headers
