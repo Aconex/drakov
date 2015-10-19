@@ -58,7 +58,7 @@
                 };
 
                 it('should match body', function () {
-                    httpReq['body'] = '{"text": "Hyperspeed jet"}';
+                    httpReq.body = '{"text": "Hyperspeed jet"}';
 
                     var specReq = {
                         body: '{\n    "text": "Hyperspeed jet"\n}\n'
@@ -68,7 +68,7 @@
                 });
 
                 it('should not match body', function () {
-                    httpReq['body'] = '{"text": "Hyperspeed jet!!"}';
+                    httpReq.body = '{"text": "Hyperspeed jet!!"}';
 
                     var specReq = {
                         body: '{\n    "text": "Hyperspeed jet"\n}\n'
@@ -86,7 +86,7 @@
                 };
 
                 it('should match body', function () {
-                    httpReq['body'] = '{"text": "Hyperspeed jet"}';
+                    httpReq.body = '{"text": "Hyperspeed jet"}';
 
                     var specReq = {
                         body: '{"text": "Hyperspeed jet"}'
@@ -96,7 +96,7 @@
                 });
 
                 it('should not match body', function () {
-                    httpReq['body'] = '{"text": "Hyperspeed jet!!"}';
+                    httpReq.body = '{"text": "Hyperspeed jet!!"}';
 
                     var specReq = {
                         body: '{\n    "text": "Hyperspeed jet"\n}\n'
@@ -116,7 +116,7 @@
                 var specReq = {
                     schema: {
                         type: 'object',
-                        required: ["first", "second"],
+                        required: ['first', 'second'],
                         properties: {
                             first: {type: 'string'},
                             second: {type: 'string'}
