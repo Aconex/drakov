@@ -42,7 +42,7 @@ Create a new thing
     + Body
 
             {
-                "text": "Hyperspeed jet",
+                "text": "Hyperspeed jet"
             }
 
 + Response 200 (application/json;charset=UTF-8)
