@@ -1,6 +1,6 @@
 {
   "name": "drakov",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Mock server that implements the API Blueprint specification",
   "main": "./index.js",
   "bin": {
