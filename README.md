@@ -108,7 +108,7 @@ For this to work you need also to listen on every route for OPTIONS requests.
 
 ## Run on Public Interface
 
-By default Drakov only binds to localhost, to run on the public IP interface use the --public switch.
+By default Drakov only binds to localhost, to run on all public IP interfaces use the --public switch.
 
 `drakov -f "../com/foo/contracts/*.md" --public`
 
