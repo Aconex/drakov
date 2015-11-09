@@ -14,7 +14,7 @@ Lists all the things from the API
 
     + Body
 
-           { "response-type": "parametrized" }
+            { "response-type": "parametrized" }
             
 ## Static endpoint [/api/sababa/static]
 
@@ -24,4 +24,4 @@ Lists all the things from the API
 
     + Body
 
-           { "response-type": "static" }
+            { "response-type": "static" }
