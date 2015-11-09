@@ -27,13 +27,20 @@ module.exports = function (grunt) {
             },
             api: {src: 'test/api/*-test.js'},
             unit: {src: 'test/unit/*-test.js'}
+        },
+        'blueprint-validator': {
+            'contract-test':{
+                mdFiles: 'test/example/**/*.md',
+                failOnWarnings: true
+            }
         }
     });
 
     // For this to work, you need to have run `npm install grunt-simple-mocha`
     grunt.loadNpmTasks('grunt-simple-mocha');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-blueprint-validator');
 
-    grunt.task.registerTask('test', ['simplemocha:api', 'simplemocha:unit']);
+    grunt.task.registerTask('test', ['blueprint-validator', 'simplemocha:api', 'simplemocha:unit']);
     grunt.task.registerTask('default', ['jshint', 'test']);
 };

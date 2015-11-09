@@ -12,7 +12,7 @@ First GET example with header
 
     + Headers
 
-        Custom-header: First
+            Custom-header: First
         
 
 + Response 200 (application/json;charset=UTF-8)
@@ -25,7 +25,7 @@ First GET example with header
 
     + Headers
 
-        Custom-header: Second
+            Custom-header: Second
         
 
 + Response 200 (application/json;charset=UTF-8)
@@ -38,7 +38,7 @@ First GET example with header
 
     + Headers
 
-        Prefer: status=400
+            Prefer: status=400
 
 + Response 400 (application/json;charset=UTF-8)
 Get examples with a specific status code (eg. 400)
@@ -53,21 +53,21 @@ Get examples with a specific status code (eg. 400)
 
     + Body
 
-        {
-            "id": 1,
-            "title": "hello"
-        }
+            {
+                "id": 1,
+                "title": "hello"
+            }
 
     + Schema
 
-        {
-            "type": "object",
-            "required": ["id"],
-            "properties": {
-                "id": {"type": "number"},
-                "title": {"type": "string" }
-            }
-        } 
+            {
+                "type": "object",
+                "required": ["id"],
+                "properties": {
+                    "id": {"type": "number"},
+                    "title": {"type": "string" }
+                }
+            } 
             
 + Response 201 (application/json)
 
@@ -100,70 +100,69 @@ First POST example with body
 
     + Body
 
-        {"first": "example"}
+            {"first": "example"}
 
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
 
-        {
-            "first": "example",
-            "status": "ok"
-        }
+            {
+                "first": "example",
+                "status": "ok"
+            }
 
 + Request (application/json)
 Second POST example with body 
 
     + Body
 
-        {"second": "example"}
+            {"second": "example"}
 
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
 
-        {
-            "second": "example",
-            "status": "ok"
-        }
+            {
+                "second": "example",
+                "status": "ok"
+            }
 
 + Request 
 Second POST example with body
 
     + Headers
 
-        content-type: application/x-www-form-urlencoded
+            content-type: application/x-www-form-urlencoded
 
     + Body
 
-        first=non-json
+            first=non-json
         
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
 
-        {
-            "first": "non-json",
-            "status": "ok"
-        }
-
+            {
+                "first": "non-json",
+                "status": "ok"
+            }
 
 + Request
 Second POST example with body
 
     + Headers
 
-        content-type: application/x-www-form-urlencoded
+            content-type: application/x-www-form-urlencoded
 
     + Body
 
-        second=non-json
+            second=non-json
 
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
 
-        {
-            "second": "non-json",
-            "status": "ok"
-        }
+            {
+                "second": "non-json",
+                "status": "ok"
+            }
