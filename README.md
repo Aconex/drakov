@@ -139,6 +139,16 @@ For HTTP methods such as DELETE, you may want Drakov to return them in the appro
 
 `drakov -f "../com/foo/contracts/*.md" --method DELETE --method OPTIONS`
 
+## Allow Headers Header
+
+For HTTP headers such as Authorization, you may want Drakov to return them in the appropriate methods allow header. You can do this using the `--header` argument
+
+`drakov -f "../com/foo/contracts/*.md" --header Authorization`
+
+`drakov -f "../com/foo/contracts/*.md" --header Authorization --header X-Csrf-Token`
+
+Drakov includes many headers by default: `Origin, X-Requested-With, Content-Type, Accept` when CORS is enabled.
+
 
 ## Using as a Node.js module
 
