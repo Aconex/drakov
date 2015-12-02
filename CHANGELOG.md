@@ -1,3 +1,39 @@
+### [0.1.14] October 10, 2015
+
+#### Changes
+
+* Replacing optimist with yargs [link](https://github.com/Aconex/drakov/pull/93)
+* Compatibility with credentialed requests [link](https://github.com/Aconex/drakov/pull/94)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* mrsanz https://github.com/mrsanz
+* Kingson-de https://github.com/Kingson-de
+
+
+### [0.1.13] October 7, 2015
+
+#### Changes
+
+* Remove json schema support for application/x-www-form-urlencoded [link](https://github.com/Aconex/drakov/pull/86)
+* Changed query params handling to accept query params matching [link](https://github.com/Aconex/drakov/pull/87)
+* FAQ Update: reference example how to request specific response [link](https://github.com/Aconex/drakov/pull/90)
+
+#### Fixes
+
+* Use an absolute path for views [link](https://github.com/Aconex/drakov/pull/92)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Marcelo https://github.com/marcelogo
+* Yohan Robert https://github.com/groyoh
+* James Kruth https://github.com/artlogic
+
+
 ### [0.1.12] August 27, 2015
 
 #### Changes

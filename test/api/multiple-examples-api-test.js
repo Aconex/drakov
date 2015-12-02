@@ -86,4 +86,23 @@ describe('/api/multiple', function(){
         });
     });
 
+    describe('PUT', function() {
+        it('should respond with 400', function(done) {
+            request.put('/api/multiple')
+                .set('Content-type', 'application/json')
+                .send({'id': 2, 'title': 'hello'})
+                .expect(400)
+                .expect('Content-type', 'application/json')
+                .end(helper.endCb(done));
+        });
+
+        it('should respond with 201', function(done) {
+            request.put('/api/multiple')
+                .set('Content-type', 'application/json')
+                .send({'id': 1, 'title': 'hello'})
+                .expect(201)
+                .expect('Content-type', 'application/json')
+                .end(helper.endCb(done));
+        });
+    });
 });

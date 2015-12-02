@@ -11,20 +11,10 @@ describe('Multipart Requests', function() {
     });
 
     describe('/api/multipart', function() {
-        it('should respond with success response for Same Multipart Content Type', function(done) {
+        it('should respond with success response when content type is Multipart', function(done) {
             request.post('/api/multipart')
             .set('Content-type', 'multipart/form-data; boundary=---BOUNDARY')
-            .send()
-            .expect(200)
-            .expect('Content-type', 'application/json;charset=UTF-8')
-            .expect({success: true})
-            .end(helper.endCb(done));
-        });
-
-        it('should respond with success response for Same Multipart Content Type with different boundary', function(done) {
-            request.post('/api/multipart')
-            .set('Content-type', 'multipart/form-data; boundary=---WebKitFormBoundaryjy0tIlk46ESOni0H')
-            .send()
+            .send('it does not really matter')
             .expect(200)
             .expect('Content-type', 'application/json;charset=UTF-8')
             .expect({success: true})

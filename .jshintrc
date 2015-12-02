@@ -11,6 +11,7 @@
     "it": false,
     "console": false,
     "describe": false,
+    "context": false,
     "before": false,
     "after": false,
     "expect": false,

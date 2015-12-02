@@ -12,7 +12,7 @@ Check Authorization header
 
     + Headers
 
-        Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
 
 + Response 200
 
@@ -20,33 +20,27 @@ Check Authorization header
 
     + Headers
 
-        Authorization: Basic foo
+            Authorization: Basic foo
 
 + Response 401
 
 ### Delete a dummy object [DELETE]
 Respond to deletion of object
 
-+ Request
-
 + Response 200
 
 ## Things [/things]
 
 ### Retrieve all the things with no header [GET]
-+ Request JSON Message
             
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
 
-           {
+            {
               "header":"absent"
             }
             
-
-
-### Retrieve all the things with specific header [GET]
 + Request JSON Message
     
     + Headers
@@ -64,4 +58,4 @@ Respond to deletion of object
 
             {
                  "header":"json"
-           }
+            }

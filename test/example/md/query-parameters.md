@@ -12,10 +12,9 @@ See [Blueprint API - URI parameters section](https://github.com/apiaryio/api-blu
 
     + Body
 
-           {
+            {
               "id": "raw"
             }
-
 
 ## Things [/api/query{?param1}]
 
@@ -32,7 +31,6 @@ See [Blueprint API - URI parameters section](https://github.com/apiaryio/api-blu
                "id": "parameter1"
             }
 
-
 ## Things [/api/query{?param2}]
 
 + Parameters
@@ -47,8 +45,6 @@ See [Blueprint API - URI parameters section](https://github.com/apiaryio/api-blu
             {
                "id": "parameter2"
             }
-
-
 
 ## Things [/api/query?param1{&param2}]
 
@@ -70,6 +66,22 @@ See [Blueprint API - URI parameters section](https://github.com/apiaryio/api-blu
 ## Things [/api/query{?param2,param3}]
 
 + Parameters
+    + param2 (string, `12345`) ... Parameter for the request
+    + param3 (string, `12345`) ... Parameter for the request
+
+### Get with query parameter [GET]
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+            {
+               "id": "parameter2_parameter3"
+            }
+
+## Things [/api/query?param1=12345{&param2}]
+
++ Parameters
     + param1 (string, `12345`) ... Parameter for the request
     + param2 (string, `12345`) ... Parameter for the request
 
@@ -80,5 +92,35 @@ See [Blueprint API - URI parameters section](https://github.com/apiaryio/api-blu
     + Body
 
             {
-               "id": "parameter2_parameter3"
+               "id": "parameter1_12345_parameter2"
+            }
+
+## Things [/api/query?param1=12345&param1=6789]
+
++ Parameters
+    + param1 (array, `["12345","6789"]`) ... Parameter for the request
+
+### Get with query parameter [GET]
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+            {
+               "id": "parameter1_12345_6789"
+            }
+
+## Things [/api/query?param1%5Bkey1%5D=12345&param1%5Bkey2%5D=6789]
+
++ Parameters
+    + param1 (object) ... Parameter for the request
+
+### Get with query parameter [GET]
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+
+            {
+               "id": "parameter1_key1_12345_key2_6789"
             }

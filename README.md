@@ -108,7 +108,7 @@ For this to work you need also to listen on every route for OPTIONS requests.
 
 ## Run on Public Interface
 
-By default Drakov only binds to localhost, to run on the public IP interface use the --public switch.
+By default Drakov only binds to localhost, to run on all public IP interfaces use the --public switch.
 
 `drakov -f "../com/foo/contracts/*.md" --public`
 
@@ -244,11 +244,11 @@ If you have any ideas or questions you are welcome to post an issue.
 * We don't have any guidelines for how to log, except that you should have your type a different colour from your actual message (better logging is in our roadmap)
 
 ### Functionality that adds CLI arguments
-* Make sure you add the new argument property to the `optimistOptions` object in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments.js#L3)
+* Make sure you add the new argument property to the `yargsConfigOptions` object in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments.js#L3)
 
 ### Middleware functionality
-* For functionality that does something with the request object add code to the [request module](https://github.com/Aconex/drakov/blob/master/lib/request.js)
-* For functionality that does something with the response object add code to the [response module](https://github.com/Aconex/drakov/blob/master/lib/response.js)
+* For functionality that does something with the request object add code to the [request module](https://github.com/Aconex/drakov/blob/master/lib/middleware/request.js)
+* For functionality that does something with the response object add code to the [response module](https://github.com/Aconex/drakov/blob/master/lib/middleware/response.js)
 
 ### Testing
 * If your contribution deals with API Blueprint request/response behaviour add an example into an existing or new markdown file in the `test/example/md` directory
@@ -262,7 +262,7 @@ A history of changes with a list of contributors can be found at https://github.
 
 ## MAINTAINERS
 
-Yakov Khalinsky <ykhalinsky@aconex.com>
+Yakov Khalinsky <yakov@therocketsurgeon.com>
 
 Marcelo Garcia de Oliveira <moliveira@aconex.com>
 

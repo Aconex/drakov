@@ -75,4 +75,33 @@ describe('Query Parameters', function(){
         });
     });
 
+    describe('/api/things?param1=12345{&param2}', function(){
+        it('should respond with response specified in a endpoint with "param1" and "param2" parameters', function(done){
+            request.get('/api/query?param1=12345&param2=2')
+                .expect(200)
+                .expect('Content-type', 'application/json;charset=UTF-8')
+                .expect({id: 'parameter1_12345_parameter2'})
+                .end(helper.endCb(done));
+        });
+    });
+
+    describe('/api/things?param1=12345&param1=6789', function(){
+        it('should respond with response specified in a endpoint with "param1" parameter as array', function(done){
+            request.get('/api/query?param1=12345&param1=6789')
+                .expect(200)
+                .expect('Content-type', 'application/json;charset=UTF-8')
+                .expect({id: 'parameter1_12345_6789'})
+                .end(helper.endCb(done));
+        });
+    });
+
+    describe('/api/things?param1[key1]=12345&param1[key2]=6789', function(){
+        it('should respond with response specified in a endpoint with "param1" parameter as object', function(done){
+            request.get('/api/query?param1[key1]=12345&param1[key2]=6789')
+                .expect(200)
+                .expect('Content-type', 'application/json;charset=UTF-8')
+                .expect({id: 'parameter1_key1_12345_key2_6789'})
+                .end(helper.endCb(done));
+        });
+    });
 });
