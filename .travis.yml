@@ -4,5 +4,5 @@ node_js:
   - "0.12"
 notifications:
   email:
-    - ykhalinsky@aconex.com
+    - yakov@therocketsurgeon.com
     - moliveira@aconex.com
