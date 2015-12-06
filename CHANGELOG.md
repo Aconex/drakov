@@ -1,3 +1,21 @@
+### [0.1.17] December 6, 2015
+
+#### Changes
+
+* CORS - configurable Access-Control-Allow-Headers [link](https://github.com/Aconex/drakov/issues/101) [link](https://github.com/Aconex/drakov/pull/106)
+
+#### Fixes
+
+* Correction to README regarding address binding [link](https://github.com/Aconex/drakov/pull/100)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Khalid Dermoumi https://github.com/khaliddermoumi
+* James Kruth https://github.com/artlogic
+
+
 ### [0.1.14] October 10, 2015
 
 #### Changes
