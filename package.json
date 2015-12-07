@@ -25,12 +25,12 @@
   "dependencies": {
     "async": "^1.4.2",
     "colors": "^1.1.0",
-    "drafter": "^0.2.8",
     "express": "^4.12.3",
     "glob": "^5.0.15",
     "jade": "^1.11.0",
     "lodash": "^3.8.0",
     "path-to-regexp": "^1.0.3",
+    "protagonist": "^1.2.0",
     "qs": "^5.1.0",
     "tv4": "^1.1.9",
     "yargs": "^3.26.0"
