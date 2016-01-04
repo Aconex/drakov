@@ -16,9 +16,7 @@ describe('MSON-API', function(){
                 request.get('/api/things')
                 .expect(200)
                 .expect('Content-type', 'application/json;charset=UTF-8')
-                .expect([
-                    {text:'Zip2',id: '1'}
-                ])
+                .expect([{text:'Zip2',id: '1'}])
                 .end(helper.endCb(done));
             });
         });
@@ -30,8 +28,7 @@ describe('MSON-API', function(){
                 request.get('/api/things/1111')
                 .expect(200)
                 .expect('Content-type', 'application/json;charset=UTF-8')
-                .expect([{text: 'Zip2', id: '1'}
-                    ])
+                .expect([{text: 'Zip2', id: '1'}])
                 .end(helper.endCb(done));
             });
         });
@@ -40,10 +37,10 @@ describe('MSON-API', function(){
             it('should respond with json object from contract example', function(done){
                 request.post('/api/things/1111')
                 .set('Content-type', 'application/json')
-                .send({ text: 'Zip2', id: '1' })
+                .send([{ text: 'Zip2', id: '1' }])
                 .expect(200)
                 .expect('Content-type', 'application/json;charset=UTF-8')
-                .expect({ text: 'Zip2', id: '1' })
+                .expect([{ text: 'Zip2', id: '1' }])
                 .end(helper.endCb(done));
             });
         });
