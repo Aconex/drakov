@@ -1,3 +1,16 @@
+### (0.2.0) January 7, 2016
+
+#### Changes
+
+* Updates to allow Drakov to run on newer versions of Node.js [link](https://github.com/Aconex/drakov/pull/110)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Andrei Scripcaru https://github.com/ascripcaru
+
+
 ### [0.1.17] December 6, 2015
 
 #### Changes
