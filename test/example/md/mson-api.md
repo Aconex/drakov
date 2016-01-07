@@ -23,7 +23,6 @@ Create a new thing
     + Attributes (object)
         + text: Hyperspeed jet (string)
 
-
 + Response 200 (application/json;charset=UTF-8)
 
     + Attributes (object)
@@ -50,14 +49,14 @@ Create a new thing
 
 ### Update thing by it's id [POST]
 
-+ Request ( application/json)
++ Request (application/json)
 Update the text of the thing
 
-    + Attributes (Things)
+    + Attributes (array[Things])
 
 + Response 200 (application/json;charset=UTF-8)
 
-    + Attributes (Things)
+    + Attributes (array[Things])
 
 ## Likes [/api/things/{thingId}/like]
 
