@@ -55,6 +55,16 @@ supported in the [arguments module](https://github.com/Aconex/drakov/blob/master
 
 All command line arguments aside from `--config` will be ignored, and the defaults will be merged in.
 
+## Running with .drakovrc configuration file
+
+`drakov`
+
+Similar to utilities such as JSHint, drakov will look for a `.drakovrc` file in the current path where `drakov` is executed
+and walk up the path until `/` is reached.
+
+The `.drakovrc` file should be a valid Node.js module that exports a valid Drakov configuration object such as would be
+used with the `--config` switch.
+
 
 ## API discovery
 
