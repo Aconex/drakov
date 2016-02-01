@@ -1,3 +1,11 @@
+### (0.2.1) February 2, 2016
+
+#### Changes
+
+* Watch for changes in loaded spec files and reload Drakov [link](https://github.com/Aconex/drakov/pull/120)
+* Automatically load configuration when no arguments are supplied [link](https://github.com/Aconex/drakov/pull/121)
+
+
 ### (0.2.0) January 7, 2016
 
 #### Changes

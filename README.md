@@ -103,6 +103,12 @@ When running drakov and binding to a public IP
 
 `drakov -f "../com/foo/contracts/*.md" --public`
 
+## Reload Drakov when loaded specification files change
+
+You can tell Drakov to watch for changes in the spec files that are loaded. When changes are detected, Drakov will reload.
+
+`drakov -f "../com/foo/contracts/*.md" --watch`
+
 ## CORS Header
 
 By default a CORS header is sent, you can disable it with the --disableCORS switch.
