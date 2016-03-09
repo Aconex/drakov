@@ -1,3 +1,16 @@
+### (0.2.2) March 9, 2016
+
+#### Changes
+
+* Avoid exit in express middleware [link](https://github.com/Aconex/drakov/pull/123)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Olivier Penhoat https://github.com/openhoat
+
+
 ### (0.2.1) February 2, 2016
 
 #### Changes
