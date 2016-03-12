@@ -11,7 +11,7 @@ drakovOptions  = {
     sourceFiles: '../test/example/**/*.md'
 };
 
-// currently need to initialise the middleware asynchronously due to protagonist parse in async
+// currently need to initialise the middleware asynchronously due to drafter parse in async
 drakovMiddleware.init(app, drakovOptions, function(err, middlewareFunction) {
     if (err) {
         throw err;
