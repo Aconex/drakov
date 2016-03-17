@@ -21,11 +21,6 @@ It can be found at [https://groups.google.com/forum/?hl=en#!forum/drakov-api-ser
 Since version 0.1.12 MSON support is now provided.
 
 
-## Note on Dependencies
-
-You will need to have `g++` and `make` installed on your system so `npm install` can compile the [Snow Crash](https://github.com/apiaryio/snowcrash) library.
-
-
 ## Installation instructions
 
 `npm install -g drakov`
