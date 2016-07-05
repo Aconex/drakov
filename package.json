@@ -1,6 +1,6 @@
 {
   "name": "drakov",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Mock server that implements the API Blueprint specification",
   "main": "./index.js",
   "bin": {
@@ -29,7 +29,7 @@
     "async": "^1.4.2",
     "chokidar": "^1.4.3",
     "colors": "^1.1.0",
-    "drafter.js": "^2.0.0",
+    "drafter.js": "^2.4.3",
     "express": "^4.13.4",
     "glob": "^7.0.3",
     "jade": "^1.11.0",

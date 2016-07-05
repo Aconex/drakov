@@ -1,3 +1,16 @@
+### (1.0.1.) July 6, 2016; Speed Racer Edition
+
+#### Changes
+
+* Update version of Drafter.js to improve performance of Blueprint parsing [link](https://github.com/Aconex/drakov/pull/134)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Bernie Telles https://github.com/btelles
+
+
 ### (0.2.2) March 9, 2016
 
 #### Changes
