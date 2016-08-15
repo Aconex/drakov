@@ -5,7 +5,24 @@
     var assert = require('assert');
 
     describe('Content', function () {
-        describe('areContentTypeSame', function () {
+        describe('areContentTypesSame', function () {
+
+            it('should return true when spec does not define content-type the same', function () {
+                var httpReq = {
+                    'headers': {
+                        'content-type': 'application/json'
+                    }
+                };
+
+                var specReq = {
+                    headers: [
+                        {}
+                    ]
+                };
+
+                assert.equal(content.areContentTypesSame(httpReq, specReq), true);
+            });
+
             it('should be the same', function () {
                 var httpReq = {
                     'headers': {
@@ -38,6 +55,65 @@
                 assert.equal(content.areContentTypesSame(httpReq, specReq), false);
             });
         });
+
+        describe('contentTypeComparator', function () {
+            it('should return 1 when first spec does not contain content-type header', function () {
+                var specA = {
+                    request: {
+                        headers: [
+                            {name: 'Not-Content-Type', value: 'application/json'}
+                        ]
+                    }
+                };
+
+                var specB ={
+                    request: {
+                        headers: [
+                            {name: 'Content-Type', value: 'application/json'}
+                        ]
+                    }
+                };
+
+                assert.equal(content.contentTypeComparator(specA, specB), 1);
+            });
+
+            it('should return -1 when first spec contains content-type header', function () {
+                var specA = {
+                    request: {
+                        headers: [
+                            {name: 'Content-Type', value: 'application/json'}
+                        ]
+                    }
+                };
+
+                var specB ={
+                    request: {
+                        headers: [
+                            {name: 'Content-Type', value: 'application/json'}
+                        ]
+                    }
+                };
+
+                assert.equal(content.contentTypeComparator(specA, specB), -1);
+            });
+
+            it('should not be the same', function () {
+                var httpReq = {
+                    'headers': {
+                        'content-type': 'application/xml'
+                    }
+                };
+
+                var specReq = {
+                    headers: [
+                        {name: 'Content-Type', value: 'application/json'}
+                    ]
+                };
+
+                assert.equal(content.areContentTypesSame(httpReq, specReq), false);
+            });
+        });
+
 
         describe('matchesBody', function () {
             it('should match body when there are no spec request', function () {
