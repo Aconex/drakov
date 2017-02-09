@@ -7,6 +7,14 @@
     var loadash = require('lodash');
 
     describe('Content', function () {
+
+        before(function (done) {
+           var helper = require('../lib/drakov-runner');
+           helper.run({stealthmode: false}, function () {
+               helper.stop(done);
+           });
+        });
+
         describe('areContentTypesSame', function () {
 
             var httpReq = {
