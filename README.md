@@ -16,9 +16,25 @@ We have setup a google group to assist with the answering of questions any users
 It can be found at [https://groups.google.com/forum/?hl=en#!forum/drakov-api-server](https://groups.google.com/forum/?hl=en#!forum/drakov-api-server)
 
 
+## Notes on the Node.js compatibility
+
+Since version 1.0.2, a version of the Drafter package is being used, which attempts to install the version with C bindings (faster), but falls back if compilation of this package fails to Drafter.js.
+
+Currently this package doesn't install on Node.js version 7+. All versions below and including Node.js 6.x will work fine.
+
+
 ## MSON Support via Attribute elements
 
 Since version 0.1.12 MSON support is now provided.
+
+
+## Logging to assist with debugging request matching
+
+Drakov provide some logging in the following situations:
+
+ - When request's path does not match any documented endpoints
+ - When request's headers does not match headers schema
+ - When request's body does not match body schema (corresponding to request's content-type)
 
 
 ## Installation instructions
@@ -45,7 +61,7 @@ Since version 0.1.12 MSON support is now provided.
 
 **Important**
 
-This mode of operation will load your configuration from a Javascript file that must export an object of arguments as 
+This mode of operation will load your configuration from a Javascript file that must export an object of arguments as
 supported in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments/arguments.js).
 
 All command line arguments aside from `--config` will be ignored, and the defaults will be merged in.
@@ -112,7 +128,7 @@ By default a CORS header is sent, you can disable it with the --disableCORS swit
 
 ## Automatic response to OPTIONS requests
 
-When you run server for testing API on different port than your app it's handy to allow cross origin resource sharing (CORS). 
+When you run server for testing API on different port than your app it's handy to allow cross origin resource sharing (CORS).
 For this to work you need also to listen on every route for OPTIONS requests.
 
 `drakov -f "../com/foo/contracts/*.md" --autoOptions`
@@ -164,7 +180,7 @@ Drakov includes many headers by default: `Origin, X-Requested-With, Content-Type
 ## Using as a Node.js module
 
     var drakov = require('drakov');
-    
+
     var argv = {
         sourceFiles: 'path/to/files/**.md',
         serverPort: 3000,
@@ -180,7 +196,7 @@ Drakov includes many headers by default: `Origin, X-Requested-With, Content-Type
         delay: 2000,
         method: ['DELETE','OPTIONS']
     };
-    
+
     drakov.run(argv, function(){
         // started Drakov
         drakov.stop(function() {

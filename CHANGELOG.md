@@ -1,3 +1,17 @@
+### (1.0.2.) February 10, 2017; Excellent logging edition
+
+#### Changes
+
+* Updated to use latest version of Drafter, which falls back to Drafter.js
+* Log request matching process for better problem diagnosis  [link](https://github.com/Aconex/drakov/pull/154)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Radion Chernyakov https://github.com/nixololo
+
+
 ### (1.0.1.) July 6, 2016; Speed Racer Edition
 
 #### Changes
