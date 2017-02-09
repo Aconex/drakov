@@ -46,7 +46,7 @@ See [Blueprint API - URI parameters section](https://github.com/apiaryio/api-blu
                "id": "parameter2"
             }
 
-## Things [/api/query?param1{&param2}]
+## Things [/api/query?{param1}&{param2}]
 
 + Parameters
     + param1 (string, `12345`) ... Parameter for the request
@@ -79,7 +79,7 @@ See [Blueprint API - URI parameters section](https://github.com/apiaryio/api-blu
                "id": "parameter2_parameter3"
             }
 
-## Things [/api/query?param1=12345{&param2}]
+## Things [/api/query?{param1}=12345&{param2}]
 
 + Parameters
     + param1 (string, `12345`) ... Parameter for the request
@@ -95,7 +95,7 @@ See [Blueprint API - URI parameters section](https://github.com/apiaryio/api-blu
                "id": "parameter1_12345_parameter2"
             }
 
-## Things [/api/query?param1=12345&param1=6789]
+## Things [/api/query?{param1}=12345&{param1}=6789]
 
 + Parameters
     + param1 (array, `["12345","6789"]`) ... Parameter for the request
@@ -110,7 +110,7 @@ See [Blueprint API - URI parameters section](https://github.com/apiaryio/api-blu
                "id": "parameter1_12345_6789"
             }
 
-## Things [/api/query?param1%5Bkey1%5D=12345&param1%5Bkey2%5D=6789]
+## Things [/api/query?{param1}%5Bkey1%5D=12345&{param1}%5Bkey2%5D=6789]
 
 + Parameters
     + param1 (object) ... Parameter for the request
