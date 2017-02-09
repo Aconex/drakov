@@ -23,13 +23,13 @@
                     ]
                 };
 
-                it('should return true when spec does not define content-type the same', function () {
+                it('should return true', function () {
                     assert.equal(content.areContentTypesSame(httpReq, specReq), true);
                 });
 
-                it('should log into console that content type is matched', function () {
+                it('should log to console that content type is matched', function () {
                     var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'MATCHED'), true);
+                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
                     });
 
                     content.areContentTypesSame(httpReq, specReq);
@@ -49,9 +49,9 @@
                     assert.equal(content.areContentTypesSame(httpReq, specReq), true);
                 });
 
-                it('should log into console that content type is matched', function () {
+                it('should log to console that content type is matched', function () {
                     var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'MATCHED'), true);
+                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
                     });
 
                     content.areContentTypesSame(httpReq, specReq);
@@ -71,7 +71,7 @@
                     assert.equal(content.areContentTypesSame(httpReq, specReq), false);
                 });
 
-                it('should log into console that content type is not matched', function () {
+                it('should log to console that content type is not matched', function () {
                     var hook = stdoutHook.setup(function (string) {
                         assert.equal(loadash.includes(string, 'NOT_MATCHED'), true);
                     });
@@ -154,7 +154,7 @@
                     assert.equal(content.matchesBody(httpReq, specReq), true);
                 });
 
-                it('should log into console that body matched', function () {
+                it('should log to console that body matched', function () {
                     httpReq.headers = {
                         'content-type': 'application/json',
                     };
@@ -164,7 +164,7 @@
                     };
 
                     var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'MATCHED'), true);
+                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
                     });
 
                     content.matchesBody(httpReq, specReq);
@@ -207,7 +207,7 @@
                     });
                 });
 
-                it('should log into console that body matched', function () {
+                it('should log to console that body matched', function () {
                     httpReq.headers = {
                         'content-type': 'application/json',
                     };
@@ -217,7 +217,7 @@
                     };
 
                     var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'MATCHED'), true);
+                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
                     });
 
                     content.matchesBody(httpReq, specReq);
@@ -262,7 +262,7 @@
                     });
                 });
 
-                it('should log into console that body is not matched', function () {
+                it('should log to console that body is not matched', function () {
                     httpReq.headers = {
                         'content-type': 'application/json',
                     };
@@ -299,9 +299,9 @@
                     assert.equal(content.matchesSchema(httpReq, specReq), true);
                 });
 
-                it('should log into console that schema is matched', function () {
+                it('should log to console that schema is matched', function () {
                     var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'MATCHED'), true);
+                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
                     });
 
                     content.matchesSchema(httpReq, specReq);
@@ -327,9 +327,9 @@
                     assert.equal(content.matchesSchema(httpReq, specReq), true);
                 });
 
-                it('should log into console that schema is matched', function () {
+                it('should log to console that schema is matched', function () {
                     var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'MATCHED'), true);
+                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
                     });
 
                     content.matchesSchema(httpReq, specReq);
@@ -355,7 +355,7 @@
                     assert.equal(content.matchesSchema(httpReq, specReq), false);
                 });
 
-                it('should log into console that schema is not matched', function () {
+                it('should log to console that schema is not matched', function () {
                     var hook = stdoutHook.setup(function (string) {
                         assert.equal(loadash.includes(string, 'NOT_MATCHED'), true);
                     });
@@ -386,7 +386,7 @@
                     assert.equal(content.matchesHeader(httpReq, specReq), true);
                 });
 
-                it('should log into console that schema is matched', function () {
+                it('should log to console that schema is matched', function () {
                     var numberOfErrors = 0;
                     var hook = stdoutHook.setup(function (string) {
                         if (loadash.includes(string, 'NOT_MATCHED')) {
@@ -410,7 +410,7 @@
                     assert.equal(content.matchesHeader(httpReq, specReq), true);
                 });
 
-                it('should log into console that schema is matched', function () {
+                it('should log to console that schema is matched', function () {
                     var numberOfErrors = 0;
                     var hook = stdoutHook.setup(function (string) {
                         if (loadash.includes(string, 'NOT_MATCHED')) {
@@ -440,7 +440,7 @@
                     assert.equal(content.matchesHeader(httpReq, specReq), true);
                 });
 
-                it('should log into console that schema is matched', function () {
+                it('should log to console that schema is matched', function () {
                     var numberOfErrors = 0;
                     var hook = stdoutHook.setup(function (string) {
                         if (loadash.includes(string, 'NOT_MATCHED')) {
@@ -471,7 +471,7 @@
                     assert.equal(content.matchesHeader(httpReq, specReq), false);
                 });
 
-                it('should log into console that schema does not matched', function () {
+                it('should log to console that schema does not match', function () {
                     var numberOfErrors = 0;
                     var hook = stdoutHook.setup(function (string) {
                         if (loadash.includes(string, 'NOT_MATCHED')) {
