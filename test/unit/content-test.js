@@ -72,7 +72,7 @@
                 var specReq = {
                     headers: [
                         {name: 'Content-Type', value: 'application/xml'}
-                    ],
+                    ]
                 };
 
                 it('should returns false ', function () {
