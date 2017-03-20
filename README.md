@@ -1,7 +1,7 @@
 # Drakov API Blueprint Mock Server
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Aconex/drakov?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
+    
 [![npm version](https://badge.fury.io/js/drakov.svg)](http://badge.fury.io/js/drakov) [![Build Status](https://travis-ci.org/Aconex/drakov.svg)](https://travis-ci.org/Aconex/drakov)
 
 ![Drakov](drakov.png)
@@ -36,6 +36,9 @@ Drakov provide some logging in the following situations:
  - When request's headers does not match headers schema
  - When request's body does not match body schema (corresponding to request's content-type)
 
+### Debug Mode
+
+When flag `--debugMode` is set on Drakov's start up all mismatching requests will be dumped on logs. Also Drakov will send a detail payload within the 404 response.
 
 ## Installation instructions
 
