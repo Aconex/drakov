@@ -4,7 +4,8 @@ var request = helper.getRequest();
 describe('HEADERS', function(){
 
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/headers.md'}, done);
+        helper.drakov.run({sourceFiles: 'test/example/md/headers.md',
+          ignoreHeader: ['Cookie']}, done);
     });
 
     after(function (done) {
@@ -28,6 +29,17 @@ describe('HEADERS', function(){
                     .set('Authorization', 'Basic foo')
                     .expect(401)
                     .end(helper.endCb(done));
+            });
+        });
+    });
+
+    describe('/ignore_headers', function(){
+
+        describe('GET', function(){
+            it('should respond with HTTP 200', function(done){
+                request.get('/ignore_headers')
+                .expect(200)
+                .end(helper.endCb(done));
             });
         });
     });
