@@ -36,8 +36,17 @@ describe('HEADERS', function(){
     describe('/ignore_headers', function(){
 
         describe('GET', function(){
-            it('should respond with HTTP 200', function(done){
+            it('should respond with HTTP 200 when header does not exist', function(done){
                 request.get('/ignore_headers')
+                .expect(200)
+                .end(helper.endCb(done));
+            });
+        });
+
+        describe('GET', function(){
+            it('should respond with HTTP 200 when header does not match', function(done){
+                request.get('/ignore_headers')
+                .set('Cookie', 'key=value2')
                 .expect(200)
                 .end(helper.endCb(done));
             });

@@ -15,81 +15,6 @@
            });
         });
 
-        describe('areContentTypesSame', function () {
-
-            var httpReq = {
-                'headers': {
-                    'content-type': 'application/json'
-                }
-            };
-
-            context('when spec does not define content-type', function ()  {
-
-                var specReq = {
-                    headers: [
-                        {}
-                    ]
-                };
-
-                it('should return true', function () {
-                    assert.equal(content.areContentTypesSame(httpReq, specReq), true);
-                });
-
-                it('should log to console that content type is matched', function () {
-                    var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
-                    });
-
-                    content.areContentTypesSame(httpReq, specReq);
-                    hook();
-                });
-            });
-
-            context('when headers correspond to spec', function ()  {
-
-                var specReq = {
-                    headers: [
-                        {name: 'Content-Type', value: 'application/json'}
-                    ]
-                };
-
-                it('should returns true', function () {
-                    assert.equal(content.areContentTypesSame(httpReq, specReq), true);
-                });
-
-                it('should log to console that content type is matched', function () {
-                    var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
-                    });
-
-                    content.areContentTypesSame(httpReq, specReq);
-                    hook();
-                });
-            });
-
-            context('when headers do not correspond to spec', function ()  {
-
-                var specReq = {
-                    headers: [
-                        {name: 'Content-Type', value: 'application/xml'}
-                    ]
-                };
-
-                it('should returns false ', function () {
-                    assert.equal(content.areContentTypesSame(httpReq, specReq), false);
-                });
-
-                it('should log to console that content type is not matched', function () {
-                    var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), true);
-                    });
-
-                    content.areContentTypesSame(httpReq, specReq);
-                    hook();
-                });
-            });
-        });
-
         describe('contentTypeComparator', function () {
             it('should return 1 when first spec does not contain content-type header', function () {
                 var specA = {
@@ -144,7 +69,7 @@
                     ]
                 };
 
-                assert.equal(content.areContentTypesSame(httpReq, specReq), false);
+                assert.equal(content.matchesHeader(httpReq, specReq), false);
             });
         });
 
@@ -492,6 +417,97 @@
                     hook();
 
                     assert.equal(numberOfErrors, 1);
+                });
+            });
+
+            context('with ignore headers', function () {
+
+                var specReq = {
+                    headers: [
+                        {name: 'Content-Type', value: 'application/xml'},
+                        {name: 'Cookie', value: 'key=vaue'}
+                    ]
+                };
+
+                it('should return true', function () {
+                    assert.equal(content.matchesHeader(httpReq, specReq, ['Content-Type', 'Cookie']), true);
+                });
+
+            });
+
+
+            describe('regarding to content type', function () {
+
+                var httpReq = {
+                    'headers': {
+                        'content-type': 'application/json'
+                    }
+                };
+
+                context('when spec does not define content-type', function ()  {
+
+                    var specReq = {
+                        headers: [
+                            {}
+                        ]
+                    };
+
+                    it('should return true', function () {
+                        assert.equal(content.matchesHeader(httpReq, specReq), true);
+                    });
+
+                    it('should log to console that content type is matched', function () {
+                        var hook = stdoutHook.setup(function (string) {
+                            assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
+                        });
+
+                        content.matchesHeader(httpReq, specReq);
+                        hook();
+                    });
+                });
+
+                context('when headers correspond to spec', function ()  {
+
+                    var specReq = {
+                        headers: [
+                            {name: 'Content-Type', value: 'application/json'}
+                        ]
+                    };
+
+                    it('should returns true', function () {
+                        assert.equal(content.matchesHeader(httpReq, specReq), true);
+                    });
+
+                    it('should log to console that content type is matched', function () {
+                        var hook = stdoutHook.setup(function (string) {
+                            assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
+                        });
+
+                        content.matchesHeader(httpReq, specReq);
+                        hook();
+                    });
+                });
+
+                context('when headers do not correspond to spec', function ()  {
+
+                    var specReq = {
+                        headers: [
+                            {name: 'Content-Type', value: 'application/xml'}
+                        ],
+                    };
+
+                    it('should returns false ', function () {
+                        assert.equal(content.matchesHeader(httpReq, specReq), false);
+                    });
+
+                    it('should log to console that content type is not matched', function () {
+                        var hook = stdoutHook.setup(function (string) {
+                            assert.equal(loadash.includes(string, 'NOT_MATCHED'), true);
+                        });
+
+                        content.matchesHeader(httpReq, specReq);
+                        hook();
+                    });
                 });
             });
         });
