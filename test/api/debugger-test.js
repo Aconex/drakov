@@ -37,20 +37,23 @@ describe('Debug Mode', function(){
         });
 
         it('should respond with spec response', function(done){
-            var expectedResponsePayload = {
-                    originalUrl:'/api/things-not-found',
-                    body: {'key1':'value1','key2':2},
-                    method: 'POST',
-                    headers:{'host':'localhost:3003','accept-encoding':'gzip, deflate','user-agent':'node-superagent/3.5.1','content-type':'application/json','content-length':'26','connection':'close'},
-                    query:{}
-            };
+            function matchingReturnedBody(expectedBody) {
+                 return function (response) {
+                    var actualBodyString = JSON.stringify(response.body.body);
+                    var expectedBodyString = JSON.stringify(expectedBody);
+                    if (actualBodyString !== expectedBodyString) {
+                      throw new Error('Expected: ' + expectedBodyString + ', but got: ' + actualBodyString);
+                    }
+                 };
+            }
 
+            var content = { key1: 'value1', key2: 2 };
             request.post('/api/things-not-found')
                 .set('Content-type', 'application/json')
-                .send({ key1: 'value1', key2: 2 })
+                .send(content)
                 .expect(404)
                 .expect('Content-type', 'application/json; charset=utf-8')
-                .expect(expectedResponsePayload)
+                .expect(matchingReturnedBody(content))
                 .end(helper.endCb(done));
 
         });
