@@ -1,3 +1,16 @@
+### (1.0.4) April 22, 2017; Talk to the headers edition
+
+#### Changes
+
+* Adding support to ignore user specified HTTP headers when searching route handlers [link](https://github.com/Aconex/drakov/pull/161)
+
+#### Thanks
+
+A quick thank you to all the people in the community who contributed code to this release!
+
+* Li Yanhui https://github.com/whimet
+
+
 ### (1.0.3) March 20, 2017; Even more logging edition
 
 #### Changes
