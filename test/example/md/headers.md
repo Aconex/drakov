@@ -29,10 +29,24 @@ Respond to deletion of object
 
 + Response 200
 
+
+## Things [/ignore_headers]
+
+### Retrieve a dummy object [GET]
+Check Cookie header
+
++ Request
+
+    + Headers
+
+            Cookie: key=value
+
++ Response 200
+
 ## Things [/things]
 
 ### Retrieve all the things with no header [GET]
-            
+
 + Response 200 (application/json;charset=UTF-8)
 
     + Body
@@ -40,15 +54,15 @@ Respond to deletion of object
             {
               "header":"absent"
             }
-            
+
 + Request JSON Message
-    
+
     + Headers
 
             content-type: application/json
 
-            
-+ Response 200 
+
++ Response 200
 
     + Headers
 

@@ -179,6 +179,11 @@ For HTTP headers such as Authorization, you may want Drakov to return them in th
 
 Drakov includes many headers by default: `Origin, X-Requested-With, Content-Type, Accept` when CORS is enabled.
 
+## Ignore Headers
+
+In cases where strict HTTP headers matching against API blueprints is not necessary, you can use the `--ignoreHeader` argument:
+
+`drakov -f "../com/foo/contracts/*.md" --ignoreHeader Cookie --ignoreHeader Authorization`
 
 ## Using as a Node.js module
 
