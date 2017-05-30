@@ -32,6 +32,7 @@
     "drafter": "^1.2.0",
     "express": "^4.14.1",
     "glob": "^7.1.1",
+    "http-shutdown": "^1.2.0",
     "jade": "^1.11.0",
     "lodash": "^4.17.4",
     "path-to-regexp": "^1.7.0",
