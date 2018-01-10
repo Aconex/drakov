@@ -20,8 +20,6 @@ It can be found at [https://groups.google.com/forum/?hl=en#!forum/drakov-api-ser
 
 Since version 1.0.2, a version of the Drafter package is being used, which attempts to install the version with C bindings (faster), but falls back if compilation of this package fails to Drafter.js.
 
-Currently this package doesn't install on Node.js version 7+. All versions below and including Node.js 6.x will work fine.
-
 
 ## MSON Support via Attribute elements
 
