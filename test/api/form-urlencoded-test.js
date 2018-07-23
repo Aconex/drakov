@@ -24,7 +24,7 @@ describe('UrlEncoded Requests', function() {
             });
         });
 
-        describe('if http request body does not matches exactly with spec request body', function() {
+        describe('if http request body does not match exactly with spec request body', function() {
             it('should respond with 404 error response', function(done) {
                 request.post('/api/urlencoded')
                     .set('Content-type', 'application/x-www-form-urlencoded')

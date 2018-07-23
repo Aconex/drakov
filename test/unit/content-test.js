@@ -224,11 +224,11 @@
                 body: '{"first": "text", "second": "text2"}'
             };
 
-            context('when spec does not define', function () {
+            context('when spec is not defined', function () {
 
                 var specReq = null;
 
-                it('should returns true', function () {
+                it('should return true', function () {
                     assert.equal(content.matchesSchema(httpReq, specReq), true);
                 });
 
@@ -256,8 +256,8 @@
                     }
                 };
 
-                it('should returns true', function () {
-                    assert.equal(content.matchesSchema(httpReq, specReq), true);
+                it('should returns and object with valid === true', function () {
+                    assert.equal(content.matchesSchema(httpReq, specReq).valid, true);
                 });
 
                 it('should log to console that schema is matched', function () {
@@ -271,7 +271,7 @@
                 });
             });
 
-            context('when schema do not correspond to spec', function () {
+            context('when schema does not correspond to spec', function () {
 
                 var specReq = {
                     schema: {
@@ -284,18 +284,22 @@
                     }
                 };
 
-                it('should returns fals', function () {
-                    assert.equal(content.matchesSchema(httpReq, specReq), false);
+                it('should contain valid === false and a nice error message', function () {
+                    var result = content.matchesSchema(httpReq, specReq);
+                    assert.equal(result.valid, false);
+                    assert.equal(result.niceError, '/first Invalid type: string (expected number)');
                 });
 
                 it('should log to console that schema is not matched', function () {
+                    var logOut;
                     var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), true);
+                        logOut = string;
                     });
 
                     content.matchesSchema(httpReq, specReq);
 
                     hook();
+                    assert.equal(loadash.includes(logOut, 'NOT_MATCHED'), true);
                 });
             });
         });

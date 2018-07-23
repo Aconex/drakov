@@ -42,6 +42,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-blueprint-validator');
 
     grunt.task.registerTask('unit-test', ['simplemocha:unit']);
-    grunt.task.registerTask('test', ['blueprint-validator', 'simplemocha:api', 'simplemocha:unit']);
+    grunt.task.registerTask('test', ['blueprint-validator', 'simplemocha:unit', 'simplemocha:api']);
     grunt.task.registerTask('default', ['jshint', 'test']);
 };
