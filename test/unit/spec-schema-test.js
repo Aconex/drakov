@@ -1,5 +1,12 @@
 var assert = require ('assert');
+var sinon = require('sinon');
+var tv4 = require('tv4');
+var logger = require('../../lib/logger');
 var specSchema = require('../../lib/spec-schema');
+
+afterEach(function() {
+    sinon.restore();
+});
 
 var schema =  {
     type: 'object',
@@ -23,13 +30,40 @@ describe('Spec Schema', function() {
     });
 
     describe ('matchWithSchema', function() {
-        it('Should return true when json is validated against schema', function () {
-            assert.equal(specSchema.matchWithSchema({id: 1}, schema).valid, true);
+        var valid = {id: 1};
+        var invalid = {
+            valid: false,
+            errors: [{
+                dataPath: 'Do',
+                message: 'you feel lucky, punk?'
+            }]
+        };
+
+        var validateMultiple;
+        var logSpy;
+
+        beforeEach(function(){
+            validateMultiple = sinon.stub(tv4, 'validateMultiple');
+            validateMultiple.withArgs(valid, schema).returns({valid: true});
+            validateMultiple.returns(invalid);
+
+            logSpy = sinon.spy(logger, 'log');
         });
 
+        describe('when the body matches the schema', function() {
 
-        it('Should return false when json is not validated against schema', function () {
-            assert.equal(specSchema.matchWithSchema({idea: 1}, schema).valid, false);
+            it('Should return a valid response', function () {
+                assert.deepEqual(specSchema.matchWithSchema({id: 1}, schema), {valid: true});
+            });
+        });
+
+        describe('when the body does not match schema', function() {
+            var expected = Object.assign({niceErrors: ['Do you feel lucky, punk?']}, invalid);
+            it('Should return false when json is not validated against schema and log ERROR', function () {
+                assert.deepEqual(specSchema.matchWithSchema({idea: 1}, schema), expected);
+
+                assert.ok(logSpy.calledWithExactly('ERROR'.red, ['Do you feel lucky, punk?']), 'Incorrect logging');
+            });
         });
     });
 
@@ -45,4 +79,5 @@ describe('Spec Schema', function() {
             }, Error);
         });
     });
+
 });

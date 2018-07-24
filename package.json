@@ -46,6 +46,7 @@
     "grunt-cli": "^1.2.0",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-simple-mocha": "^0.4.0",
+    "sinon": "^6.1.4",
     "supertest": "^3.0.0"
   }
 }
