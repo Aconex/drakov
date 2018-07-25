@@ -19,7 +19,7 @@ var schema =  {
 
 describe('Spec Schema', function() {
 
-    describe ('hasSchema', function() {
+    describe('hasSchema', function() {
         it('Should return true when the spec object has a schema property', function () {
             assert.equal(specSchema.hasSchema({schema: {}}), true);
         });
@@ -29,7 +29,7 @@ describe('Spec Schema', function() {
         });
     });
 
-    describe ('matchWithSchema', function() {
+    describe('matchWithSchema', function() {
         var valid = {id: 1};
         var invalid = {
             valid: false,
@@ -42,7 +42,7 @@ describe('Spec Schema', function() {
         var validateMultiple;
         var logSpy;
 
-        beforeEach(function(){
+        beforeEach(function() {
             validateMultiple = sinon.stub(tv4, 'validateMultiple');
             validateMultiple.withArgs(valid, schema).returns({valid: true});
             validateMultiple.returns(invalid);
