@@ -28,6 +28,24 @@ describe('Simple-API', function(){
         });
     });
 
+    describe('/api/things/old', function(){
+        describe('GET', function(){
+            it('should respond with json collection from contract example', function(done){
+                request.get('/api/things/old')
+                .expect(200)
+                .expect('Content-type', 'application/json;charset=UTF-8')
+                .expect([
+                    {text: 'NES',id: '1'},
+                    {text: 'Atari', id: '2'},
+                    {text: 'The Beatles', id: '3'},
+                    {text: 'Grandma', id: '4'},
+                    {text: '80s', id: '5'}
+                ])
+                .end(helper.endCb(done));
+            });
+        });
+    });
+
     describe('/api/things/{thingId}', function(){
         describe('GET', function(){
             it('should respond with json object from contract example', function(done){
