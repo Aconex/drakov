@@ -79,7 +79,7 @@
                 body: '{"text": "Hyperspeed jet"}',
             };
 
-            context('when spec does not define', function ()  {
+            context('when spec is not defined', function ()  {
 
                 it('should return true', function () {
                     var specReq = null;
@@ -224,22 +224,13 @@
                 body: '{"first": "text", "second": "text2"}'
             };
 
+
             context('when spec is not defined', function () {
 
                 var specReq = null;
 
-                it('should return true', function () {
-                    assert.equal(content.matchesSchema(httpReq, specReq), true);
-                });
-
-                it('should log to console that schema is matched', function () {
-                    var hook = stdoutHook.setup(function (string) {
-                        assert.equal(loadash.includes(string, 'NOT_MATCHED'), false);
-                    });
-
-                    content.matchesSchema(httpReq, specReq);
-
-                    hook();
+                it('should return `{valid:false}`', function () {
+                    assert.deepEqual(content.matchesSchema(httpReq, specReq), {valid: false});
                 });
             });
 
