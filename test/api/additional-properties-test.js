@@ -1,7 +1,7 @@
 var helper = require('../lib');
 var request = helper.getRequest();
 
-describe('Reject addtional properties', function(){
+describe('Reject additional properties', function(){
     before(function (done) {
         helper.drakov.run({sourceFiles: 'test/example/md/json-schema.md'}, done);
     });
