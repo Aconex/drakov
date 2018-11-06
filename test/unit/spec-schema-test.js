@@ -13,7 +13,13 @@ var schema =  {
     required: ['id'],
     properties: {
         id: {type: 'number'},
-        title: {type: 'string' }
+        title: {type: 'string'},
+        third: {
+            type: 'object',
+            properties: {
+                inner: {type: 'string'}
+            },
+        },
     }
 };
 
@@ -39,13 +45,13 @@ describe('Spec Schema', function() {
             }]
         };
 
-        var validateMultiple;
+        var validateMultipleMock;
         var logSpy;
 
         beforeEach(function() {
-            validateMultiple = sinon.stub(tv4, 'validateMultiple');
-            validateMultiple.withArgs(valid, schema).returns({valid: true});
-            validateMultiple.returns(invalid);
+            validateMultipleMock = sinon.stub(tv4, 'validateMultiple');
+            validateMultipleMock.withArgs(valid, schema).returns({valid: true});
+            validateMultipleMock.returns(invalid);
 
             logSpy = sinon.spy(logger, 'log');
         });
