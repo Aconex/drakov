@@ -1,3 +1,4 @@
 .idea/
 node_modules/
 atlassian-ide-plugin.xml
+.vscode

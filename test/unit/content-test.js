@@ -75,6 +75,14 @@
 
         describe('matchesBody', function () {
 
+            context('when body is empty and spec schema is defined', () => {
+                it('should return false', () => {
+                    let specReq = {schema:{}};
+                    let httpReq = '';
+                    assert.deepStrictEqual(content.matchesBody(httpReq, specReq), false);
+                });
+            });
+
             var httpReq = {
                 body: '{"text": "Hyperspeed jet"}',
             };
@@ -169,7 +177,7 @@
                         };
                     });
 
-                    it('should returns false', function () {
+                    it('should return false', function () {
                         var specReq = {
                             body: '{"text": "Hyperspeed jet!!!!!"}'
                         };
