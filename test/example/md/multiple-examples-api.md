@@ -80,16 +80,6 @@ Get examples with a specific status code (eg. 400)
                 "title": "hello"
             }
 
-    + Schema
-
-            {
-                "type": "object",
-                "required": ["id"],
-                "properties": {
-                    "id": {"type": "number"},
-                    "title": {"type": "string" }
-                }
-            }
 
 + Response 400 (application/json)
 
