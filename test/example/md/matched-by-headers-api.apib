@@ -1,0 +1,52 @@
+# Note [/demo]
+
+## Add a Note [POST]
+
++ Request (application/json)
+
+    + Body
+    ```json
+        {
+            "question": "Why?",
+            "choices": ["Why not?", "BECAUSE!"]
+        }
+    ```
+
+
+    + Schema
+    ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["question", "choices"],
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "choices": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2
+                }
+              }
+             
+            }
+    ```
+
++ Response 200 (application/json)
+
+
++ Request (application/json)
+
+    + Body
+    ```json
+        {
+            "question": "Why?",
+            "choices": ["who knows?", "BECAUSE!"]
+        }
+    ```
+
++ Response 200 (application/json)
+
