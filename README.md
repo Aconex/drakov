@@ -1,13 +1,19 @@
-# Drakov API Blueprint Mock Server
-
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Aconex/drakov?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-    
-[![npm version](https://badge.fury.io/js/drakov.svg)](http://badge.fury.io/js/drakov) [![Build Status](https://travis-ci.org/Aconex/drakov.svg)](https://travis-ci.org/Aconex/drakov)
+# Drakov API Blueprint Mock Server - **Fubo Fork**
 
 ![Drakov](drakov.png)
 
-Mock server that implements the [API Blueprint](http://apiblueprint.org/) specification:
+Mock server that implements the [API Blueprint](http://apiblueprint.org/) specification
 
+# Fubo differences
+
+This fork works differently than the original in the following ways:
+- When both a schema and example body are present on a request/response pair, the example will
+be ignored for matching. 
+    - The header `X-Matched-By` has been added and will indicate whether a successful request was matched by a schema or body
+- When the header `reject-unknown-props: true` is added to a request, any properties not specified in the spec will cause the request to be rejected
+- When request validation fails, a message listing issues will be returned in the response body
+
+ 
 
 ## Community
 
