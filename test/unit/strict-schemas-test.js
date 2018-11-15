@@ -34,5 +34,6 @@ describe('strictSchemas', () => {
             assert.strictEqual(strictSchema.properties.third.additionalProperties, false, 'child missing proptery');
 
         });
+
     });
 });
