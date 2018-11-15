@@ -43,6 +43,7 @@ describe('Reject additional properties', () => {
             });
         });
 
+        // This is specifically to make sure the original schema does not get mutated or corrupted when generating the strict schema
         describe('when sending alternate requests with and without the header', () => {
             it('the response should be successfull only when header is missing', (done) => {
                 request.post('/notes')
