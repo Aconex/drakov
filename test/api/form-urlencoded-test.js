@@ -31,7 +31,7 @@ describe('UrlEncoded Requests', function() {
                     .send('random_number=555&static=magic')
 
                     .expect(404)
-                    .expect('Content-type', 'text/html; charset=utf-8')
+                    .expect('Content-type', 'application/json;charset=UTF-8')
                     .end(helper.endCb(done));
             });
         });
