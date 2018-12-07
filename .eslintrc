@@ -1,0 +1,14 @@
+{
+  "env": { 
+    "es6": true,
+    "node": true,
+     "mocha": true
+  },
+  "extends": [
+    "plugin:flowtype/recommended",
+    "eslint:recommended"
+  ],
+  "plugins": [
+    "flowtype"
+  ]
+}

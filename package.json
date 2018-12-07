@@ -7,7 +7,10 @@
     "drakov": "drakov"
   },
   "scripts": {
-    "test": "grunt"
+    "build": "flow-remove-types -x '.js,.json' --pretty lib/ -d build/  ",
+    "pretest": "npm run build",
+    "test": "grunt",
+    "flow": "flow"
   },
   "homepage": "https://github.com/aconex/drakov",
   "author": {
@@ -30,7 +33,7 @@
     "chokidar": "^1.6.1",
     "colors": "^1.1.0",
     "drafter": "^1.2.0",
-    "express": "4.15.5",
+    "express": "^4.16.4",
     "glob": "^7.1.1",
     "http-shutdown": "^1.2.0",
     "jade": "^1.11.0",
@@ -41,10 +44,16 @@
     "yargs": "^6.6.0"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "eslint-plugin-flowtype": "^3.2.0",
+    "flow-bin": "^0.87.0",
+    "flow-remove-types": "^1.2.3",
     "grunt": "^0.4.5",
     "grunt-blueprint-validator": "^3.1.0",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-jshint": "^1.1.0",
+    "grunt-eslint": "^21.0.0",
     "grunt-simple-mocha": "^0.4.0",
     "sinon": "^6.1.4",
     "supertest": "^3.0.0"
