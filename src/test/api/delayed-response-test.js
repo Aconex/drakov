@@ -3,7 +3,7 @@ var assert = require('assert');
 var helper = require('../lib');
 var request = helper.getRequest();
 
-var TIME_DELAY = 2000;
+var TIME_DELAY = 500;
 
 describe('DELAYED', function () {
 

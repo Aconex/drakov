@@ -8,7 +8,7 @@
   },
   "scripts": {
     "api-test": "mocha \"build/test/api/**/*-test.js\"",
-    "build": "flow-remove-types -x '.js,.json' --pretty src/ -d build/  ",
+    "build": "flow-remove-types -x '.js,.json,.jade' --pretty src/ -d build/  ",
     "clean": "rm -dR build",
     "flow": "flow",
     "prebuild": "npm run clean || true",
