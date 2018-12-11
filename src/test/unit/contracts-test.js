@@ -1,8 +1,10 @@
 // @flow
-// const contracts = require('../../lib/parse/contracts');
+const sinon = require('sinon')
 const assert = require('assert');
+
+const contracts = require('../../lib/parse/contracts');
 afterEach(() => {
-    // sinon.restore();
+    sinon.restore();
 });
 
 describe('contracts', () => {
@@ -10,11 +12,9 @@ describe('contracts', () => {
         // const readFile  = sinon.stub(fs, 'readFileSync');
         // readFile.throwsException();
         it('WHEN calling parseContracts THEN it throws error', () => {
-            // contracts.parseContracts("1");
+            contracts.parseContracts(["1"]);
             assert.ok(false);
         });
     });
 });
 
-
-///make sure tests point at build folder!!!

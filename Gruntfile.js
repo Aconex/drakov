@@ -3,23 +3,8 @@ module.exports = function (grunt) {
     grunt.initConfig({
 
         eslint: {
-            target: ['lib/**/*.js','test/**/*.js']
+            target: ['src/lib/**/*.js','src/test/**/*.js']
         },
-        // jshint: {
-        //     options: {
-        //         jshintrc: true,
-        //         ignores: [
-        //             'describe',
-        //             'it'
-        //         ]
-        //     },
-        //     files: [
-        //         'lib/**/*.js',
-        //         'test/**/*.js',
-        //         'index.js'
-        //     ]
-        // },
-
         simplemocha: {
             options: {
                 globals: ['should'],
@@ -28,12 +13,12 @@ module.exports = function (grunt) {
                 ui: 'bdd',
                 reporter: 'tap'
             },
-            api: {src: 'test/api/*-test.js'},
-            unit: {src: 'test/unit/**/*-test.js'}
+            api: {src: 'build/test/api/*-test.js'},
+            unit: {src: 'build/test/unit/**/*-test.js'}
         },
         'blueprint-validator': {
             'contract-test':{
-                mdFiles: 'test/example/**/*.md',
+                mdFiles: 'build/test/example/**/*.md',
                 failOnWarnings: true
             }
         }

@@ -4,7 +4,7 @@ var https = require('https');
 var httpShutdown = require('http-shutdown');
 const logger = require('./logger');
 
-var version = require('../package.json').version;
+var version = require('../../package.json').version;
 
 exports.isSSL = false;
 

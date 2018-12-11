@@ -1,4 +1,4 @@
-var drakov = require('./build/drakov');
+var drakov = require('./build/src/drakov');
 
 module.exports = {
     run: drakov.run,

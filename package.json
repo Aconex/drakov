@@ -7,10 +7,12 @@
     "drakov": "drakov"
   },
   "scripts": {
-    "build": "flow-remove-types -x '.js,.json' --pretty lib/ -d build/  ",
+    "build": "flow-remove-types -x '.js,.json' --pretty src/ -d build/  ",
+    "clean": "rm -dR build",
+    "flow": "flow",
+    "prebuild": "npm run clean",
     "pretest": "npm run build",
-    "test": "grunt",
-    "flow": "flow"
+    "test": "grunt"
   },
   "homepage": "https://github.com/aconex/drakov",
   "author": {

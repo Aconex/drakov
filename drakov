@@ -2,9 +2,9 @@
 
 process.title = 'drakov';
 
-var drakov = require('./build/drakov');
-var watcher = require('./build/watcher');
-var args = require('./build/arguments');
+var drakov = require('./build/lib/drakov');
+var watcher = require('./build/lib/watcher');
+var args = require('./build/lib/arguments');
 
 var argv = args.getArgv();
 drakov.run(argv, function() {
