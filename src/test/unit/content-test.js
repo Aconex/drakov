@@ -5,11 +5,11 @@
     var stdoutHook = require('../lib/stdout-hook');
     var assert = require('assert');
     var loadash = require('lodash');
+    var helper = require('../lib/drakov-runner');
 
     describe('Content', function () {
 
         before(function (done) {
-           var helper = require('../lib/drakov-runner');
            helper.run({stealthmode: false}, function () {
                helper.stop(done);
            });

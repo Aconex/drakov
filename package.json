@@ -7,14 +7,17 @@
     "drakov": "drakov"
   },
   "scripts": {
-    "api-test": "mocha \"build/test/api/**/*-test.js\"",
+    "api-test": "npm run build && npm run api-test-no-build",
+    "api-test-no-build": "mocha \"build/test/api/**/*-test.js\"",
     "build": "flow-remove-types -x '.js,.json,.jade' --pretty src/ -d build/  ",
     "clean": "rm -dR build",
     "flow": "flow",
-    "prebuild": "npm run clean || true",
-    "pretest": "npm run build",
-    "test": "npm run unit-test && npm run api-test",
-    "unit-test": "mocha \"build/test/unit/**/*-test.js\""
+    "lint": "eslint src/lib/**/*.js src/test/**/*.js",
+    "prebuild": "npm run lint && npm run clean || true",
+    "test": "npm run build && npm run unit-test-no-build && npm run api-test-no-build",
+    "unit-test": "npm run build && npm run unit-test-no-build",
+    "unit-test-no-build": "mocha \"build/test/unit/**/*-test.js\"",
+    "validate-blueprints": "node node_modules/api-blueprint-validator-module/bin/validator 'build/test/example/**/*.+(md|apib)' true"
   },
   "homepage": "https://github.com/aconex/drakov",
   "author": {
@@ -33,6 +36,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "api-blueprint-validator-module": "^1.2.2",
     "async": "^2.1.4",
     "chokidar": "^1.6.1",
     "colors": "^1.1.0",
@@ -53,13 +57,7 @@
     "eslint-plugin-flowtype": "^3.2.0",
     "flow-bin": "^0.87.0",
     "flow-remove-types": "^1.2.3",
-    "grunt": "^0.4.5",
-    "grunt-blueprint-validator": "^3.1.0",
-    "grunt-cli": "^1.2.0",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-eslint": "^21.0.0",
-    "grunt-simple-mocha": "^0.4.0",
-    "sinon": "^6.1.4",
+    "sinon": "^7.2.0",
     "supertest": "^3.0.0"
   }
 }

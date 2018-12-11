@@ -1,9 +1,19 @@
 // @flow 
-// const fs = require('fs');
+const fs = require('fs');
 
-let parseContracts = (fileNames: Array<string>): string => {
+const logger = require('../../lib/logger');
 
-    return fileNames[0];
+let parseContracts = (fileNames: Array<string>): Array<Buffer> => {
+    const contents: Array<Buffer> = [];
+    fileNames.forEach((name: string) => {
+        try {
+            contents.push(fs.readFileSync(name));
+        } catch (e) {
+            logger.error(`Unable to open file "${name}"`);
+        }
+    });
+
+    return contents;
 };
 
 module.exports = {
