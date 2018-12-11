@@ -3,7 +3,7 @@ var request = helper.getRequest();
 
 describe('static-versus-parametrized-API', function(){
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/static-versus-parametrized-api.md'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/static-versus-parametrized-api.md'}, done);
     });
 
     after(function (done) {

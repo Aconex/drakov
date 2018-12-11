@@ -3,7 +3,7 @@ var request = helper.getRequest();
 
 describe('Simple-API', function(){
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/content-type.md'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/content-type.md'}, done);
     });
 
     after(function (done) {

@@ -4,7 +4,7 @@ var request = helper.getRequest();
 describe('Auto OPTIONS', function () {
 
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/simple-api.md', autoOptions: true}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md', autoOptions: true}, done);
     });
 
     after(function (done) {

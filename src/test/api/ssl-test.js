@@ -4,9 +4,9 @@ var request = helper.getRequest(true);
 describe('SSL', function(){
     before(function (done) {
         var drakovArgs = {
-            sourceFiles: 'test/example/md/headers.md',
-            sslKeyFile: 'test/ssl/localhost.key',
-            sslCrtFile: 'test/ssl/localhost.crt'
+            sourceFiles: 'src/test/example/md/headers.md',
+            sslKeyFile: 'src/test/ssl/localhost.key',
+            sslCrtFile: 'src/test/ssl/localhost.crt'
         };
         helper.drakov.run(drakovArgs, done);
     });

@@ -3,7 +3,7 @@ var request = helper.getRequest();
 
 describe('MSON-API', function(){
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/mson-api.md'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/mson-api.md'}, done);
     });
 
     after(function (done) {

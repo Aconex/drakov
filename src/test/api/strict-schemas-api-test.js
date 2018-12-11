@@ -3,7 +3,7 @@ var request = helper.getRequest();
 
 describe('Reject additional properties', () => {
     before((done) => {
-        helper.drakov.run({ sourceFiles: 'test/example/md/strict-schema.md' }, done);
+        helper.drakov.run({ sourceFiles: 'src/test/example/md/strict-schema.md' }, done);
     });
 
     after((done) => {

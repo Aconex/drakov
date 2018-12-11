@@ -4,7 +4,7 @@ var request = helper.getRequest();
 describe('HTTP 404', function(){
 
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/simple-api.md'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md'}, done);
     });
 
     after(function (done) {

@@ -7,7 +7,7 @@ describe('Debug Mode', function(){
     describe('Debug mode disabled', function(){
 
         before(function (done) {
-            helper.drakov.run({sourceFiles: 'test/example/md/simple-api.md'}, done);
+            helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md'}, done);
         });
 
         after(function (done) {
@@ -29,7 +29,7 @@ describe('Debug Mode', function(){
     describe('Debug mode enabled', function(){
 
         before(function (done) {
-            helper.drakov.run({sourceFiles: 'test/example/md/simple-api.md', debugMode: true}, done);
+            helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md', debugMode: true}, done);
         });
 
         after(function (done) {

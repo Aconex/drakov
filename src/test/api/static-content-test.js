@@ -4,7 +4,7 @@ var request = helper.getRequest();
 describe('Static content', function(){
 
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/simple-api.md', staticPaths: 'test/example/static'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md', staticPaths: 'src/test/example/static'}, done);
     });
 
     after(function (done) {

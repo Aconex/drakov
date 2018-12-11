@@ -4,7 +4,7 @@ var request = helper.getRequest();
 describe('/api/multiple', function(){
 
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/multiple-examples-api.md'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/multiple-examples-api.md'}, done);
     });
 
     after(function (done) {

@@ -3,7 +3,7 @@ var request = helper.getRequest();
 
 describe('UrlEncoded Requests', function() {
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/form-urlencoded.md'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/form-urlencoded.md'}, done);
     });
 
     after(function (done) {

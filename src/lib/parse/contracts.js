@@ -1,8 +1,7 @@
 // @flow 
-// var fs = require('fs');
+// const fs = require('fs');
 
 let parseContracts = (fileNames: Array<string>): string => {
-    // fs.existsSync(fileNames)
 
     return fileNames[0];
 };

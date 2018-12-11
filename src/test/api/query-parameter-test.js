@@ -3,7 +3,7 @@ var request = helper.getRequest();
 
 describe('Query Parameters', function(){
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/query-parameters.md'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/query-parameters.md'}, done);
     });
 
     after(function (done) {

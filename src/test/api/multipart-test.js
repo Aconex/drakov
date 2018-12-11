@@ -3,7 +3,7 @@ var request = helper.getRequest();
 
 describe('Multipart Requests', function() {
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/multipart.md'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/multipart.md'}, done);
     });
 
     after(function (done) {

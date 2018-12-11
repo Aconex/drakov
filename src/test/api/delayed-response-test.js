@@ -10,7 +10,7 @@ describe('DELAYED', function () {
     var startTimestamp;
 
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/simple-api.md', delay: TIME_DELAY}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md', delay: TIME_DELAY}, done);
     });
 
     after(function (done) {

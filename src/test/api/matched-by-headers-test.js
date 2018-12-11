@@ -4,7 +4,7 @@ var request = helper.getRequest();
 describe('matches-by-headers', () => {
 
     before((done) => {
-        helper.drakov.run({sourceFiles: 'test/example/md/matched-by-headers-api.apib',
+        helper.drakov.run({sourceFiles: 'src/test/example/md/matched-by-headers-api.apib',
           ignoreHeader: ['Cookie']}, done);
     });
 

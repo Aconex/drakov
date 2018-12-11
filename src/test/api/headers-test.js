@@ -4,7 +4,7 @@ var request = helper.getRequest();
 describe('HEADERS', function(){
 
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/headers.md',
+        helper.drakov.run({sourceFiles: 'src/test/example/md/headers.md',
           ignoreHeader: ['Cookie']}, done);
     });
 

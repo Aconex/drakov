@@ -3,7 +3,7 @@ var request = helper.getRequest();
 
 describe('text/plain media type', function(){
     before(function (done) {
-        helper.drakov.run({sourceFiles: 'test/example/md/text-plain.md'}, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/text-plain.md'}, done);
     });
 
     after(function (done) {

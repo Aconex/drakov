@@ -5,7 +5,7 @@ describe('Discover', function() {
     describe('Simple-API', function() {
         describe('Discover option true', function() {
             before(function(done) {
-                helper.drakov.run({sourceFiles: 'test/example/md/simple-api.md', discover: true}, done);
+                helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md', discover: true}, done);
             });
 
             after(function(done) {
@@ -25,7 +25,7 @@ describe('Discover', function() {
         });
         describe('Discover option not specified', function() {
             before(function(done) {
-                helper.drakov.run({sourceFiles: 'test/example/md/simple-api.md'}, done);
+                helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md'}, done);
             });
 
             after(function(done) {
