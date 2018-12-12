@@ -5,16 +5,17 @@
 + Request (application/json)
 
     + Body
-    ```json
-        {
-            "question": "Why?",
-            "choices": ["Why not?", "BECAUSE!"]
-        }
-    ```
-
+    
+        ```json
+            {
+                "question": "Why?",
+                "choices": ["Why not?", "BECAUSE!"]
+            }
+        ```
 
     + Schema
-    ```json
+    
+        ```json
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
               "required": ["question", "choices"],
@@ -33,7 +34,7 @@
               }
              
             }
-    ```
+        ```
 
 + Response 200 (application/json)
 
@@ -41,12 +42,13 @@
 + Request (application/json)
 
     + Body
-    ```json
-        {
-            "question": "Why?",
-            "choices": ["who knows?", "BECAUSE!"]
-        }
-    ```
+
+        ```json
+            {
+                "question": "Why?",
+                "choices": ["who knows?", "BECAUSE!"]
+            }
+         ```
 
 + Response 200 (application/json)
 

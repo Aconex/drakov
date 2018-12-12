@@ -13,11 +13,12 @@
     "clean": "rm -dR build",
     "flow": "flow",
     "lint": "eslint src/lib/**/*.js src/test/**/*.js",
-    "prebuild": "npm run lint && npm run clean || true",
+    "preapi-test-no-build": "npm run validate-blueprints",
+    "prebuild": "npm run lint && (npm run clean || true)",
     "test": "npm run build && npm run unit-test-no-build && npm run api-test-no-build",
     "unit-test": "npm run build && npm run unit-test-no-build",
     "unit-test-no-build": "mocha \"build/test/unit/**/*-test.js\"",
-    "validate-blueprints": "node node_modules/api-blueprint-validator-module/bin/validator 'build/test/example/**/*.+(md|apib)' true"
+    "validate-blueprints": "node node_modules/api-blueprint-validator-module/bin/validator 'src/test/example/**/*.+(md|apib)' true"
   },
   "homepage": "https://github.com/aconex/drakov",
   "author": {
