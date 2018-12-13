@@ -4,11 +4,6 @@ var filter = require('../handler-filter');
 var logger = require('../logger');
 
 module.exports = function(options, cb) {
-    if (options.contractFixtureMap) {
-        // TODO
-    }
-
-
     buildRouteMap(options, function(err, routeMap) {
         if (err) {
             return cb(err);

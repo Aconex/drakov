@@ -14,7 +14,7 @@ module.exports = {
     },
     contractFixtureMap: {
         alias: 'm',
-        description: 'File location for configuration map from contract loactions to fixture files'
+        description: 'File location for configuration map from contract loactions to fixture files. This will load and validate all the fixture files lis'
     },
     pathDelimiter: {
         alias: 'd',

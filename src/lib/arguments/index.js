@@ -60,9 +60,18 @@ function loadCommandlineArguments() {
     logger.log('[INFO]'.white, 'Loading configuration from CLI');
     return argv
         .usage('Usage: \n  ./drakov -f <path to blueprint> [-p <server port|3000>]' +
+        '\nExactly one of -f or -m is requred' +
         '\n\nExample: \n  ' + './drakov -f ./*.md -p 3000')
         .options(yargsConfigOptions)
-        .demand('f')
+        .check((argv) => {
+            if (argv.sourceFiles && argv.contractFixtureMap) {
+                return "Only one of -f and -m may be defined";
+            } else if (argv.sourceFiles || argv.contractFixtureMap) {
+                return true;
+            } else {
+                return "Either -f or -m must be provided";
+            }
+        })
         .wrap(80)
         .argv;
 }
