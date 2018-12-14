@@ -21,14 +21,14 @@ exports.matchWithSchema = function(json, schema) {
 
     let result = tv4.validateMultiple(json, schema);
 
+    var niceErrors = [];
     if (!result.valid) {
 
-        var niceErrors = [];
         result.errors.forEach(function(error) {
             niceErrors.push(error.dataPath + ' ' + error.message);
         });
 
-        logger.log('ERROR'.red, niceErrors);
+        // logger.log('ERROR'.red, niceErrors);
         result.niceErrors = niceErrors;
     }
 

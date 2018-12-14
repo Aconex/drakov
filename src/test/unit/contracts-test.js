@@ -6,9 +6,10 @@ const drafter = require('drafter');
 
 const urlParser = require('../../lib/parse/url');
 const logger = require('../../lib/logger');
-
+const specSchema = require('../../lib/spec-schema');
 const contracts = require('../../lib/parse/contracts');
-import type { Action, Contract, Example, Mappings } from '../../lib/parse/contracts'
+
+import type { Body, BlueprintResource, BlueprintAction, Contract, Actions, Example, Mappings } from '../../lib/parse/contracts'
 
 let readFileStub: typeof sinon.stub;
 beforeEach(() => {
@@ -85,11 +86,14 @@ describe('parseContracts', () => {
             });
         });
         describe('AND the file is parsable', () => {
+            const requestBody: Body = { schema: 'request schema' }
+            const responseBody: Body = { schema: 'response schema' }
+
             const example: Example = {
-                requests: [{ schema: 'request schema' }],
-                responses: [{ schema: 'response schema' }]
+                requests: [requestBody],
+                responses: [responseBody]
             };
-            const action: Action = {
+            const action: BlueprintAction = {
                 method: 'POST',
                 examples: [example]
             };
@@ -104,10 +108,50 @@ describe('parseContracts', () => {
                     }
                 }
             };
+            let validateSchemaStub;
+            let urlStub;
+
+            beforeEach(() => {
+                urlStub = sinon.stub(urlParser, 'parse');
+                urlStub.withArgs('blueprint url').returns({ url: 'final url' });
+
+                validateSchemaStub = sinon.stub(specSchema, 'validateAndParseSchema');
+                validateSchemaStub.withArgs(requestBody).returns(requestBody);
+                validateSchemaStub.withArgs(responseBody).returns(responseBody);
+            });
+
+            describe('BUT the schema is invalid', () => {
+                it('WHEN calling parseContracts THEN it throws an error', () => {
+
+                    const badBody: Body = { schema: 'bad schema' }
+                    const example: Example = {
+                        requests: [requestBody],
+                        responses: [badBody]
+                    };
+                    const action: BlueprintAction = {
+                        method: 'POST',
+                        examples: [example]
+                    };
+
+                    // mirror actual drafter results
+                    const parsedBlueprint = {
+                        ast: {
+                            resourceGroups: [{
+                                resources: [{
+                                    uriTemplate: 'blueprint url',
+                                    actions: [action]
+                                }]
+                            }]
+                        }
+                    };
+
+                    validateSchemaStub.withArgs(badBody).throws('test-err');
+                    parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
+                    assert.throws(() => contracts.parseContracts(mapping), /test-err/);
+                });
+            });
 
             it('WHEN calling parseContracts THEN it returns a map of contracts to fixtures', () => {
-                const urlStub = sinon.stub(urlParser, 'parse');
-                urlStub.withArgs('blueprint url').returns({ url: 'final url' });
 
                 // mirror actual drafter results
                 const parsedBlueprint = {
@@ -127,10 +171,8 @@ describe('parseContracts', () => {
 
             describe('BUT the schema is missing for a resource', () => {
                 it('WHEN calling parseContracts THEN it logs an error with the resource and continue', () => {
-                    const urlStub = sinon.stub(urlParser, 'parse');
-                    urlStub.withArgs('blueprint url').returns({ url: 'final url' });
 
-                    const badAction: Action = {
+                    const badAction: BlueprintAction = {
                         method: 'PUT',
                         examples: []
                     };
@@ -156,8 +198,7 @@ describe('parseContracts', () => {
 
             describe('AND there is a duplicate action', () => {
                 it('WHEN calling parseContracts THEN it logs an error with the resource and continue', () => {
-                    const urlStub = sinon.stub(urlParser, 'parse');
-                    urlStub.withArgs('blueprint url').returns({ url: 'final url' });
+
 
                     // mirror actual drafter results
                     const parsedBlueprint = {
@@ -178,6 +219,83 @@ describe('parseContracts', () => {
                     assert.equal(error.getCall(0).args[0], 'POST "final url" is defined more than once; ignoring additional schema');
                 });
             });
+        });
+    });
+});
+
+describe('removeInvalidActions', () => {
+
+    const contractActions: Actions = {
+        'POST': {
+            request: null,
+            response: {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "required": ["question", "choices"],
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "type": "string"
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 2
+                    }
+                }
+
+            }
+        }
+    };
+
+    describe('GIVEN the fixture body matches the contract schema', () => {
+        it('WHEN calling removeInvalidActions THEN all actions return', () => {
+            const fixtureBody = '{\n"question": "Why?",\n"choices": ["Why not?", "BECAUSE!"]\n}';
+            const action: BlueprintAction = {
+                method: 'POST',
+                examples: [{
+                    requests: [],
+                    responses: [{ body: fixtureBody }]
+                }],
+            };
+            const resource: BlueprintResource = {
+                uriTemplate: 'final-url',
+                actions: [action]
+            };
+
+            assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), resource);
+        });
+    });
+    describe('GIVEN the a fixture body  does not match the contract schema', () => {
+        it('WHEN calling removeInvalidActions THEN that action is removed return', () => {
+            const fixtureBody = '{\n"question": "Why?",\n"choices": ["Why not?", "BECAUSE!"]\n}';
+            const badFixtureBody = '{\n"question": 2,\n"choices": ["Why not?", "BECAUSE!"]\n}';
+            const goodAction: BlueprintAction = {
+                method: 'POST',
+                examples: [{
+                    requests: [],
+                    responses: [{ body: fixtureBody }]
+                }],
+            };
+            const badAction: BlueprintAction = {
+                method: 'POST',
+                examples: [{
+                    requests: [],
+                    responses: [{ body: badFixtureBody }]
+                }],
+            };
+
+            const resource: BlueprintResource = {
+                uriTemplate: 'final-url',
+                actions: [goodAction, badAction]
+            };
+
+            const expectedResource: BlueprintResource = {
+                uriTemplate: 'final-url',
+                actions: [goodAction]
+            };
+            assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), expectedResource);
         });
     });
 });

@@ -4,21 +4,26 @@ const drafter = require('drafter');
 
 const urlParser = require('./url');
 const logger = require('../logger');
+const specSchema = require('../spec-schema');
+
 export type Mappings = { [string]: string }
 
-type Schema = {
-    request: ?string,
-    response: ?string
+// any valid JSON-schema
+type JsonSchema = any
+
+type ResourceSchemas = {
+    request: ?JsonSchema,
+    response: ?JsonSchema
 };
 
 type Verb = string;
 type Url = string;
 
-type Actions = {
-    [Verb]: Schema
+export type Actions = {
+    [Verb]: ResourceSchemas
 };
 
-type Resources = {
+export type Resources = {
     [Url]: Actions
 };
 
@@ -26,8 +31,9 @@ export type Contract = {
     fixtureFolder: string,
     resources: Resources
 }
-type Body = {
-    schema: string
+export type Body = {
+    schema?: string,
+    body?: string
 };
 
 export type Example = {
@@ -35,11 +41,28 @@ export type Example = {
     responses: Array<Body>
 };
 
-export type Action = {
+export type BlueprintAction = {
     method: string,
     examples: ?Array<Example>
 }
 
+export type SchemaValidationResult = {
+    valid: boolean,
+    niceErrors: Array<string>
+}
+
+export type BlueprintResource = {
+    uriTemplate: string,
+    actions: Array<BlueprintAction>
+};
+export type ResourceGroup = {
+    resources: Array<BlueprintResource>
+};
+export type Blueprint = {
+    ast: {
+        resourceGroups: Array<ResourceGroup>
+    }
+};
 const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
     let contents: string;
     try {
@@ -76,8 +99,9 @@ const parseContracts = (mappings: Mappings): Array<Contract> => {
             throw Error(message);
         }
 
+        // TODO: figure out what this option does, copied from drakov's usage of drafter
         const options = { type: 'ast' };
-        let parsedContract;
+        let parsedContract: Blueprint;
         try {
             parsedContract = drafter.parseSync(data, options);
         } catch (e) {
@@ -87,6 +111,7 @@ const parseContracts = (mappings: Mappings): Array<Contract> => {
             throw Error(message);
         }
 
+
         const resources: Resources = {};
         parsedContract.ast.resourceGroups.forEach(resourceGroup => {
             resourceGroup.resources.forEach(resourceExample => {
@@ -95,12 +120,12 @@ const parseContracts = (mappings: Mappings): Array<Contract> => {
                 const resource = resources[url] || {}
                 resources[url] = resource;
 
-                resourceExample.actions.forEach((action: Action) => {
+                resourceExample.actions.forEach((action: BlueprintAction) => {
                     if (resource[action.method]) {
                         logger.error(`${action.method} "${url}" is defined more than once; ignoring additional schema`);
 
                     } else {
-                        const schema: ?Schema = createSchema(action, url);
+                        const schema: ?ResourceSchemas = createSchema(action, url);
                         if (schema) {
                             resource[action.method] = schema;
                         }
@@ -122,7 +147,7 @@ const parseContracts = (mappings: Mappings): Array<Contract> => {
 };
 
 
-const createSchema = (action: Action, url: string): ?Schema => {
+const createSchema = (action: BlueprintAction, url: string): ?ResourceSchemas => {
 
     const httpVerb = action.method;
 
@@ -132,15 +157,73 @@ const createSchema = (action: Action, url: string): ?Schema => {
         return;
     }
 
-    const request = example.requests[0] && example.requests[0].schema;
-    const response = example.responses[0] && example.responses[0].schema;
+    const request = example.requests[0] && example.requests[0];
+    const response = example.responses[0] && example.responses[0];
 
     return {
-        request,
-        response
+        request: getSchema(request),
+        response: getSchema(response)
     };
 };
+
+const getSchema = (body: Body): ?JsonSchema => {
+    if (!body) return;
+
+    const validatedBody: Body = specSchema.validateAndParseSchema(body);
+    return validatedBody.schema;
+}
+
+const removeInvalidActions = (resource: BlueprintResource, contractActions: Actions): BlueprintResource => {
+    const validActions: Array<BlueprintAction> = []
+    
+    resource.actions.forEach((action) => {
+        const contractAction = contractActions[action.method]
+        if (!action.examples) return;
+        const validExamples: Array<Example> = [];
+        
+        action.examples.forEach((example, exampleIndex) => {
+            const validRequests: Array<Body> = [];
+            const validResponses: Array<Body> = [];
+            validResponses; validRequests; 
+            example.requests.forEach((request, requestIndex) => {
+                const result: SchemaValidationResult = specSchema.matchWithSchema(request.body, contractAction.request);
+                if (result.valid) {
+                    validRequests.push(request);
+                } else {
+                    logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] request[${requestIndex}] failed validation:
+                    ${result.niceErrors.join('\n')}`)
+                }
+            });
+
+            example.responses.forEach((response, responseIndex) => {
+                const body = JSON.parse(response.body || "");
+                const result: SchemaValidationResult = specSchema.matchWithSchema(body, contractAction.response);
+                if (result.valid) {
+                    validResponses.push(response);
+                } else {
+                    logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] response[${responseIndex}] failed validation:
+                    ${result.niceErrors.join('\n')}`)
+                }
+            });
+
+            if (validRequests.length || validResponses.length) {
+                validExamples.push({
+                    requests: validRequests,
+                    responses: validResponses
+                });
+            }
+        });
+
+        if (validExamples.length) {
+          const actionWithValidExamples: BlueprintAction = Object.assign({}, action, {examples: validExamples});
+          validActions.push(actionWithValidExamples);
+        }
+    });
+    return Object.assign({}, resource, {actions: validActions});
+}
+
 module.exports = {
+    removeInvalidActions,
     parseContracts,
     readContractFixtureMap,
 }

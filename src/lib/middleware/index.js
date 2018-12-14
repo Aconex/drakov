@@ -3,7 +3,7 @@ var responseUtils = require('./response');
 var staticMiddleware = require('./static');
 const contracts = require('../parse/contracts');
 
-var bootstrapMiddleware = function(app, argv) {
+var bootstrapMiddleware = function (app, argv) {
     if (argv.drakovHeader) {
         app.use(responseUtils.drakovHeaders);
     }
@@ -15,12 +15,13 @@ var bootstrapMiddleware = function(app, argv) {
     app.use(responseUtils.allowMethods(argv.method));
 };
 
-exports.init = function(app, argv, cb) {
+exports.init = function (app, argv, cb) {
     bootstrapMiddleware(app, argv);
-    var options = {sourceFiles: argv.sourceFiles,
+    var options = {
+        sourceFiles: argv.sourceFiles,
         autoOptions: argv.autoOptions,
         ignoreHeaders: argv.ignoreHeader,
-      };
+    };
 
     if (argv.contractFixtureMap) {
         const contractsMap = contracts.readContractFixtureMap(argv.contractFixtureMap);
@@ -28,9 +29,9 @@ exports.init = function(app, argv, cb) {
         // TODO work for real
         options.sourceFiles = Object.values(contractsMap)[0] + '/*.?(apib|md)';
     } 
-    
-    routeHandlers(options, function(err, middleware) {
-        cb(err, middleware);
-    });
-
+    // else {
+        routeHandlers(options, function (err, middleware) {
+            cb(err, middleware);
+        });
+    // }
 };
