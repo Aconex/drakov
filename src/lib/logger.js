@@ -19,7 +19,7 @@ exports.error = function() {
         return;
     }
     // eslint-disable-next-line no-console
-    console.error(Array.prototype.slice.call(arguments).join(' '));
+    console.error('[ERROR]'.red, Array.prototype.slice.call(arguments).join(' '));
 };
 
 exports.stringfy = function(matched) {

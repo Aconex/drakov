@@ -28,7 +28,7 @@ exports.matchWithSchema = function(json, schema) {
             niceErrors.push(error.dataPath + ' ' + error.message);
         });
 
-        // logger.log('ERROR'.red, niceErrors);
+        logger.error(niceErrors);
         result.niceErrors = niceErrors;
     }
 

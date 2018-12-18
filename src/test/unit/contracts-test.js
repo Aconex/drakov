@@ -3,6 +3,7 @@ const sinon = require('sinon')
 const assert = require('assert');
 const fs = require('fs');
 const drafter = require('drafter');
+const http = require('../../lib/parse/httpFetch');
 
 const urlParser = require('../../lib/parse/url');
 const logger = require('../../lib/logger');
@@ -23,23 +24,22 @@ describe('readContractFixtureMap', () => {
 
     describe('GIVEN the file does not exist', () => {
         it('WHEN calling readContractFixtureMap THEN it logs the file name AND throws error', () => {
-            const error = sinon.spy(logger, 'error');
-
+            const expectedMessage = 'Unable to read contract fixture map file "myFile"';
             readFileStub.throws();
-            assert.throws(() => contracts.readContractFixtureMap('myFile'));
-            assert.equal(error.getCall(0).args[0], 'Unable to read contract fixture map file "myFile"');
+            //$FlowFixMe
+            assert.throws(() => contracts.readContractFixtureMap('myFile'), { message: expectedMessage });
         });
     });
 
     describe('GIVEN the file exists', () => {
         describe('AND the file cannot be parsed', () => {
             it('WHEN calling readContractFixtureMap THEN it logs the file name AND throws error', () => {
-                const error = sinon.spy(logger, 'error');
                 const unparsableContents = 'justTryToParseME!!!!!!!!!!';
                 readFileStub.returns(unparsableContents);
+                const expectedMessage = /^Unable to parse contract fixture map contents "myFile"/;
 
-                assert.throws(() => contracts.readContractFixtureMap('myFile'));
-                assert.ok(error.getCall(0).args[0].startsWith('Unable to parse contract fixture map contents "myFile"'));
+                //$FlowFixMe
+                assert.throws(() => contracts.readContractFixtureMap('myFile'), { message: expectedMessage });
             });
         });
         describe('AND the file is parsable', () => {
@@ -58,16 +58,65 @@ describe('readContractFixtureMap', () => {
 
 describe('parseContracts', () => {
     const mapping: Mappings = { 'contract': 'fixture' }
-    describe('GIVEN the file does not exist', () => {
-        it('WHEN calling readContractFixtureMap THEN it logs the file name AND throws error', () => {
-            const error = sinon.spy(logger, 'error');
 
+    let validateSchemaStub;
+    let urlStub;
+    const requestBody: Body = { schema: 'request schema' };
+    const responseBody: Body = { schema: 'response schema' };
+    
+    beforeEach(() => {
+        urlStub = sinon.stub(urlParser, 'parse');
+        urlStub.withArgs('blueprint url').returns({ url: 'final url' });
+
+        validateSchemaStub = sinon.stub(specSchema, 'validateAndParseSchema');
+        validateSchemaStub.withArgs(requestBody).returns(requestBody);
+        validateSchemaStub.withArgs(responseBody).returns(responseBody);
+    });
+
+    describe('GIVEN the file does not exist', () => {
+        it('WHEN calling readContractFixtureMap THEN it logs the file name AND throws error', async () => {
             readFileStub.throws('some error');
-            assert.throws(() => contracts.parseContracts(mapping));
-            assert.equal(error.getCall(0).args[0], 'Unable to read contract file "contract"');
+            //$FlowFixMe
+            await assert.rejects(async () => await contracts.parseContracts(mapping), { message: 'Unable to read contract file "contract"' });
         });
     });
 
+    describe('GIVEN the contract file starts with "http(s)://"', () => {
+        const myContractUrl = 'https://myContractUrl';
+
+        const mappingWithUrl: Mappings = { [myContractUrl]: 'fixture' }
+        const contractContents = 'myOnlineContract';
+
+        it('WHEN calling readContractFixtureMap THEN it will try to fetch the file online', async () => {
+            const requestBody: Body = { schema: 'request schema' }
+            const responseBody: Body = { schema: 'response schema' }
+
+            const example: Example = {
+                requests: [requestBody],
+                responses: [responseBody]
+            };
+            const action: BlueprintAction = {
+                method: 'POST',
+                examples: [example]
+            };
+            const parsedBlueprint = {
+                ast: {
+                    resourceGroups: [{
+                        resources: [{
+                            uriTemplate: 'blueprint url',
+                            actions: [action]
+                        }]
+                    }]
+                }
+            };
+
+            const fetchStub = sinon.stub(http, 'fetch');
+            const drafterStub = sinon.stub(drafter, 'parseSync');
+            fetchStub.withArgs(myContractUrl, sinon.match.object).returns(contractContents);
+            drafterStub.withArgs(contractContents).returns(parsedBlueprint);
+            await contracts.parseContracts(mappingWithUrl);
+        });
+    });
     describe('GIVEN the file exists', () => {
         let parseBlueprintStub;
         const blueprintContents = 'Some contents that dont matter one bit';
@@ -77,17 +126,17 @@ describe('parseContracts', () => {
         });
 
         describe('AND the file cannot be parsed', () => {
-            it('WHEN calling parseContracts THEN it logs the file name AND throws error', () => {
-                const error = sinon.spy(logger, 'error');
-                parseBlueprintStub.throws('parings error for test');
+            it('WHEN calling parseContracts THEN it logs the file name AND throws error', async () => {
+                parseBlueprintStub.throws('parsing error for test');
+                const expectedErr = 'Error parsing contract contents "contract"\n            Cause: parsing error for test';
 
-                assert.throws(() => contracts.parseContracts(mapping));
-                assert.ok(error.getCall(0).args[0].startsWith('Error parsings contract contents "contract"'));
+                //$FlowFixMe
+                await assert.rejects(async () => await contracts.parseContracts(mapping), { message: expectedErr });
             });
         });
+
         describe('AND the file is parsable', () => {
-            const requestBody: Body = { schema: 'request schema' }
-            const responseBody: Body = { schema: 'response schema' }
+
 
             const example: Example = {
                 requests: [requestBody],
@@ -108,20 +157,10 @@ describe('parseContracts', () => {
                     }
                 }
             };
-            let validateSchemaStub;
-            let urlStub;
 
-            beforeEach(() => {
-                urlStub = sinon.stub(urlParser, 'parse');
-                urlStub.withArgs('blueprint url').returns({ url: 'final url' });
-
-                validateSchemaStub = sinon.stub(specSchema, 'validateAndParseSchema');
-                validateSchemaStub.withArgs(requestBody).returns(requestBody);
-                validateSchemaStub.withArgs(responseBody).returns(responseBody);
-            });
 
             describe('BUT the schema is invalid', () => {
-                it('WHEN calling parseContracts THEN it throws an error', () => {
+                it('WHEN calling parseContracts THEN it throws an error', async () => {
 
                     const badBody: Body = { schema: 'bad schema' }
                     const example: Example = {
@@ -145,13 +184,14 @@ describe('parseContracts', () => {
                         }
                     };
 
-                    validateSchemaStub.withArgs(badBody).throws('test-err');
+                    validateSchemaStub.withArgs(badBody).throws(new Error('test-err'));
                     parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
-                    assert.throws(() => contracts.parseContracts(mapping), /test-err/);
+                    //$FlowFixMe
+                    await assert.rejects(async () => await contracts.parseContracts(mapping), { message: 'test-err' });
                 });
             });
 
-            it('WHEN calling parseContracts THEN it returns a map of contracts to fixtures', () => {
+            it('WHEN calling parseContracts THEN it returns a map of contracts to fixtures', async () => {
 
                 // mirror actual drafter results
                 const parsedBlueprint = {
@@ -166,11 +206,11 @@ describe('parseContracts', () => {
                 };
 
                 parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
-                assert.deepEqual(contracts.parseContracts(mapping), [expected]);
+                assert.deepEqual(await contracts.parseContracts(mapping), [expected]);
             });
 
             describe('BUT the schema is missing for a resource', () => {
-                it('WHEN calling parseContracts THEN it logs an error with the resource and continue', () => {
+                it('WHEN calling parseContracts THEN it logs an error with the resource and continue', async () => {
 
                     const badAction: BlueprintAction = {
                         method: 'PUT',
@@ -191,13 +231,13 @@ describe('parseContracts', () => {
                     const error = sinon.spy(logger, 'error');
 
                     parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
-                    assert.deepEqual(contracts.parseContracts(mapping), [expected]);
+                    assert.deepEqual(await contracts.parseContracts(mapping), [expected]);
                     assert.equal(error.getCall(0).args[0], 'No request/response pairs found for: PUT "final url"');
                 });
             });
 
             describe('AND there is a duplicate action', () => {
-                it('WHEN calling parseContracts THEN it logs an error with the resource and continue', () => {
+                it('WHEN calling parseContracts THEN it logs an error with the resource and continue', async () => {
 
 
                     // mirror actual drafter results
@@ -215,7 +255,7 @@ describe('parseContracts', () => {
                     const error = sinon.spy(logger, 'error');
 
                     parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
-                    assert.deepEqual(contracts.parseContracts(mapping), [expected]);
+                    assert.deepEqual(await contracts.parseContracts(mapping), [expected]);
                     assert.equal(error.getCall(0).args[0], 'POST "final url" is defined more than once; ignoring additional schema');
                 });
             });
@@ -224,7 +264,13 @@ describe('parseContracts', () => {
 });
 
 describe('removeInvalidActions', () => {
+    let errorSpy;
+    let matchWithSchemaStub;
+    beforeEach(() => {
+        errorSpy = sinon.spy(logger, 'error');
+        matchWithSchemaStub = sinon.stub(specSchema, 'matchWithSchema');
 
+    });
     const contractActions: Actions = {
         'POST': {
             request: null,
@@ -264,6 +310,9 @@ describe('removeInvalidActions', () => {
                 actions: [action]
             };
 
+            matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].response)
+                .returns({ valid: true });
+
             assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), resource);
         });
     });
@@ -295,7 +344,48 @@ describe('removeInvalidActions', () => {
                 uriTemplate: 'final-url',
                 actions: [goodAction]
             };
+
+            matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].response)
+                .returns({ valid: true });
+            matchWithSchemaStub.withArgs(JSON.parse(badFixtureBody), contractActions['POST'].response)
+                .returns({ valid: false });
             assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), expectedResource);
+            assert.equal(errorSpy.getCall(0).args[0], 'POST final-url example[0] response[0] failed validation')
+        });
+    });
+
+    describe('GIVEN an action in the fixure has no match in the contract', () => {
+        it('WHEN calling removeInvalidActions THEN it logs an error for the missing action and removes it', () => {
+            const fixtureBody = '{\n"question": "Why?",\n"choices": ["Why not?", "BECAUSE!"]\n}';
+            const validAction: BlueprintAction = {
+                method: 'POST',
+                examples: [{
+                    requests: [],
+                    responses: [{ body: fixtureBody }]
+                }],
+            };
+
+            const unmatchedAction: BlueprintAction = {
+                method: 'GET',
+                examples: [{
+                    requests: [],
+                    responses: [{ body: fixtureBody }]
+                }],
+            };
+            const resource: BlueprintResource = {
+                uriTemplate: 'final-url',
+                actions: [validAction, unmatchedAction]
+            };
+
+            const expectedResource: BlueprintResource = {
+                uriTemplate: 'final-url',
+                actions: [validAction]
+            };
+
+            matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].response)
+                .returns({ valid: true });
+            assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), expectedResource);
+            assert.equal(errorSpy.getCall(0).args[0], 'GET final-url is not in the contract');
         });
     });
 });

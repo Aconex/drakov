@@ -1,6 +1,9 @@
+const process = require('process');
+
 var routeHandlers = require('./route-handlers');
 var responseUtils = require('./response');
 var staticMiddleware = require('./static');
+const logger = require('../logger');
 const contracts = require('../parse/contracts');
 
 var bootstrapMiddleware = function (app, argv) {
@@ -17,21 +20,34 @@ var bootstrapMiddleware = function (app, argv) {
 
 exports.init = function (app, argv, cb) {
     bootstrapMiddleware(app, argv);
-    var options = {
-        sourceFiles: argv.sourceFiles,
-        autoOptions: argv.autoOptions,
-        ignoreHeaders: argv.ignoreHeader,
-    };
 
     if (argv.contractFixtureMap) {
         const contractsMap = contracts.readContractFixtureMap(argv.contractFixtureMap);
-        options.contracts = contracts.parseContracts(contractsMap);
-        // TODO work for real
-        options.sourceFiles = Object.values(contractsMap)[0] + '/*.?(apib|md)';
-    } 
-    // else {
+        contracts.parseContracts(contractsMap)
+            .then(contracts => {
+                return {
+                    contracts,
+                    autoOptions: argv.autoOptions,
+                    ignoreHeaders: argv.ignoreHeader,
+                };
+            }).then(options => {
+                routeHandlers(options, function (err, middleware) {
+                    cb(err, middleware);
+                });
+            }).catch(err => {
+                logger.error(err.message);
+                process.exitCode = 1;
+            });
+
+    } else {
+        var options = {
+            sourceFiles: argv.sourceFiles,
+            autoOptions: argv.autoOptions,
+            ignoreHeaders: argv.ignoreHeader,
+        };
         routeHandlers(options, function (err, middleware) {
             cb(err, middleware);
         });
-    // }
+    }
+
 };

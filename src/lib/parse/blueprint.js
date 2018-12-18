@@ -1,17 +1,20 @@
+//@flow
 var fs = require('fs');
 var drafter = require('drafter');
 var _ = require('lodash');
 var urlParser = require('./url');
 var parseParameters = require('./parameters');
 var parseAction = require('./action');
+let contracts = require('./contracts');
 var logger = require('../logger');
 var autoOptionsAction = require('../json/auto-options-action.json');
+import type {Actions, Blueprint, BlueprintResource, Contract} from '../parse/contracts';
 
-module.exports = function(filePath, autoOptions, routeMap) {
-    return function(cb) {
+module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, contract?: Contract) {
+    return function(cb: (err: ?Error) => void) {
         var data = fs.readFileSync(filePath, {encoding: 'utf8'});
         var options = { type: 'ast' };
-        drafter.parse(data, options, function(err, result) {
+        drafter.parse(data, options, function(err: Error, result: Blueprint) {
             if (err) {
                 logger.log(err);
                 return cb(err);
@@ -19,7 +22,14 @@ module.exports = function(filePath, autoOptions, routeMap) {
 
             var allRoutesList = [];
             result.ast.resourceGroups.forEach(function(resourceGroup){
-                resourceGroup.resources.forEach(setupResourceAndUrl);
+                if (contract) {
+                    const exitstingContract = contract;
+                    resourceGroup.resources.forEach((resource) => {
+                        validateAndSetupResource(resource, exitstingContract);
+                    });
+                } else {
+                    resourceGroup.resources.forEach(setupResourceAndUrl);
+                }
             });
 
             // add OPTIONS route where its missing - this must be done after all routes are parsed
@@ -29,7 +39,24 @@ module.exports = function(filePath, autoOptions, routeMap) {
 
             cb();
 
-            function setupResourceAndUrl(resource) {
+            function validateAndSetupResource(resource: BlueprintResource, contract: Contract) {
+                const contractActions: Actions = contract.resources[resource.uriTemplate];
+
+                let valdatedResource = contracts.removeInvalidActions(resource, contractActions);
+                if (!valdatedResource.actions.length) {
+                    return;
+                }
+                var parsedUrl = urlParser.parse(valdatedResource.uriTemplate);
+                var key = parsedUrl.url;
+                routeMap[key] = routeMap[key] || { urlExpression: key, methods: {} };
+                parseParameters(parsedUrl, valdatedResource.parameters, routeMap);
+                valdatedResource.actions.forEach(function(action){
+                    parseAction(parsedUrl, action, routeMap);
+                    saveRouteToTheList(parsedUrl, action);
+                });
+            }
+
+            function setupResourceAndUrl(resource: BlueprintResource) {
                 var parsedUrl = urlParser.parse(resource.uriTemplate);
                 var key = parsedUrl.url;
                 routeMap[key] = routeMap[key] || { urlExpression: key, methods: {} };

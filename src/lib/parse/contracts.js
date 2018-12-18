@@ -5,6 +5,7 @@ const drafter = require('drafter');
 const urlParser = require('./url');
 const logger = require('../logger');
 const specSchema = require('../spec-schema');
+const http = require('./httpFetch');
 
 export type Mappings = { [string]: string }
 
@@ -53,7 +54,8 @@ export type SchemaValidationResult = {
 
 export type BlueprintResource = {
     uriTemplate: string,
-    actions: Array<BlueprintAction>
+    actions: Array<BlueprintAction>,
+    parameters?: Array<any>
 };
 export type ResourceGroup = {
     resources: Array<BlueprintResource>
@@ -69,8 +71,7 @@ const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
         contents = fs.readFileSync(contractFixtureMapFile, { encoding: 'utf8' });
     } catch (e) {
         const message = `Unable to read contract fixture map file "${contractFixtureMapFile}"`
-        logger.error(message);
-        throw Error(message);
+        throw new Error(message);
     }
 
     let contractFixtureMap: Mappings;
@@ -79,36 +80,40 @@ const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
     } catch (e) {
         const message = `Unable to parse contract fixture map contents "${contractFixtureMapFile}"
             Cause: ${e}`;
-        logger.error(message);
-        throw Error(message);
+        throw new Error(message);
     }
 
     return contractFixtureMap;
 };
 
-const parseContracts = (mappings: Mappings): Array<Contract> => {
+const parseContracts = async (mappings: Mappings): Promise<Array<Contract>> => {
     const contracts: Array<Contract> = [];
-    Object.keys(mappings).forEach(contractFile => {
+    for (const contractFile of Object.keys(mappings)) {
 
         let data: string
         try {
-            data = fs.readFileSync(contractFile, { encoding: 'utf8' });
+            if (/^http?s:\/\//.test(contractFile)) {
+                data = await http.fetch(contractFile, {
+                    headers: {
+                        'Authorization': `token ${process.env.GIT_TOKEN || ''}`,
+                    }
+                });
+            } else {
+                data = fs.readFileSync(contractFile, { encoding: 'utf8' });
+            }
         } catch (e) {
             const message = `Unable to read contract file "${contractFile}"`
-            logger.error(message);
-            throw Error(message);
+            throw new Error(message);
         }
-
         // TODO: figure out what this option does, copied from drakov's usage of drafter
         const options = { type: 'ast' };
         let parsedContract: Blueprint;
         try {
             parsedContract = drafter.parseSync(data, options);
         } catch (e) {
-            const message = `Error parsings contract contents "${contractFile}"
+            const message = `Error parsing contract contents "${contractFile}"
             Cause: ${e}`;
-            logger.error(message);
-            throw Error(message);
+            throw new Error(message);
         }
 
 
@@ -140,8 +145,7 @@ const parseContracts = (mappings: Mappings): Array<Contract> => {
         };
 
         contracts.push(contract);
-    });
-
+    }
     return contracts;
 
 };
@@ -177,16 +181,20 @@ const removeInvalidActions = (resource: BlueprintResource, contractActions: Acti
     const validActions: Array<BlueprintAction> = []
     
     resource.actions.forEach((action) => {
-        const contractAction = contractActions[action.method]
+        const contractAction = contractActions[action.method];
+        if (!contractAction) {
+            logger.error(`${action.method} ${resource.uriTemplate} is not in the contract`);
+            return;
+        }
         if (!action.examples) return;
         const validExamples: Array<Example> = [];
         
         action.examples.forEach((example, exampleIndex) => {
             const validRequests: Array<Body> = [];
             const validResponses: Array<Body> = [];
-            validResponses; validRequests; 
             example.requests.forEach((request, requestIndex) => {
-                const result: SchemaValidationResult = specSchema.matchWithSchema(request.body, contractAction.request);
+                const body = JSON.parse(request.body || "");
+                const result: SchemaValidationResult = specSchema.matchWithSchema(body, contractAction.request);
                 if (result.valid) {
                     validRequests.push(request);
                 } else {
@@ -201,8 +209,7 @@ const removeInvalidActions = (resource: BlueprintResource, contractActions: Acti
                 if (result.valid) {
                     validResponses.push(response);
                 } else {
-                    logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] response[${responseIndex}] failed validation:
-                    ${result.niceErrors.join('\n')}`)
+                    logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] response[${responseIndex}] failed validation`);
                 }
             });
 
@@ -217,6 +224,9 @@ const removeInvalidActions = (resource: BlueprintResource, contractActions: Acti
         if (validExamples.length) {
           const actionWithValidExamples: BlueprintAction = Object.assign({}, action, {examples: validExamples});
           validActions.push(actionWithValidExamples);
+        } else {
+            logger.error(`${action.method} ${resource.uriTemplate} has no valid examples and has been excluded`);
+
         }
     });
     return Object.assign({}, resource, {actions: validActions});

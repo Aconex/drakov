@@ -9,7 +9,7 @@
   "scripts": {
     "api-test": "npm run build && npm run api-test-no-build",
     "api-test-no-build": "mocha \"build/test/api/**/*-test.js\"",
-    "build": "flow-remove-types -x '.json,.jade' src/ -d build/ && flow-remove-types -x '.js' --pretty --sourcemaps src/ -d build/",
+    "build": "flow-remove-types -x '.json,.jade' src/ -d build/ && flow-remove-types -x '.js' --sourcemaps src/ -d build/",
     "clean": "rm -dR build",
     "flow": "flow",
     "lint": "eslint src/lib/**/*.js src/test/**/*.js",
@@ -47,6 +47,7 @@
     "http-shutdown": "^1.2.0",
     "jade": "^1.11.0",
     "lodash": "^4.17.4",
+    "node-fetch": "^2.3.0",
     "path-to-regexp": "^1.7.0",
     "qs": "^6.3.0",
     "tv4": "^1.1.9",
