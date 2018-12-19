@@ -115,6 +115,9 @@ exports.matchesSchema = function(httpReq, specReq) {
     var reqBody = getBodyContent(httpReq, isJson(contentType));
     var result =  specSchema.matchWithSchema(reqBody, schema);
     logger.log('[MATCHING]'.yellow,'by request body schema', logger.stringfy(result.valid));
+    if (!result.valid) {
+        logger.error(result.niceErrors);
+    }
     return result;
 };
 

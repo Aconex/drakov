@@ -2,13 +2,15 @@
 var fs = require('fs');
 var drafter = require('drafter');
 var _ = require('lodash');
+var pathToRegexp = require('path-to-regexp');
+
 var urlParser = require('./url');
 var parseParameters = require('./parameters');
 var parseAction = require('./action');
 let contracts = require('./contracts');
 var logger = require('../logger');
 var autoOptionsAction = require('../json/auto-options-action.json');
-import type {Actions, Blueprint, BlueprintResource, Contract} from '../parse/contracts';
+import type {Actions, Blueprint, BlueprintResource, Contract, Resources} from '../parse/contracts';
 
 module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, contract?: Contract) {
     return function(cb: (err: ?Error) => void) {
@@ -39,10 +41,12 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
 
             cb();
 
-            function validateAndSetupResource(resource: BlueprintResource, contract: Contract) {
-                const contractActions: Actions = contract.resources[resource.uriTemplate];
+            function validateAndSetupResource(fixtureResource: BlueprintResource, contract: Contract) {
+                const fixtureUrl = urlParser.parse(fixtureResource.uriTemplate).url;
+               
+                const contractActions: ?Actions = getActions(fixtureUrl, contract.resources);
 
-                let valdatedResource = contracts.removeInvalidActions(resource, contractActions);
+                let valdatedResource = contracts.removeInvalidActions(fixtureResource, contractActions);
                 if (!valdatedResource.actions.length) {
                     return;
                 }
@@ -54,6 +58,16 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
                     parseAction(parsedUrl, action, routeMap);
                     saveRouteToTheList(parsedUrl, action);
                 });
+            }
+
+            function getActions(fixtureUrl: string, contractResources: Resources): ?Actions {
+                for (const contractResourceUrl in contractResources) {
+                    var regex = pathToRegexp(contractResourceUrl);
+                    var match = regex.exec(fixtureUrl);
+                    if (match) {
+                        return contractResources[contractResourceUrl];
+                    }
+                }
             }
 
             function setupResourceAndUrl(resource: BlueprintResource) {

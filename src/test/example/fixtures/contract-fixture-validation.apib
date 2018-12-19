@@ -1,0 +1,147 @@
+# Group 1
+
+## Simple request [/demo]
+
+### get a Note [GET]
+
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "question": "Why?",
+                "choices": ["Why not?", "BECAUSE!"]
+            }
+        ```
+
+### Post note [POST]
+
++ Request
+
+    + Body
+   
+         ```json
+            {
+                "title": "Meaning of life?"
+            }
+        ```
+
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "question": "Why?",
+                "choices": ["42", "Forty-two!"]
+            }
+        ```
+
+
+
++ Request
+ Good request, bad response
+    + Body
+   
+         ```json
+            {
+                "title": "Ultimate anwser"
+            }
+        ```
+
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "choices": ["hmmmmm?!"]
+            }
+        ```
+
+### Bad Request [PUT]
++ Request
+
+    + Body
+   
+         ```json
+            {
+                "title": "Meaning of liffff?"
+            }
+        ```
+
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "question": "Y?",
+                "choices": ["37", "Forty!"]
+            }
+        ```
+
+## Request with path parameter [/demo/path-param]
+
+### Get note by param [GET] 
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "question": "Who?",
+                "choices": ["Me", "Not Me!"]
+            }
+        ```
+
+## Request with missing property in response body [/demo/missing]
+
+### Get With non-matching body [GET] 
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "question": "?"
+            }
+        ```
+        
+## Request similar with same start as another with a path param [/demo/detail]
+
+### Get demo detail [GET] 
++ Response 200 (application/json)
+    + Body
+
+        ```json
+            {
+                "query": "How Many?",
+                "answers": [1,42]
+            }
+        ```
+
+## Request with query parameters [/demo?query=value]
+
+### Request with query parameters [GET]
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "question": "When?",
+                "choices": ["Now", "Later"]
+            }
+        ```
+
+
+
+# Group 2
+
+## Request not in contract [/unknown]
+
+### Unknown [GET]
+
++ Response 200 (application/json)

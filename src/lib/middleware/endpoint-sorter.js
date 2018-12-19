@@ -1,4 +1,9 @@
-module.exports.sort = function(routeMap) {
+/*
+    Urls with more segments always have higher matching priority 
+    and if two urls have the same segment, fewer path params have higher
+    priority
+*/
+module.exports.sortByMatchingPriority = function(routeMap) {
     function getBinaryFromUrl(url) {
         return url.split('/').map(function (section) {
             return section.indexOf(':') < 0 ? '1' : '0';

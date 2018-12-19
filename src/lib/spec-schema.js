@@ -1,6 +1,5 @@
 var tv4 = require('tv4');
 var metaSchema = require('./json/meta-schema-v4');
-var logger = require('./logger');
 
 function validateSchema(schema) {
     if (metaSchema.$schema) {
@@ -28,7 +27,6 @@ exports.matchWithSchema = function(json, schema) {
             niceErrors.push(error.dataPath + ' ' + error.message);
         });
 
-        logger.error(niceErrors);
         result.niceErrors = niceErrors;
     }
 

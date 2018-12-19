@@ -39,7 +39,7 @@ module.exports = function(options: Options, cb: EndpointCb) {
         });
 
         async.series(asyncFunctions, function(err) {
-            cb(err, endpointSorter.sort(routeMap));
+            cb(err, endpointSorter.sortByMatchingPriority(routeMap));
         });
     }
 };

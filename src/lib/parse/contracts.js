@@ -2,6 +2,7 @@
 const fs = require('fs');
 const drafter = require('drafter');
 
+const endpointSorter = require('../middleware/endpoint-sorter');
 const urlParser = require('./url');
 const logger = require('../logger');
 const specSchema = require('../spec-schema');
@@ -105,7 +106,6 @@ const parseContracts = async (mappings: Mappings): Promise<Array<Contract>> => {
             const message = `Unable to read contract file "${contractFile}"`
             throw new Error(message);
         }
-        // TODO: figure out what this option does, copied from drakov's usage of drafter
         const options = { type: 'ast' };
         let parsedContract: Blueprint;
         try {
@@ -139,13 +139,20 @@ const parseContracts = async (mappings: Mappings): Promise<Array<Contract>> => {
             });
         });
 
+
+        if (!Object.keys(resources).length) {
+            throw new Error(`No resources found for "${contractFile}"`);
+        }
+
         const contract: Contract = {
             fixtureFolder: mappings[contractFile],
-            resources
+            resources: endpointSorter.sortByMatchingPriority(resources)
         };
 
         contracts.push(contract);
     }
+
+
     return contracts;
 
 };
@@ -177,42 +184,57 @@ const getSchema = (body: Body): ?JsonSchema => {
     return validatedBody.schema;
 }
 
-const removeInvalidActions = (resource: BlueprintResource, contractActions: Actions): BlueprintResource => {
+const removeInvalidActions = (resource: BlueprintResource, contractActions: ?Actions): BlueprintResource => {
     const validActions: Array<BlueprintAction> = []
-    
+
     resource.actions.forEach((action) => {
-        const contractAction = contractActions[action.method];
+        const contractAction = contractActions && contractActions[action.method];
         if (!contractAction) {
             logger.error(`${action.method} ${resource.uriTemplate} is not in the contract`);
             return;
         }
         if (!action.examples) return;
         const validExamples: Array<Example> = [];
-        
+
         action.examples.forEach((example, exampleIndex) => {
             const validRequests: Array<Body> = [];
             const validResponses: Array<Body> = [];
-            example.requests.forEach((request, requestIndex) => {
-                const body = JSON.parse(request.body || "");
-                const result: SchemaValidationResult = specSchema.matchWithSchema(body, contractAction.request);
-                if (result.valid) {
-                    validRequests.push(request);
-                } else {
-                    logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] request[${requestIndex}] failed validation:
-                    ${result.niceErrors.join('\n')}`)
+            if (action.method === 'POST' || action.method === 'PUT') {
+                if (example.requests.length !== example.responses.length) {
+                    throw new Error('Number of requests and responses are not equal');
                 }
-            });
 
-            example.responses.forEach((response, responseIndex) => {
-                const body = JSON.parse(response.body || "");
-                const result: SchemaValidationResult = specSchema.matchWithSchema(body, contractAction.response);
-                if (result.valid) {
-                    validResponses.push(response);
-                } else {
-                    logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] response[${responseIndex}] failed validation`);
+                for (let requestIndex = 0;requestIndex < example.requests.length; requestIndex++) {
+                    const request = example.requests[requestIndex];
+                    const reqBody = JSON.parse(request.body || "");
+                    const reqResult: SchemaValidationResult = specSchema.matchWithSchema(reqBody, contractAction.request);
+                    if (!reqResult.valid) {
+                        logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] request[${requestIndex}] failed validation: \n\t${reqResult.niceErrors.join('\n\t')}`);
+                    }
+
+                    const response = example.responses[requestIndex];
+                    const respBody = JSON.parse(response.body || "");
+                    const respResult: SchemaValidationResult = specSchema.matchWithSchema(respBody, contractAction.response);
+                    if (!respResult.valid) {
+                        logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] response[${requestIndex}] failed validation: \n\t${respResult.niceErrors.join('\n\t')}`);
+                    }
+
+                    if (reqResult.valid && respResult.valid) {
+                        validRequests.push(request);
+                        validResponses.push(response);
+                    }
                 }
-            });
-
+            } else {
+                example.responses.forEach((response, responseIndex) => {
+                    const body = JSON.parse(response.body || "");
+                    const result: SchemaValidationResult = specSchema.matchWithSchema(body, contractAction.response);
+                    if (result.valid) {
+                        validResponses.push(response);
+                    } else {
+                        logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] response[${responseIndex}] failed validation: \n\t${result.niceErrors.join('\n\t')}`);
+                    }
+                });
+            }
             if (validRequests.length || validResponses.length) {
                 validExamples.push({
                     requests: validRequests,
@@ -222,14 +244,14 @@ const removeInvalidActions = (resource: BlueprintResource, contractActions: Acti
         });
 
         if (validExamples.length) {
-          const actionWithValidExamples: BlueprintAction = Object.assign({}, action, {examples: validExamples});
-          validActions.push(actionWithValidExamples);
+            const actionWithValidExamples: BlueprintAction = Object.assign({}, action, { examples: validExamples });
+            validActions.push(actionWithValidExamples);
         } else {
             logger.error(`${action.method} ${resource.uriTemplate} has no valid examples and has been excluded`);
 
         }
     });
-    return Object.assign({}, resource, {actions: validActions});
+    return Object.assign({}, resource, { actions: validActions });
 }
 
 module.exports = {

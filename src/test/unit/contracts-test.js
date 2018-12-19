@@ -63,7 +63,7 @@ describe('parseContracts', () => {
     let urlStub;
     const requestBody: Body = { schema: 'request schema' };
     const responseBody: Body = { schema: 'response schema' };
-    
+
     beforeEach(() => {
         urlStub = sinon.stub(urlParser, 'parse');
         urlStub.withArgs('blueprint url').returns({ url: 'final url' });
@@ -191,6 +191,24 @@ describe('parseContracts', () => {
                 });
             });
 
+            describe('BUT there are no resources defined', () => {
+                it('WHEN calling parseContracts THEN it throws an error', async () => {
+
+                    // mirror actual drafter results
+                    const parsedBlueprint = {
+                        ast: {
+                            resourceGroups: [{
+                                resources: []
+                            }]
+                        }
+                    };
+
+                    parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
+                    //$FlowFixMe
+                    await assert.rejects(async () => await contracts.parseContracts(mapping), { message: 'No resources found for "contract"' });
+                });
+            });
+
             it('WHEN calling parseContracts THEN it returns a map of contracts to fixtures', async () => {
 
                 // mirror actual drafter results
@@ -259,6 +277,7 @@ describe('parseContracts', () => {
                     assert.equal(error.getCall(0).args[0], 'POST "final url" is defined more than once; ignoring additional schema');
                 });
             });
+
         });
     });
 });
@@ -273,7 +292,10 @@ describe('removeInvalidActions', () => {
     });
     const contractActions: Actions = {
         'POST': {
-            request: null,
+            request: {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object"
+            },
             response: {
                 "$schema": "http://json-schema.org/draft-07/schema#",
                 "required": ["question", "choices"],
@@ -301,7 +323,7 @@ describe('removeInvalidActions', () => {
             const action: BlueprintAction = {
                 method: 'POST',
                 examples: [{
-                    requests: [],
+                    requests: [{ body: fixtureBody }],
                     responses: [{ body: fixtureBody }]
                 }],
             };
@@ -311,6 +333,8 @@ describe('removeInvalidActions', () => {
             };
 
             matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].response)
+                .returns({ valid: true });
+            matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].request)
                 .returns({ valid: true });
 
             assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), resource);
@@ -323,14 +347,14 @@ describe('removeInvalidActions', () => {
             const goodAction: BlueprintAction = {
                 method: 'POST',
                 examples: [{
-                    requests: [],
+                    requests: [{ body: fixtureBody }],
                     responses: [{ body: fixtureBody }]
                 }],
             };
             const badAction: BlueprintAction = {
                 method: 'POST',
                 examples: [{
-                    requests: [],
+                    requests: [{ body: fixtureBody }],
                     responses: [{ body: badFixtureBody }]
                 }],
             };
@@ -347,10 +371,13 @@ describe('removeInvalidActions', () => {
 
             matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].response)
                 .returns({ valid: true });
+            matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].request)
+                .returns({ valid: true });
+
             matchWithSchemaStub.withArgs(JSON.parse(badFixtureBody), contractActions['POST'].response)
-                .returns({ valid: false });
+                .returns({ valid: false, niceErrors:['some error'] });
             assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), expectedResource);
-            assert.equal(errorSpy.getCall(0).args[0], 'POST final-url example[0] response[0] failed validation')
+            assert.equal(errorSpy.getCall(0).args[0], 'POST final-url example[0] response[0] failed validation: \n\tsome error')
         });
     });
 
@@ -360,7 +387,7 @@ describe('removeInvalidActions', () => {
             const validAction: BlueprintAction = {
                 method: 'POST',
                 examples: [{
-                    requests: [],
+                    requests: [{ body: fixtureBody }],
                     responses: [{ body: fixtureBody }]
                 }],
             };
@@ -383,6 +410,8 @@ describe('removeInvalidActions', () => {
             };
 
             matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].response)
+                .returns({ valid: true });
+            matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].request)
                 .returns({ valid: true });
             assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], 'GET final-url is not in the contract');

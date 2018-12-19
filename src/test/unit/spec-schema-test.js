@@ -1,7 +1,6 @@
 var assert = require ('assert');
 var sinon = require('sinon');
 var tv4 = require('tv4');
-var logger = require('../../lib/logger');
 var specSchema = require('../../lib/spec-schema');
 
 afterEach(function() {
@@ -46,14 +45,12 @@ describe('Spec Schema', function() {
         };
 
         var validateMultipleMock;
-        var logSpy;
 
         beforeEach(function() {
             validateMultipleMock = sinon.stub(tv4, 'validateMultiple');
             validateMultipleMock.withArgs(valid, schema).returns({valid: true});
             validateMultipleMock.returns(invalid);
 
-            logSpy = sinon.spy(logger, 'error');
         });
 
         describe('when the body matches the schema', function() {
@@ -68,7 +65,6 @@ describe('Spec Schema', function() {
             it('Should return false when json is not validated against schema and log ERROR', function () {
                 assert.deepEqual(specSchema.matchWithSchema({idea: 1}, schema), expected);
 
-                assert.ok(logSpy.calledWithExactly(['Do you feel lucky, punk?']), 'Incorrect logging');
             });
         });
     });

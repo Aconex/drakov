@@ -1,3 +1,3 @@
 {
-    "https://raw.githubusercontent.com/fubotv/contract-testing/master/demo/simple_post.apib": "src/test/example/fixtures"
+    "src/test/example/contract/contract-fixture-validation.apib": "src/test/example/fixtures"
 }

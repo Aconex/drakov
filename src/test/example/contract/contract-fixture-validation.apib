@@ -1,0 +1,213 @@
+# Demo Group 1
+
+## Simple request [/demo]
+
+### get a Note [GET]
+
++ Response 200 (application/json)
+
+    + Schema
+    
+        ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["question", "choices"],
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "choices": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2
+                }
+              }
+             
+            }
+        ```
+
+
+### Post note [POST]
+
++ Request
+
+    + Body
+ 
+        ```json
+            {
+              "question": "Y?",
+              "choices": ["37", "Forty!"]
+            }
+        ```
+
+    + Schema
+    
+        ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["title"],
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                }
+              }
+            }
+        ```    
+
++ Response 200 (application/json)
+
+    + Schema
+    
+        ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["question", "choices"],
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "choices": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2
+                }
+              }
+             
+            }
+        ```
+
+### Bad Request [PUT]
++ Request
+ 
+    + Body
+ 
+        ```json
+            {
+              "question": "Y?",
+              "choices": ["37", "Forty!"]
+            }
+        ```
+    + Schema
+    
+        ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["question", "choices"],
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "choices": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2
+                }
+              }
+             
+            }
+        ```
+
++ Response 200 (application/json)
+
+    + Schema
+    
+        ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["question", "choices"],
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "choices": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2
+                }
+              }
+             
+            }
+        ```
+## Request with path parameter [/demo/:pathparam]
+
+### Get note by param [GET] 
++ Response 200 (application/json)
+
+    + Schema
+    
+        ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["question", "choices"],
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "choices": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2
+                }
+              }
+             
+            }
+        ```
+
+## Request similar with same start as another with a path param [/demo/detail]
+
+### Get demo detail [GET] 
++ Response 200 (application/json)
+
+    + Schema
+    
+        ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["query", "answers"],
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                },
+                "answers": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 2
+                }
+              }
+             
+            }
+        ```
+
+## Request with query parameters [/demo?query={query}]
+
+### [GET]
+
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "question": "What?",
+                "choices": ["This", "That"]
+            }
+        ```

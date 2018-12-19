@@ -16,10 +16,12 @@ be ignored for matching.
 ### Using fixtures with contracts
 
 The server now has an additional running mode where it will read a json config mapping contract
-files to a folder of fixtures. All fixtures will be validated against the schema in the contract file, matching my http verb and url (not and parameters or headers). Any failures will be logged and dropped. 
+files to a folder of fixtures. All fixtures will be validated against the schema in the contract file, matching my http verb and url (not and parameters or headers).
+Any failures will be logged and the resouces described will not be added to the server. 
 All fixture files are expected to be local, but contracts can be local or on github; files that start with http(s) are assumed to be on github. 
-To access files on github, you must provide a `GIT_TOKEN` as an environmental variable, and ensure the full link to the raw file, for example ```"https://raw.githubusercontent.com/fubotv/contract-testing/master/demo/simple_post.apib"```
+To access files on github, you must provide a `GIT_TOKEN` as an environmental variable, and ensure the full link to the raw file, for example `"https://raw.githubusercontent.com/fubotv/contract-testing/master/demo/simple_post.apib"`
 
+This mode is mutally exclusive with the existing mode; either a source file glob (`-f`) or a path to the mapping file (`-m`) must be provided.
 
 ## Community
 

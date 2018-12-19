@@ -8,7 +8,7 @@ describe('Endpoint Sorter', function() {
             '/aaa/bbb/ccc': {}
         };
 
-        var sortedKeys = Object.keys(sorter.sort(routeMap));
+        var sortedKeys = Object.keys(sorter.sortByMatchingPriority(routeMap));
 
         assert.deepEqual(sortedKeys, ['/aaa/bbb/ccc', '/aaa/bbb/:ccc']);
     });
@@ -25,7 +25,7 @@ describe('Endpoint Sorter', function() {
                 '/:aaa/:bbb/ccc': {}
         };
 
-        var sortedKeys = Object.keys(sorter.sort(routeMaps));
+        var sortedKeys = Object.keys(sorter.sortByMatchingPriority(routeMaps));
 
         var expected = ['/aaa/bbb/ccc',
             '/aaa/bbb/:ccc',
