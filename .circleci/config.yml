@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/node:10
+    environment:
+      # use cacheable/permitted local folder for global npm installs
+      NPM_CONFIG_PREFIX: "~/.npm-global"
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            # try an exact package.json based cache
+            - npm-dependencies-{{ checksum "package.json" }}
+            # fallback to any most recent cache as it will be better than nothing
+            - npm-dependencies-
+      - run:
+          name: Enable global npm installation in local folder
+          command: |
+            echo 'export PATH=$NPM_CONFIG_PREFIX/bin:$PATH' >> $BASH_ENV
+      # install js-native libraries with to speed up uncached build time
+      - run: npm install
+      - save_cache:
+          key: npm-dependencies-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+            - ~/.npm-global
+      - run: npm test
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
+     

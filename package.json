@@ -13,7 +13,7 @@
     "clean": "rm -dR build",
     "flow": "flow",
     "lint": "eslint src/lib/**/*.js src/test/**/*.js",
-    "postinstall": "flow-typed install mocha@5.x.x",
+    "postinstall": "flow-typed install mocha",
     "preapi-test-no-build": "npm run validate-blueprints",
     "prebuild": "npm run lint && (npm run clean || true)",
     "test": "npm run build && npm run unit-test-no-build && npm run api-test-no-build",
@@ -61,6 +61,7 @@
     "flow-bin": "^0.87.0",
     "flow-remove-types": "^1.2.3",
     "flow-typed": "^2.5.1",
+    "mocha": "^5.2.0",
     "sinon": "^7.2.0",
     "supertest": "^3.0.0"
   }
