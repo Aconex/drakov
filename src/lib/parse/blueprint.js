@@ -25,12 +25,12 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
             var allRoutesList = [];
             result.ast.resourceGroups.forEach(function(resourceGroup){
                 if (contract) {
-                    const exitstingContract = contract;
+                    const existingContract = contract;
                     resourceGroup.resources.forEach((resource) => {
-                        validateAndSetupResource(resource, exitstingContract);
+                        validateAndAddFixturesToServer(resource, existingContract);
                     });
                 } else {
-                    resourceGroup.resources.forEach(setupResourceAndUrl);
+                    resourceGroup.resources.forEach(addResourceToServer);
                 }
             });
 
@@ -41,25 +41,19 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
 
             cb();
 
-            function validateAndSetupResource(fixtureResource: BlueprintResource, contract: Contract) {
+            function validateAndAddFixturesToServer(fixtureResource: BlueprintResource, contract: Contract) {
                 const fixtureUrl = urlParser.parse(fixtureResource.uriTemplate).url;
                
                 const contractActions: ?Actions = getActions(fixtureUrl, contract.resources);
 
-                let valdatedResource = contracts.removeInvalidActions(fixtureResource, contractActions);
-                if (!valdatedResource.actions.length) {
+                let validatedResource: BlueprintResource = contracts.removeInvalidFixtures(fixtureResource, contractActions);
+                if (!validatedResource.actions.length) {
                     return;
                 }
-                var parsedUrl = urlParser.parse(valdatedResource.uriTemplate);
-                var key = parsedUrl.url;
-                routeMap[key] = routeMap[key] || { urlExpression: key, methods: {} };
-                parseParameters(parsedUrl, valdatedResource.parameters, routeMap);
-                valdatedResource.actions.forEach(function(action){
-                    parseAction(parsedUrl, action, routeMap);
-                    saveRouteToTheList(parsedUrl, action);
-                });
+                addResourceToServer(validatedResource);
             }
 
+            // `contractResources` is expected to already be sorted in match-priority order.
             function getActions(fixtureUrl: string, contractResources: Resources): ?Actions {
                 for (const contractResourceUrl in contractResources) {
                     var regex = pathToRegexp(contractResourceUrl);
@@ -70,7 +64,7 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
                 }
             }
 
-            function setupResourceAndUrl(resource: BlueprintResource) {
+            function addResourceToServer(resource: BlueprintResource) {
                 var parsedUrl = urlParser.parse(resource.uriTemplate);
                 var key = parsedUrl.url;
                 routeMap[key] = routeMap[key] || { urlExpression: key, methods: {} };

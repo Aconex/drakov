@@ -5,67 +5,71 @@ const drafter = require('drafter');
 const endpointSorter = require('../middleware/endpoint-sorter');
 const urlParser = require('./url');
 const logger = require('../logger');
-const specSchema = require('../spec-schema');
+const schemaValidator = require('../spec-schema');
 const http = require('./httpFetch');
 
-export type Mappings = { [string]: string }
+export type Mappings = { [string]: string };
+export type SchemaValidationResult = {
+    valid: boolean,
+    niceErrors: Array<string>
+};
 
-// any valid JSON-schema
-type JsonSchema = any
+// structures for Contracts
+export type Contract = {
+    fixtureFolder: string,
+    resources: Resources
+};
+
+export type Resources = {
+    [Url]: Actions
+};
+type Url = string;
+
+export type Actions = {
+    [Verb]: ResourceSchemas
+};
+type Verb = string;
 
 type ResourceSchemas = {
     request: ?JsonSchema,
     response: ?JsonSchema
 };
 
-type Verb = string;
-type Url = string;
+type JsonSchema = any // any valid JSON-schema
 
-export type Actions = {
-    [Verb]: ResourceSchemas
+
+// structures for Fixtures and non-validated blueprints as returned by drafter
+export type Blueprint = {
+    ast: {
+        resourceGroups: Array<ResourceGroup>
+    }
 };
 
-export type Resources = {
-    [Url]: Actions
+export type ResourceGroup = {
+    resources: Array<BlueprintResource>
 };
-
-export type Contract = {
-    fixtureFolder: string,
-    resources: Resources
-}
-export type Body = {
-    schema?: string,
-    body?: string
-};
-
-export type Example = {
-    requests: Array<Body>,
-    responses: Array<Body>
-};
-
-export type BlueprintAction = {
-    method: string,
-    examples: ?Array<Example>
-}
-
-export type SchemaValidationResult = {
-    valid: boolean,
-    niceErrors: Array<string>
-}
 
 export type BlueprintResource = {
     uriTemplate: string,
     actions: Array<BlueprintAction>,
     parameters?: Array<any>
 };
-export type ResourceGroup = {
-    resources: Array<BlueprintResource>
+
+export type BlueprintAction = {
+    method: string,
+    examples: ?Array<Example>
 };
-export type Blueprint = {
-    ast: {
-        resourceGroups: Array<ResourceGroup>
-    }
+
+export type Example = {
+    requests: Array<BodyDescriptor>,
+    responses: Array<BodyDescriptor>
 };
+
+export type BodyDescriptor = {
+    schema?: string,
+    body?: string
+};
+
 const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
     let contents: string;
     try {
@@ -87,78 +91,92 @@ const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
     return contractFixtureMap;
 };
 
-const parseContracts = async (mappings: Mappings): Promise<Array<Contract>> => {
-    const contracts: Array<Contract> = [];
-    for (const contractFile of Object.keys(mappings)) {
-
-        let data: string
-        try {
-            if (/^http?s:\/\//.test(contractFile)) {
-                data = await http.fetch(contractFile, {
-                    headers: {
-                        'Authorization': `token ${process.env.GIT_TOKEN || ''}`,
-                    }
-                });
-            } else {
-                data = fs.readFileSync(contractFile, { encoding: 'utf8' });
-            }
-        } catch (e) {
-            const message = `Unable to read contract file "${contractFile}"`
-            throw new Error(message);
+const readFile = async (filePath: string): Promise<string> => {
+    let fileContents: string;
+    try {
+        if (/^http?s:\/\//.test(filePath)) {
+            fileContents = await http.fetch(filePath, {
+                headers: {
+                    'Authorization': `token ${process.env.GIT_TOKEN || ''}`,
+                }
+            });
+        } else {
+            fileContents = fs.readFileSync(filePath, { encoding: 'utf8' });
         }
-        const options = { type: 'ast' };
-        let parsedContract: Blueprint;
-        try {
-            parsedContract = drafter.parseSync(data, options);
-        } catch (e) {
-            const message = `Error parsing contract contents "${contractFile}"
-            Cause: ${e}`;
-            throw new Error(message);
-        }
+    } catch (e) {
+        const message = `Unable to read contract file "${filePath}"`
+        throw new Error(message);
+    }
 
+    return fileContents;
+}
 
-        const resources: Resources = {};
-        parsedContract.ast.resourceGroups.forEach(resourceGroup => {
-            resourceGroup.resources.forEach(resourceExample => {
-                var url: string = urlParser.parse(resourceExample.uriTemplate).url;
+const parseBlueprint = (contractTest: string, contractFilePath: string): Blueprint => {
+    let parsedContract: Blueprint;
+    const options = { type: 'ast' };
+    try {
+        parsedContract = drafter.parseSync(contractTest, options);
+    } catch (e) {
+        const message = `Error parsing contract contents "${contractFilePath}"\n\tCause: ${e}`;
+        throw new Error(message);
+    }
+    return parsedContract;
+}
 
-                const resource = resources[url] || {}
-                resources[url] = resource;
+const mapBlueprintToResources = (blueprint: Blueprint): Resources => {
+    const resources: Resources = {};
 
-                resourceExample.actions.forEach((action: BlueprintAction) => {
-                    if (resource[action.method]) {
-                        logger.error(`${action.method} "${url}" is defined more than once; ignoring additional schema`);
+    blueprint.ast.resourceGroups.forEach(resourceGroup => {
+        resourceGroup.resources.forEach(resourceExample => {
+            var url: string = urlParser.parse(resourceExample.uriTemplate).url;
 
-                    } else {
-                        const schema: ?ResourceSchemas = createSchema(action, url);
-                        if (schema) {
-                            resource[action.method] = schema;
-                        }
+            const resource = resources[url] || {}
+            resources[url] = resource;
+
+            resourceExample.actions.forEach((action: BlueprintAction) => {
+                if (resource[action.method]) {
+                    logger.error(`${action.method} "${url}" is defined more than once; ignoring additional schema`);
+
+                } else {
+                    const schema: ?ResourceSchemas = extractSchema(action, url);
+                    if (schema) {
+                        resource[action.method] = schema;
                     }
-                });
+                }
             });
         });
+    });
 
+    return resources;
+}
+
+const parseContracts = async (mappings: Mappings): Promise<Array<Contract>> => {
+    const contracts: Array<Contract> = [];
+    for (const contractFilePath of Object.keys(mappings)) {
+
+        const fileContents = await readFile(contractFilePath);
+
+        const parsedContract = parseBlueprint(fileContents, contractFilePath);
+
+        const resources = mapBlueprintToResources(parsedContract);
 
         if (!Object.keys(resources).length) {
-            throw new Error(`No resources found for "${contractFile}"`);
+            throw new Error(`No resources found for "${contractFilePath}"`);
         }
 
         const contract: Contract = {
-            fixtureFolder: mappings[contractFile],
+            fixtureFolder: mappings[contractFilePath],
             resources: endpointSorter.sortByMatchingPriority(resources)
         };
 
         contracts.push(contract);
     }
 
-
     return contracts;
-
 };
 
 
-const createSchema = (action: BlueprintAction, url: string): ?ResourceSchemas => {
+const extractSchema = (action: BlueprintAction, url: string): ?ResourceSchemas => {
 
     const httpVerb = action.method;
 
@@ -177,14 +195,39 @@ const createSchema = (action: BlueprintAction, url: string): ?ResourceSchemas =>
     };
 };
 
-const getSchema = (body: Body): ?JsonSchema => {
+const getSchema = (body: BodyDescriptor): ?JsonSchema => {
     if (!body) return;
 
-    const validatedBody: Body = specSchema.validateAndParseSchema(body);
+    const validatedBody: BodyDescriptor = schemaValidator.validateAndParseSchema(body);
     return validatedBody.schema;
 }
 
-const removeInvalidActions = (resource: BlueprintResource, contractActions: ?Actions): BlueprintResource => {
+type BodyMetadata = {
+    method: string,
+    url: string,
+    exampleIndex: number,
+    bodyIndex: number
+};
+
+const validateBody = (bodyDescriptor: BodyDescriptor, schema: JsonSchema, bodyType: 'request' | 'response', metadata: BodyMetadata): SchemaValidationResult => {
+    let result: SchemaValidationResult;
+    try {
+        const parsedBody = JSON.parse(bodyDescriptor.body || "");
+        result = schemaValidator.matchWithSchema(parsedBody, schema);
+        if (!result.valid) {
+            logger.error(`${metadata.method} ${metadata.url} example[${metadata.exampleIndex}] ${bodyType}[${metadata.bodyIndex}] failed validation: \n\t${result.niceErrors.join('\n\t')}`);
+        }
+    } catch (e) {
+        if (e.name === 'SyntaxError') {
+            result = { valid: false, niceErrors: [] };
+            logger.error(`${metadata.method} ${metadata.url} example[${metadata.exampleIndex}] ${bodyType}[${metadata.bodyIndex}] error parsing body\n\t${e.message}`);
+        } else {
+            throw e;
+        }
+    }
+    return result;
+};
+const removeInvalidFixtures = (resource: BlueprintResource, contractActions: ?Actions): BlueprintResource => {
     const validActions: Array<BlueprintAction> = []
 
     resource.actions.forEach((action) => {
@@ -197,41 +240,35 @@ const removeInvalidActions = (resource: BlueprintResource, contractActions: ?Act
         const validExamples: Array<Example> = [];
 
         action.examples.forEach((example, exampleIndex) => {
-            const validRequests: Array<Body> = [];
-            const validResponses: Array<Body> = [];
+            const validRequests: Array<BodyDescriptor> = [];
+            const validResponses: Array<BodyDescriptor> = [];
             if (action.method === 'POST' || action.method === 'PUT') {
                 if (example.requests.length !== example.responses.length) {
                     throw new Error('Number of requests and responses are not equal');
                 }
 
-                for (let requestIndex = 0;requestIndex < example.requests.length; requestIndex++) {
+                for (let requestIndex = 0; requestIndex < example.requests.length; requestIndex++) {
+                    const metadata: BodyMetadata = { method: action.method, url: resource.uriTemplate, exampleIndex, bodyIndex: requestIndex };
+
                     const request = example.requests[requestIndex];
-                    const reqBody = JSON.parse(request.body || "");
-                    const reqResult: SchemaValidationResult = specSchema.matchWithSchema(reqBody, contractAction.request);
-                    if (!reqResult.valid) {
-                        logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] request[${requestIndex}] failed validation: \n\t${reqResult.niceErrors.join('\n\t')}`);
-                    }
+                    const requestResult = validateBody(request, contractAction.request, 'request', metadata);
 
                     const response = example.responses[requestIndex];
-                    const respBody = JSON.parse(response.body || "");
-                    const respResult: SchemaValidationResult = specSchema.matchWithSchema(respBody, contractAction.response);
-                    if (!respResult.valid) {
-                        logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] response[${requestIndex}] failed validation: \n\t${respResult.niceErrors.join('\n\t')}`);
-                    }
+                    const responseResult = validateBody(response, contractAction.response, 'response', metadata);
 
-                    if (reqResult.valid && respResult.valid) {
+                    if (requestResult.valid && responseResult.valid) {
                         validRequests.push(request);
                         validResponses.push(response);
                     }
                 }
             } else {
+                // Validate GET and DELETE fixtures
                 example.responses.forEach((response, responseIndex) => {
-                    const body = JSON.parse(response.body || "");
-                    const result: SchemaValidationResult = specSchema.matchWithSchema(body, contractAction.response);
+                    const metadata: BodyMetadata = { method: action.method, url: resource.uriTemplate, exampleIndex, bodyIndex: responseIndex };
+                    const result = validateBody(response, contractAction.response, 'response', metadata);
+
                     if (result.valid) {
                         validResponses.push(response);
-                    } else {
-                        logger.error(`${action.method} ${resource.uriTemplate} example[${exampleIndex}] response[${responseIndex}] failed validation: \n\t${result.niceErrors.join('\n\t')}`);
                     }
                 });
             }
@@ -255,7 +292,7 @@ const removeInvalidActions = (resource: BlueprintResource, contractActions: ?Act
 }
 
 module.exports = {
-    removeInvalidActions,
+    removeInvalidFixtures,
     parseContracts,
     readContractFixtureMap,
 }

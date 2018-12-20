@@ -7,10 +7,10 @@ const http = require('../../lib/parse/httpFetch');
 
 const urlParser = require('../../lib/parse/url');
 const logger = require('../../lib/logger');
-const specSchema = require('../../lib/spec-schema');
+const schemaValidator = require('../../lib/spec-schema');
 const contracts = require('../../lib/parse/contracts');
 
-import type { Body, BlueprintResource, BlueprintAction, Contract, Actions, Example, Mappings } from '../../lib/parse/contracts'
+import type { BodyDescriptor, BlueprintResource, BlueprintAction, Contract, Actions, Example, Mappings } from '../../lib/parse/contracts'
 
 let readFileStub: typeof sinon.stub;
 beforeEach(() => {
@@ -61,14 +61,14 @@ describe('parseContracts', () => {
 
     let validateSchemaStub;
     let urlStub;
-    const requestBody: Body = { schema: 'request schema' };
-    const responseBody: Body = { schema: 'response schema' };
+    const requestBody: BodyDescriptor = { schema: 'request schema' };
+    const responseBody: BodyDescriptor = { schema: 'response schema' };
 
     beforeEach(() => {
         urlStub = sinon.stub(urlParser, 'parse');
         urlStub.withArgs('blueprint url').returns({ url: 'final url' });
 
-        validateSchemaStub = sinon.stub(specSchema, 'validateAndParseSchema');
+        validateSchemaStub = sinon.stub(schemaValidator, 'validateAndParseSchema');
         validateSchemaStub.withArgs(requestBody).returns(requestBody);
         validateSchemaStub.withArgs(responseBody).returns(responseBody);
     });
@@ -88,8 +88,8 @@ describe('parseContracts', () => {
         const contractContents = 'myOnlineContract';
 
         it('WHEN calling readContractFixtureMap THEN it will try to fetch the file online', async () => {
-            const requestBody: Body = { schema: 'request schema' }
-            const responseBody: Body = { schema: 'response schema' }
+            const requestBody: BodyDescriptor = { schema: 'request schema' }
+            const responseBody: BodyDescriptor = { schema: 'response schema' }
 
             const example: Example = {
                 requests: [requestBody],
@@ -128,7 +128,7 @@ describe('parseContracts', () => {
         describe('AND the file cannot be parsed', () => {
             it('WHEN calling parseContracts THEN it logs the file name AND throws error', async () => {
                 parseBlueprintStub.throws('parsing error for test');
-                const expectedErr = 'Error parsing contract contents "contract"\n            Cause: parsing error for test';
+                const expectedErr = 'Error parsing contract contents "contract"\n\tCause: parsing error for test';
 
                 //$FlowFixMe
                 await assert.rejects(async () => await contracts.parseContracts(mapping), { message: expectedErr });
@@ -162,7 +162,7 @@ describe('parseContracts', () => {
             describe('BUT the schema is invalid', () => {
                 it('WHEN calling parseContracts THEN it throws an error', async () => {
 
-                    const badBody: Body = { schema: 'bad schema' }
+                    const badBody: BodyDescriptor = { schema: 'bad schema' }
                     const example: Example = {
                         requests: [requestBody],
                         responses: [badBody]
@@ -282,12 +282,12 @@ describe('parseContracts', () => {
     });
 });
 
-describe('removeInvalidActions', () => {
+describe('removeInvalidFixtures', () => {
     let errorSpy;
     let matchWithSchemaStub;
     beforeEach(() => {
         errorSpy = sinon.spy(logger, 'error');
-        matchWithSchemaStub = sinon.stub(specSchema, 'matchWithSchema');
+        matchWithSchemaStub = sinon.stub(schemaValidator, 'matchWithSchema');
 
     });
     const contractActions: Actions = {
@@ -318,7 +318,7 @@ describe('removeInvalidActions', () => {
     };
 
     describe('GIVEN the fixture body matches the contract schema', () => {
-        it('WHEN calling removeInvalidActions THEN all actions return', () => {
+        it('WHEN calling removeInvalidFixtures THEN all actions return', () => {
             const fixtureBody = '{\n"question": "Why?",\n"choices": ["Why not?", "BECAUSE!"]\n}';
             const action: BlueprintAction = {
                 method: 'POST',
@@ -337,11 +337,11 @@ describe('removeInvalidActions', () => {
             matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].request)
                 .returns({ valid: true });
 
-            assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), resource);
+            assert.deepEqual(contracts.removeInvalidFixtures(resource, contractActions), resource);
         });
     });
     describe('GIVEN the a fixture body  does not match the contract schema', () => {
-        it('WHEN calling removeInvalidActions THEN that action is removed return', () => {
+        it('WHEN calling removeInvalidFixtures THEN that action is removed return', () => {
             const fixtureBody = '{\n"question": "Why?",\n"choices": ["Why not?", "BECAUSE!"]\n}';
             const badFixtureBody = '{\n"question": 2,\n"choices": ["Why not?", "BECAUSE!"]\n}';
             const goodAction: BlueprintAction = {
@@ -375,14 +375,14 @@ describe('removeInvalidActions', () => {
                 .returns({ valid: true });
 
             matchWithSchemaStub.withArgs(JSON.parse(badFixtureBody), contractActions['POST'].response)
-                .returns({ valid: false, niceErrors:['some error'] });
-            assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), expectedResource);
+                .returns({ valid: false, niceErrors: ['some error'] });
+            assert.deepEqual(contracts.removeInvalidFixtures(resource, contractActions), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], 'POST final-url example[0] response[0] failed validation: \n\tsome error')
         });
     });
 
-    describe('GIVEN an action in the fixure has no match in the contract', () => {
-        it('WHEN calling removeInvalidActions THEN it logs an error for the missing action and removes it', () => {
+    describe('GIVEN an action in the fixture has no match in the contract', () => {
+        it('WHEN calling removeInvalidFixtures THEN it logs an error for the missing action and removes it', () => {
             const fixtureBody = '{\n"question": "Why?",\n"choices": ["Why not?", "BECAUSE!"]\n}';
             const validAction: BlueprintAction = {
                 method: 'POST',
@@ -413,8 +413,34 @@ describe('removeInvalidActions', () => {
                 .returns({ valid: true });
             matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].request)
                 .returns({ valid: true });
-            assert.deepEqual(contracts.removeInvalidActions(resource, contractActions), expectedResource);
+            assert.deepEqual(contracts.removeInvalidFixtures(resource, contractActions), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], 'GET final-url is not in the contract');
+        });
+
+        describe('GIVEN a fixture body is not valid JSON', () => {
+            it('WHEN calling removeInvalidFixtures THEN it logs an error for the fixture and removes it', () => {
+
+                const notJson = 'THIS IS NOT JSON';
+                const action: BlueprintAction = {
+                    method: 'POST',
+                    examples: [{
+                        requests: [{ body: notJson }],
+                        responses: [{ body: notJson }]
+                    }],
+                };
+                const resource: BlueprintResource = {
+                    uriTemplate: 'final-url',
+                    actions: [ action]
+                };
+
+                const expectedResource: BlueprintResource = {
+                    uriTemplate: 'final-url',
+                    actions: []
+                };
+
+                assert.deepEqual(contracts.removeInvalidFixtures(resource, contractActions), expectedResource);
+                assert.equal(errorSpy.getCall(0).args[0], 'POST final-url example[0] request[0] error parsing body\n\tUnexpected token T in JSON at position 0');
+            });
         });
     });
 });
