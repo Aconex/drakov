@@ -4,6 +4,10 @@
 
 Mock server that implements the [API Blueprint](http://apiblueprint.org/) specification
 
+## Installation instructions
+
+`npm install -g --no-optional git://github.com/fubotv/drakov`
+
 ## Fubo differences
 
 This fork works differently than the original in the following ways:
@@ -52,9 +56,6 @@ Drakov provide some logging in the following situations:
 
 When flag `--debugMode` is set on Drakov's start up all mismatching requests will be dumped on logs. Also Drakov will send a detail payload within the 404 response.
 
-## Installation instructions
-
-`npm install -g drakov`
 
 
 ## Running
