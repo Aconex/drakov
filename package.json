@@ -30,7 +30,7 @@
     "chokidar": "^1.6.1",
     "colors": "^1.1.0",
     "drafter": "^1.2.0",
-    "express": "4.15.5",
+    "express": "^4.16.4",
     "glob": "^7.1.1",
     "http-shutdown": "^1.2.0",
     "jade": "^1.11.0",
@@ -41,7 +41,7 @@
     "yargs": "^6.6.0"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
+    "grunt": "^1.0.3",
     "grunt-blueprint-validator": "^3.1.0",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-jshint": "^1.1.0",

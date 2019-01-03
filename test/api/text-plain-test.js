@@ -18,7 +18,7 @@ describe('text/plain media type', function(){
                     .set('Content-type', 'text/plain')
                     .send('username=username&password=password')
                     .expect(200)
-                    .expect('Content-type', 'application/json')
+                    .expect('Content-type', 'application/json; charset=utf-8')
                     .expect( {'status':'ok'})
                     .end(helper.endCb(done));
             });

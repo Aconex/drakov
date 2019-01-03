@@ -51,7 +51,7 @@ describe('MSON-API', function(){
             it('should not include charset on the response`s content-type', function(done){
                 request.get('/api/charsetless')
                     .expect(200)
-                    .expect('Content-type', 'application/json')
+                    .expect('Content-type', 'application/json; charset=utf-8')
                     .expect({'charset':'not present', 'id': '1'})
                     .end(helper.endCb(done));
             });
