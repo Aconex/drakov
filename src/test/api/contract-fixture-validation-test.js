@@ -1,7 +1,7 @@
 const helper = require('../lib');
 const request = helper.getRequest();
 
-describe.only('Contract Fixture Validation', () => {
+describe('Contract Fixture Validation', () => {
     describe('GIVEN drakov is run in non-validation mode', () => {
         before((done) => {
             helper.drakov.run({ sourceFiles: 'src/test/example/fixtures/contract-fixture-validation.apib' }, done);
