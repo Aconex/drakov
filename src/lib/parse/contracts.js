@@ -39,10 +39,16 @@ type JsonSchema = any // any valid JSON-schema
 
 
 // structures for Fixtures and non-validated blueprints as returned by drafter
+type Warning = {
+    message: string,
+    location: { index: number, length: number }
+};
+
 export type Blueprint = {
     ast: {
         resourceGroups: Array<ResourceGroup>
-    }
+    },
+    warnings: Array<Warning>
 };
 
 export type ResourceGroup = {
@@ -111,17 +117,27 @@ const readFile = async (filePath: string): Promise<string> => {
     return fileContents;
 }
 
-const parseBlueprint = (contractTest: string, contractFilePath: string): Blueprint => {
+
+const parseBlueprint = (rawContract: string, contractFilePath: string): Blueprint => {
     let parsedContract: Blueprint;
     const options = { type: 'ast' };
     try {
-        parsedContract = drafter.parseSync(contractTest, options);
+        parsedContract = drafter.parseSync(rawContract, options);
     } catch (e) {
         const message = `Error parsing contract contents "${contractFilePath}"\n\tCause: ${e}`;
         throw new Error(message);
     }
+
+    if (parsedContract.warnings.length) {
+        const formatWarning = (warning: Warning): string => {
+            return `\t${warning.message}. See: "${rawContract.substring(warning.location[0].index, warning.location[0].index + warning.location[0].length - 1)}"`;
+        }
+        logger.log(`Warnings for contract "${contractFilePath}":\n ${parsedContract.warnings.map(formatWarning).join('\n')}`);
+    }
+
     return parsedContract;
 }
+
 
 const mapBlueprintToResources = (blueprint: Blueprint): Resources => {
     const resources: Resources = {};

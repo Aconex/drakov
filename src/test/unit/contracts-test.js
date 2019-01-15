@@ -10,7 +10,7 @@ const logger = require('../../lib/logger');
 const schemaValidator = require('../../lib/spec-schema');
 const contracts = require('../../lib/parse/contracts');
 
-import type { BodyDescriptor, BlueprintResource, BlueprintAction, Contract, Actions, Example, Mappings } from '../../lib/parse/contracts'
+import type { BodyDescriptor, Blueprint, BlueprintResource, BlueprintAction, Contract, Actions, Example, Mappings } from '../../lib/parse/contracts'
 
 let readFileStub: typeof sinon.stub;
 beforeEach(() => {
@@ -99,7 +99,7 @@ describe('parseContracts', () => {
                 method: 'POST',
                 examples: [example]
             };
-            const parsedBlueprint = {
+            const parsedBlueprint: Blueprint = {
                 ast: {
                     resourceGroups: [{
                         resources: [{
@@ -107,7 +107,8 @@ describe('parseContracts', () => {
                             actions: [action]
                         }]
                     }]
-                }
+                },
+                warnings: []
             };
 
             const fetchStub = sinon.stub(http, 'fetch');
@@ -158,6 +159,35 @@ describe('parseContracts', () => {
                 }
             };
 
+            describe('AND there are parsing warnings', () => {
+                it('THEN logs the message and section of the blueprint', async () => { 
+                    const parsedBlueprint: Blueprint = {
+                        ast: {
+                            resourceGroups: [{
+                                resources: [{
+                                    uriTemplate: 'blueprint url',
+                                    actions: []
+                                }]
+                            }]
+                        },
+                        warnings: [{
+                            message: 'warning message',
+                            location: [{
+                                index: 5,
+                                length: 3
+                            }]
+                        }]
+                    };
+
+                    parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
+                    const log = sinon.spy(logger, 'log');
+
+                    await contracts.parseContracts(mapping);
+
+                    parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
+                    assert.equal(log.getCall(0).args[0], 'Warnings for contract "contract":\n \twarning message. See: "co"');
+                });
+            });
 
             describe('BUT the schema is invalid', () => {
                 it('WHEN calling parseContracts THEN it throws an error', async () => {
@@ -173,7 +203,7 @@ describe('parseContracts', () => {
                     };
 
                     // mirror actual drafter results
-                    const parsedBlueprint = {
+                    const parsedBlueprint: Blueprint = {
                         ast: {
                             resourceGroups: [{
                                 resources: [{
@@ -181,7 +211,8 @@ describe('parseContracts', () => {
                                     actions: [action]
                                 }]
                             }]
-                        }
+                        },
+                        warnings: []
                     };
 
                     validateSchemaStub.withArgs(badBody).throws(new Error('test-err'));
@@ -200,7 +231,8 @@ describe('parseContracts', () => {
                             resourceGroups: [{
                                 resources: []
                             }]
-                        }
+                        },
+                        warnings: []
                     };
 
                     parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
@@ -220,7 +252,8 @@ describe('parseContracts', () => {
                                 actions: [action]
                             }]
                         }]
-                    }
+                    },
+                    warnings: []
                 };
 
                 parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
@@ -243,7 +276,8 @@ describe('parseContracts', () => {
                                     actions: [action, badAction]
                                 }]
                             }]
-                        }
+                        },
+                        warnings: []
                     };
 
                     const error = sinon.spy(logger, 'error');
@@ -267,7 +301,8 @@ describe('parseContracts', () => {
                                     actions: [action, action]
                                 }]
                             }]
-                        }
+                        },
+                        warnings: []
                     };
 
                     const error = sinon.spy(logger, 'error');
