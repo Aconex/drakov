@@ -1,5 +1,6 @@
 // @flow 
 const fs = require('fs');
+const path = require('path');
 const drafter = require('drafter');
 
 const endpointSorter = require('../middleware/endpoint-sorter');
@@ -8,7 +9,7 @@ const logger = require('../logger');
 const schemaValidator = require('../spec-schema');
 const http = require('./httpFetch');
 
-export type Mappings = { [string]: string };
+export type Mappings = { [string]: Array<string> };
 export type SchemaValidationResult = {
     valid: boolean,
     niceErrors: Array<string>
@@ -16,7 +17,7 @@ export type SchemaValidationResult = {
 
 // structures for Contracts
 export type Contract = {
-    fixtureFolder: string,
+    fixtureFolders: Array<string>,
     resources: Resources
 };
 
@@ -41,7 +42,7 @@ type JsonSchema = any // any valid JSON-schema
 // structures for Fixtures and non-validated blueprints as returned by drafter
 type Warning = {
     message: string,
-    location: { index: number, length: number }
+    location: Array<{ index: number, length: number }>
 };
 
 export type Blueprint = {
@@ -76,7 +77,12 @@ export type BodyDescriptor = {
     body?: string
 };
 
+function isHttpPath(filePath: string): boolean {
+    return /^http?s:\/\//.test(filePath)
+}
+
 const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
+    const basePath = path.dirname(contractFixtureMapFile);
     let contents: string;
     try {
         contents = fs.readFileSync(contractFixtureMapFile, { encoding: 'utf8' });
@@ -85,22 +91,31 @@ const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
         throw new Error(message);
     }
 
-    let contractFixtureMap: Mappings;
+    let rawContractFixtureMap: Mappings;
     try {
-        contractFixtureMap = JSON.parse(contents);
+        rawContractFixtureMap = JSON.parse(contents);
     } catch (e) {
         const message = `Unable to parse contract fixture map contents "${contractFixtureMapFile}"
             Cause: ${e}`;
         throw new Error(message);
     }
+    const contractFixtureMap: Mappings = {};
+
+    Object.keys(rawContractFixtureMap).forEach((key) => {
+        const contractPath = isHttpPath(key) ? key : path.join(basePath, key);
+        const fixturesPaths = rawContractFixtureMap[key].map(fixturePath => path.join(basePath, fixturePath));
+        contractFixtureMap[contractPath] = fixturesPaths;
+    });
 
     return contractFixtureMap;
 };
 
+
+
 const readFile = async (filePath: string): Promise<string> => {
     let fileContents: string;
     try {
-        if (/^http?s:\/\//.test(filePath)) {
+        if (isHttpPath(filePath)) {
             fileContents = await http.fetch(filePath, {
                 headers: {
                     'Authorization': `token ${process.env.GIT_TOKEN || ''}`,
@@ -181,7 +196,7 @@ const parseContracts = async (mappings: Mappings): Promise<Array<Contract>> => {
         }
 
         const contract: Contract = {
-            fixtureFolder: mappings[contractFilePath],
+            fixtureFolders: mappings[contractFilePath],
             resources: endpointSorter.sortByMatchingPriority(resources)
         };
 

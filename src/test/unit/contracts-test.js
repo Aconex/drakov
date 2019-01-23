@@ -43,21 +43,27 @@ describe('readContractFixtureMap', () => {
             });
         });
         describe('AND the file is parsable', () => {
-            it('WHEN calling readContractFixtureMap THEN it returns a map of contracts to fixtures', () => {
-                const mapping: Mappings = {
-                    contract1: 'fixture 1',
-                    contract2: 'fixture 2'
+            it('WHEN calling readContractFixtureMap' +
+                    'THEN it returns a map of contracts to fixtures with the relative path added to non-http paths', () => {
+                 const mappingFileContents: Mappings = {
+                    'https://contract1': ['fixture1'],
+                    'contract2': ['fixture2']
                 };
 
-                readFileStub.withArgs('1').returns(JSON.stringify(mapping));
-                assert.deepEqual(contracts.readContractFixtureMap('1'), mapping);
+                const expectedMapping: Mappings = {
+                    'https://contract1': ['relative/path/fixture1'],
+                    'relative/path/contract2': ['relative/path/fixture2']
+                };
+                readFileStub.withArgs('relative/path/1').returns(JSON.stringify(mappingFileContents));
+                assert.deepEqual(contracts.readContractFixtureMap('relative/path/1'), expectedMapping);
             });
+
         });
     });
 });
 
 describe('parseContracts', () => {
-    const mapping: Mappings = { 'contract': 'fixture' }
+    const mapping: Mappings = { 'contract': ['fixture'] }
 
     let validateSchemaStub;
     let urlStub;
@@ -84,7 +90,7 @@ describe('parseContracts', () => {
     describe('GIVEN the contract file starts with "http(s)://"', () => {
         const myContractUrl = 'https://myContractUrl';
 
-        const mappingWithUrl: Mappings = { [myContractUrl]: 'fixture' }
+        const mappingWithUrl: Mappings = { [myContractUrl]: ['fixture'] }
         const contractContents = 'myOnlineContract';
 
         it('WHEN calling readContractFixtureMap THEN it will try to fetch the file online', async () => {
@@ -148,7 +154,7 @@ describe('parseContracts', () => {
                 examples: [example]
             };
             const expected: Contract = {
-                fixtureFolder: 'fixture',
+                fixtureFolders: ['fixture'],
                 resources: {
                     'final url': {
                         'POST': {

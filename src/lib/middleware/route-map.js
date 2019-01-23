@@ -3,7 +3,7 @@ const glob = require('glob');
 const async = require('async');
 const parseBlueprint = require('../parse/blueprint');
 const endpointSorter = require('./endpoint-sorter');
-import type {Contract} from '../parse/contracts';
+import type { Contract } from '../parse/contracts';
 
 type Options = {
     sourceFiles: ?Array<string>,
@@ -12,7 +12,7 @@ type Options = {
 }
 type EndpointCb = (err: Error, endpoints?: Array<any>) => void;
 
-module.exports = function(options: Options, cb: EndpointCb) {
+module.exports = function (options: Options, cb: EndpointCb) {
     const sourceFiles = options.sourceFiles;
     const autoOptions = options.autoOptions;
     const contracts = options.contracts;
@@ -20,8 +20,10 @@ module.exports = function(options: Options, cb: EndpointCb) {
 
     if (contracts) {
         contracts.forEach(contract => {
-            const files = glob.sync(`${contract.fixtureFolder}/*.?(apib|md)`);
-            setupRouteMap(files, contract);
+            contract.fixtureFolders.forEach(fixtureFolder => {
+                const files = glob.sync(`${fixtureFolder}/*.?(apib|md)`);
+                setupRouteMap(files, contract);
+            });
         });
     } else if (sourceFiles) {
         const files = glob.sync(sourceFiles);
@@ -34,11 +36,11 @@ module.exports = function(options: Options, cb: EndpointCb) {
 
         const asyncFunctions = [];
 
-        files.forEach(function(filePath) {
+        files.forEach(function (filePath) {
             asyncFunctions.push(parseBlueprint(filePath, autoOptions, routeMap, contract));
         });
 
-        async.series(asyncFunctions, function(err) {
+        async.series(asyncFunctions, function (err) {
             cb(err, endpointSorter.sortByMatchingPriority(routeMap));
         });
     }
