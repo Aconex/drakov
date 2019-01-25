@@ -15,7 +15,7 @@
     "flow": "flow",
     "install-flow-types": "flow-typed install mocha",
     "lint": "eslint src/lib/**/*.js src/test/**/*.js",
-    "postinstall": "npm install -g flow-remove-types && npm run assemble",
+    "postinstall": "if ! command -v flow-remove-types ; then npm install -g flow-remove-types; fi && npm run assemble",
     "preapi-test-no-build": "npm run validate-blueprints",
     "prebuild": "npm run lint && (npm run clean || true)",
     "test": "npm run build && npm run unit-test-no-build && npm run api-test-no-build",
