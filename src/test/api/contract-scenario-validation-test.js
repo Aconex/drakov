@@ -4,7 +4,7 @@ const request = helper.getRequest();
 describe('Contract Fixture Validation', () => {
     describe('GIVEN drakov is run in non-validation mode', () => {
         before((done) => {
-            helper.drakov.run({ sourceFiles: 'src/test/example/fixtures/contract-fixture-validation.apib' }, done);
+            helper.drakov.run({ sourceFiles: 'src/test/example/scenarios/contract-scenario-validation.apib' }, done);
         });
 
         after((done) => {
@@ -109,7 +109,7 @@ describe('Contract Fixture Validation', () => {
 
     describe('WHEN running in validation mode', () => {
         before((done) => {
-            helper.drakov.run({ contractFixtureMap: 'src/test/example/contract/contract-fixture-mapping.json' }, done);
+            helper.drakov.run({ contractFixtureMap: 'src/test/example/contract/contract-scenario-mapping.json' }, done);
         });
 
         after((done) => {
