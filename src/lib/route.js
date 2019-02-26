@@ -23,7 +23,7 @@ exports.getRouteHandlers = function (parsedUrl, action) {
             request: 'undefined' === typeof example.requests[0] ? null : specSchema.validateAndParseSchema(example.requests[0]),
             execute: function (req, res) {
 
-                logger.log('[DRAKOV]'.red, action.method.green, parsedUrl.uriTemplate.yellow,
+                logger.log( action.method.green, parsedUrl.uriTemplate.yellow,
                     (this.request && this.request.description ? this.request.description : action.name).blue);
 
                 this.response.headers.forEach(function (header) {
@@ -41,7 +41,7 @@ exports.getRouteHandlers = function (parsedUrl, action) {
 exports.createErrorHandler = function(validatedHandler) {
 
     var execute = function (req, res) {
-        logger.log('[DRAKOV]'.red, this.action.method.green, this.parsedUrl.uriTemplate.yellow,
+        logger.log(this.action.method.green, this.parsedUrl.uriTemplate.yellow,
             (this.request && this.request.description ? this.request.description : this.action.name).blue);
 
         this.response.headers.forEach(function (header) {

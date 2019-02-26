@@ -12,7 +12,14 @@ var server = null;
 
 exports.run = function(argv, cb) {
 
-    logger.setStealthMode(argv.stealthmode);
+    if (argv.debugMode) {
+        logger.setLogLevel('DEBUG');
+    } else if (argv.stealthmode) {
+        logger.setLogLevel('NONE');
+    } else {
+        logger.setLogLevel(argv.logLevel);
+    }
+
 
     logger.log('   DRAKOV STARTED   '.green.bold.inverse);
 

@@ -48,7 +48,7 @@ function getBodyContent(req, parseToJson){
         try {
             body = JSON.parse(body);
         } catch (e) {
-            logger.log('[WARNING]'.red, 'JSON body could not be parsed. Using body as is.');
+            logger.warn('JSON body could not be parsed. Using body as is.');
         }
     }
 
@@ -60,7 +60,7 @@ function areContentTypesSame(httpReq, specReq) {
     var expected = getMediaTypeFromSpecReq(specReq);
 
     var result = !expected || actual === expected;
-    logger.log('[MATCHING]'.yellow,'by request content type:', expected, 'actual:', actual, logger.stringfy(result));
+    logger.log('Matching by request content type:', expected, 'actual:', actual, renderMatchType(result));
     return result;
 }
 
@@ -96,7 +96,7 @@ exports.matchesBody = function(httpReq, specReq) {
     var specBody = getBodyContent(specReq, isJson(contentType));
     var result = lodash.isEqual(reqBody, specBody);
 
-    logger.log('[MATCHING]'.yellow,'by request body content', logger.stringfy(result));
+    logger.log('Matching by request body content', renderMatchType(result));
     return result;
 };
 
@@ -114,7 +114,7 @@ exports.matchesSchema = function(httpReq, specReq) {
     var contentType = getMediaTypeFromHttpReq(httpReq);
     var reqBody = getBodyContent(httpReq, isJson(contentType));
     var result =  specSchema.matchWithSchema(reqBody, schema);
-    logger.log('[MATCHING]'.yellow,'by request body schema', logger.stringfy(result.valid));
+    logger.log('Matching by request body schema', renderMatchType(result.valid));
     if (!result.valid) {
         logger.error(result.niceErrors);
     }
@@ -145,10 +145,14 @@ exports.matchesHeader = function(httpReq, specReq, ignoreHeaders) {
         var result = httpReq.headers.hasOwnProperty(httpReqHeader) &&
           httpReq.headers[httpReqHeader] === header.value;
 
-        logger.log('[MATCHING]'.yellow,'by request header', httpReqHeader, '=', header.value, logger.stringfy(result));
+        logger.log('Matching by request header', httpReqHeader, '=', header.value, renderMatchType(result));
         return result;
     }
 
     return specReq.headers.filter(headersForEvaluation).every(containsHeader) &&
       (shouldIgnoreHeader('content-type') || areContentTypesSame(httpReq, specReq));
 };
+
+function renderMatchType(matched) {
+    return matched ? 'MATCHED'.green : 'NOT_MATCHED'.red;
+}

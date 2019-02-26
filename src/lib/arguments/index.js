@@ -56,8 +56,8 @@ function getPathsFromCwd() {
 }
 
 function loadCommandlineArguments() {
-    logger.log('[INFO]'.white, 'No configuration files found');
-    logger.log('[INFO]'.white, 'Loading configuration from CLI');
+    logger.log('No configuration files found');
+    logger.log('Loading configuration from CLI');
     return argv
         .usage('Usage: \n  ./drakov -f <path to blueprint> [-p <server port|3000>]' +
         '\nExactly one of -f or -m is requred' +
@@ -72,6 +72,7 @@ function loadCommandlineArguments() {
                 return "Either -f or -m must be provided";
             }
         })
+        .conflicts('stealthmode', 'debugMode')
         .wrap(80)
         .argv;
 }

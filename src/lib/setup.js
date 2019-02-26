@@ -14,9 +14,6 @@ exports.startServer = function (argv, app, cb) {
 
     var startCb = function() {
         logger.log(('   Drakov ' + version + '     ').bold.inverse, 'Listening on port ' + argv.serverPort.toString().bold.red);
-        if (argv.stealthmode) {
-            logger.log('   STEALTH MODE     '.grey.bold.inverse, 'running silently'.grey);
-        }
 
         if (argv.public) {
             logger.log('   PUBLIC MODE     '.grey.bold.inverse, 'running publicly'.grey);

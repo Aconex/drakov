@@ -32,7 +32,7 @@ exports.notFoundHandler = function(argv) {
         if (!res.headersSent){
             if (argv.debugMode) {
                 var debugRequest = debug(req);
-                logger.log('[DEBUG]'.yellow, 'mismatching request:', JSON.stringify(debugRequest));
+                logger.debug('Mismatching request:', JSON.stringify(debugRequest));
                 res.status(404).json(debugRequest);
                 return;
             }

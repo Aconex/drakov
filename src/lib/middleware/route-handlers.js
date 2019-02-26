@@ -21,10 +21,12 @@ module.exports = function(options, cb) {
                 // req.path allows us to delegate query string handling to the route handler functions
                 var match = regex.exec(req.path);
 
-                logger.log('[MATCHING]'.yellow, 'by url pattern:', urlPattern.yellow, logger.stringfy(match));
                 if (match) {
+                    logger.log('Matching by url pattern:', urlPattern.yellow, 'MATCHED'.green);
                     var handlers = routeMap[urlPattern].methods[req.method.toUpperCase()];
                     handler = filter.filterHandlers(req, handlers, options.ignoreHeaders);
+                } else {
+                    logger.debug('Matching by url pattern:', urlPattern.yellow, 'NOT_MATCHED'.red);
                 }
             });
 

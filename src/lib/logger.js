@@ -1,27 +1,45 @@
+/* eslint-disable no-console */
 require('colors');
 
-var stealthMode = false;
+const levels = {
+    NONE: 0,
+    ERROR: 1,
+    WARN: 2,
+    INFO: 3,
+    DEBUG: 4
+}
+exports.levels = Object.keys(levels);
 
-exports.setStealthMode = function(isStealthMode) {
-    stealthMode = isStealthMode;
-};
+var logLevel = levels.INFO;
 
-exports.log = function() {
-    if (stealthMode) {
-        return;
+exports.setLogLevel = function (level) {
+    const newLevel = levels[level]
+    if (newLevel !== undefined) {
+        logLevel = newLevel;
     }
-    // eslint-disable-next-line no-console
-    console.log(Array.prototype.slice.call(arguments).join(' '));
 };
 
-exports.error = function() {
-    if (stealthMode) {
-        return;
+exports.debug = function (...args) {
+    if (logLevel >= levels.DEBUG) {
+        console.log('[DEBUG]  '.gray, args.join(' '));
     }
-    // eslint-disable-next-line no-console
-    console.error('[ERROR]'.red, Array.prototype.slice.call(arguments).join(' '));
 };
 
-exports.stringfy = function(matched) {
-  return matched ? 'MATCHED'.green : 'NOT_MATCHED'.red;
+exports.log = function (...args) {
+    if (logLevel >= levels.INFO) {
+        console.log('[INFO ]  '.white, args.join(' '));
+    }
 };
+
+exports.warn = function (...args) {
+    if (logLevel >= levels.WARN) {
+        console.error('[WARN ]  '.yellow, args.join(' '));
+    }
+};
+
+exports.error = function (...args) {
+    if (logLevel >= levels.ERROR) {
+        console.error('[ERROR]  '.red, args.join(' '));
+    }
+};
+

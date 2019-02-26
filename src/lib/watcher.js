@@ -11,7 +11,7 @@ var RESTART_COUNT = 0;
 
 var changeHandler = function(filePath) {
     ++RESTART_COUNT;
-    logger.log('[CHANGE]'.white, filePath.green, ('Restarting ' + RESTART_COUNT).blue);
+    logger.log('Change', filePath.green, ('Restarting ' + RESTART_COUNT).blue);
     drakov.stop(function(){
         drakov.run(CACHED_ARGV);
     });

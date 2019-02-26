@@ -1,3 +1,4 @@
+const logger = require('../logger')
 module.exports = {
     sourceFiles: {
         alias: 'f',
@@ -20,8 +21,15 @@ module.exports = {
         alias: 'd',
         description: 'Delimiter for mount point in static path (defaults is "=")'
     },
+    logLevel :{
+        alias: 'l',
+        description: 'Log level. Overridden by stealthmode or debugMode',
+        choices: logger.levels,
+        default: 'INFO'
+    },
+    // currently kept for backward compatibility
     stealthmode: {
-        description: 'Run silent (no console output)'
+        description: 'Run silent (no console output); equivalent to logLevel: NONE. Mutually exclusive with debugMode'
     },
     disableCORS: {
         description: 'Disable CORS header'
@@ -60,7 +68,7 @@ module.exports = {
         description: 'Reload Drakov when change detected in list of source files'
     },
     debugMode: {
-        description: 'Enables DEBUG mode. Mismatch requests will be dumped'
+        description: 'Enables DEBUG mode. Mismatch requests will be dumped. Sets log level to DEBUG. Mutually exclusive with stealthmode'
     },
     ignoreHeader: {
         description: 'Ignore the HTTP header in API blueprints',

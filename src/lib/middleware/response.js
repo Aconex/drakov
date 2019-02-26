@@ -6,7 +6,7 @@ exports.delayedResponse = function(delay){
         if(!delay){
             return next();
         }
-        logger.log('[DELAY]'.yellow, delay+'ms');
+        logger.log('Delay'.yellow, delay + 'ms');
         setTimeout(next, delay);
     };
 };
