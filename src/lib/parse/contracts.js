@@ -243,8 +243,12 @@ type BodyMetadata = {
 const validateBody = (bodyDescriptor: BodyDescriptor, schema: JsonSchema, bodyType: 'request' | 'response', metadata: BodyMetadata): SchemaValidationResult => {
     let result: SchemaValidationResult;
     try {
-        const parsedBody = JSON.parse(bodyDescriptor.body || "");
-        result = schemaValidator.matchWithSchema(parsedBody, schema);
+        if (!bodyDescriptor.body && !schema) {
+            result = { valid: true, niceErrors: [] };
+        } else {
+            const parsedBody = JSON.parse(bodyDescriptor.body || "");
+            result = schemaValidator.matchWithSchema(parsedBody, schema);
+        }
         if (!result.valid) {
             logger.error(`${metadata.method} ${metadata.url} example[${metadata.exampleIndex}] ${bodyType}[${metadata.bodyIndex}] failed validation: \n\t${result.niceErrors.join('\n\t')}`);
         }

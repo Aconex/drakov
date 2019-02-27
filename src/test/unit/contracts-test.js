@@ -44,19 +44,19 @@ describe('readContractFixtureMap', () => {
         });
         describe('AND the file is parsable', () => {
             it('WHEN calling readContractFixtureMap' +
-                    'THEN it returns a map of contracts to fixtures with the relative path added to non-http paths', () => {
-                 const mappingFileContents: Mappings = {
-                    'https://contract1': ['fixture1'],
-                    'contract2': ['fixture2']
-                };
+                'THEN it returns a map of contracts to fixtures with the relative path added to non-http paths', () => {
+                    const mappingFileContents: Mappings = {
+                        'https://contract1': ['fixture1'],
+                        'contract2': ['fixture2']
+                    };
 
-                const expectedMapping: Mappings = {
-                    'https://contract1': ['relative/path/fixture1'],
-                    'relative/path/contract2': ['relative/path/fixture2']
-                };
-                readFileStub.withArgs('relative/path/1').returns(JSON.stringify(mappingFileContents));
-                assert.deepEqual(contracts.readContractFixtureMap('relative/path/1'), expectedMapping);
-            });
+                    const expectedMapping: Mappings = {
+                        'https://contract1': ['relative/path/fixture1'],
+                        'relative/path/contract2': ['relative/path/fixture2']
+                    };
+                    readFileStub.withArgs('relative/path/1').returns(JSON.stringify(mappingFileContents));
+                    assert.deepEqual(contracts.readContractFixtureMap('relative/path/1'), expectedMapping);
+                });
 
         });
     });
@@ -166,7 +166,7 @@ describe('parseContracts', () => {
             };
 
             describe('AND there are parsing warnings', () => {
-                it('THEN logs the message and section of the blueprint', async () => { 
+                it('THEN logs the message and section of the blueprint', async () => {
                     const parsedBlueprint: Blueprint = {
                         ast: {
                             resourceGroups: [{
@@ -471,7 +471,7 @@ describe('removeInvalidFixtures', () => {
                 };
                 const resource: BlueprintResource = {
                     uriTemplate: 'final-url',
-                    actions: [ action]
+                    actions: [action]
                 };
 
                 const expectedResource: BlueprintResource = {
@@ -482,6 +482,38 @@ describe('removeInvalidFixtures', () => {
                 assert.deepEqual(contracts.removeInvalidFixtures(resource, contractActions), expectedResource);
                 assert.equal(errorSpy.getCall(0).args[0], 'POST final-url example[0] request[0] error parsing body\n\tUnexpected token T in JSON at position 0');
             });
+        });
+
+    
+    });
+
+    describe('GIVEN an empty response', () => {
+        const action: BlueprintAction = {
+            method: 'POST',
+            examples: [{
+                requests: [{ body:'{}'}],
+                responses: [{ body: '' }]
+            }],
+        };
+
+        const resource: BlueprintResource = {
+            uriTemplate: 'final-url',
+            actions: [action]
+        };
+
+        const emptyResponseAction: Actions = {
+            'POST': {
+                request: {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object"
+                },
+                response: ''
+            }
+        };
+        it('WHEN calling with an empty response THEN it passes', () => {
+            matchWithSchemaStub.returns({ valid: true });
+            assert.deepEqual(contracts.removeInvalidFixtures(resource, emptyResponseAction), resource);
+
         });
     });
 });
