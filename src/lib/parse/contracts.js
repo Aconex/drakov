@@ -243,6 +243,8 @@ type BodyMetadata = {
 const validateBody = (bodyDescriptor: BodyDescriptor, schema: JsonSchema, bodyType: 'request' | 'response', metadata: BodyMetadata): SchemaValidationResult => {
     let result: SchemaValidationResult;
     try {
+        // the validator throws an error with empty contract  
+        // this validates when you have an empty body in this case
         if (!bodyDescriptor.body && !schema) {
             result = { valid: true, niceErrors: [] };
         } else {
