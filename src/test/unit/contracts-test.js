@@ -487,7 +487,7 @@ describe('removeInvalidFixtures', () => {
     
     });
 
-    describe('GIVEN an empty response', () => {
+    describe('GIVEN a contract that expects an empty response', () => {
         const action: BlueprintAction = {
             method: 'POST',
             examples: [{
