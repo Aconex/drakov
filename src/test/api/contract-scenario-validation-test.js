@@ -203,4 +203,35 @@ describe('Contract Fixture Validation', () => {
         });
     });
 
+    describe('WHEN running with multiple contracts', () => {
+        before((done) => {
+            helper.drakov.run({ contractFixtureMap: 'src/test/example/contract/mapping-with-two-contracts.json' }, done);
+        });
+
+        after((done) => {
+            helper.drakov.stop(done);
+        });
+
+        describe('THEN resources from both scenario files are available', () => {
+            it('valid GET /demo is served', (done) => {
+                request.get('/demo')
+                    .expect(200)
+                    .expect({
+                        "question": "Why?",
+                        "choices": ["Why not?", "BECAUSE!"]
+                    })
+                    .end(done);
+            });
+
+            it('valid GET /demo2 is served', (done) => {
+                request.get('/demo2')
+                    .expect(200)
+                    .expect({
+                        "question": "Why?",
+                        "choices": ["Why not?", "BECAUSE!"]
+                    })
+                    .end(done);
+            });
+        });
+    });
 });

@@ -17,31 +17,28 @@ module.exports = function (options: Options, cb: EndpointCb) {
     const autoOptions = options.autoOptions;
     const contracts = options.contracts;
     const routeMap = {};
+    const asyncFunctions = [];
+
 
     if (contracts) {
         contracts.forEach(contract => {
             contract.fixtureFolders.forEach(fixtureFolder => {
                 const files = glob.sync(`${fixtureFolder}/*.?(apib|md)`);
-                setupRouteMap(files, contract);
+                files.forEach(function (filePath) {
+                    asyncFunctions.push(parseBlueprint(filePath, autoOptions, routeMap, contract));
+                });
             });
         });
     } else if (sourceFiles) {
         const files = glob.sync(sourceFiles);
-        setupRouteMap(files);
+        files.forEach(function (filePath) {
+            asyncFunctions.push(parseBlueprint(filePath, autoOptions, routeMap));
+        });
     } else {
         throw Error('Should not be here!! args should require either sourceFiles or contracts');
     }
 
-    function setupRouteMap(files: Array<string>, contract?: Contract) {
-
-        const asyncFunctions = [];
-
-        files.forEach(function (filePath) {
-            asyncFunctions.push(parseBlueprint(filePath, autoOptions, routeMap, contract));
-        });
-
-        async.series(asyncFunctions, function (err) {
-            cb(err, endpointSorter.sortByMatchingPriority(routeMap));
-        });
-    }
+    async.series(asyncFunctions, function (err) {
+        cb(err, endpointSorter.sortByMatchingPriority(routeMap));
+    });
 };
