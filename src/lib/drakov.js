@@ -21,7 +21,7 @@ exports.run = function(argv, cb) {
     }
 
 
-    logger.log('   DRAKOV STARTED   '.green.bold.inverse);
+    logger.info('   DRAKOV STARTED   '.green.bold.inverse);
 
     var app = express();
 
@@ -64,7 +64,7 @@ exports.stop = function(cb) {
     };
     try {
         server.forceShutdown(function() {
-            logger.log('   DRAKOV STOPPED   '.red.bold.inverse);
+            logger.info('   DRAKOV STOPPED   '.red.bold.inverse);
             runCb();
         });
     } catch (e) {

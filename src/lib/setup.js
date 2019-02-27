@@ -13,10 +13,10 @@ exports.startServer = function (argv, app, cb) {
     var server = null;
 
     var startCb = function() {
-        logger.log(('   Drakov ' + version + '     ').bold.inverse, 'Listening on port ' + argv.serverPort.toString().bold.red);
+        logger.info(('   Drakov ' + version + '     ').bold.inverse, 'Listening on port ' + argv.serverPort.toString().bold.red);
 
         if (argv.public) {
-            logger.log('   PUBLIC MODE     '.grey.bold.inverse, 'running publicly'.grey);
+            logger.info('   PUBLIC MODE     '.grey.bold.inverse, 'running publicly'.grey);
         }
 
         if (cb) {

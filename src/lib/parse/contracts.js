@@ -147,7 +147,7 @@ const parseBlueprint = (rawContract: string, contractFilePath: string): Blueprin
         const formatWarning = (warning: Warning): string => {
             return `\t${warning.message}. See: "${rawContract.substring(warning.location[0].index, warning.location[0].index + warning.location[0].length - 1)}"`;
         }
-        logger.log(`Warnings for contract "${contractFilePath}":\n ${parsedContract.warnings.map(formatWarning).join('\n')}`);
+        logger.info(`Warnings for contract "${contractFilePath}":\n ${parsedContract.warnings.map(formatWarning).join('\n')}`);
     }
 
     return parsedContract;

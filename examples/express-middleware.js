@@ -20,6 +20,6 @@ drakovMiddleware.init(app, drakovOptions, function(err, middlewareFunction) {
     }
     app.use(middlewareFunction);
     app.listen(8000, function() {
-        logger.log('server started with Drakov middleware');
+        logger.info('server started with Drakov middleware');
     });
 });

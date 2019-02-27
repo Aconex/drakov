@@ -14,11 +14,11 @@ drakov.run(drakovOptions, function(err){
     if (err) {
         throw err;
     }
-    logger.log('-- STARTED --');
+    logger.info('-- STARTED --');
     drakov.stop(function(err) {
         if (err) {
             throw err;
         }
-        logger.log('-- STOPPED --');
+        logger.info('-- STOPPED --');
     });
 });

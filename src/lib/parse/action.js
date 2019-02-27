@@ -8,5 +8,5 @@ module.exports = function(parsedUrl, action, routeMap) {
 
     var routeHandlers = route.getRouteHandlers(parsedUrl, action);
     routeMap[key].methods[action.method] = routeMap[key].methods[action.method].concat(routeHandlers);
-    logger.log('Setup Route:', action.method.green, key.yellow, action.name.blue);
+    logger.info('Setup Route:', action.method.green, key.yellow, action.name.blue);
 };

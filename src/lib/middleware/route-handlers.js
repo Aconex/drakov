@@ -22,7 +22,7 @@ module.exports = function(options, cb) {
                 var match = regex.exec(req.path);
 
                 if (match) {
-                    logger.log('Matching by url pattern:', urlPattern.yellow, 'MATCHED'.green);
+                    logger.info('Matching by url pattern:', urlPattern.yellow, 'MATCHED'.green);
                     var handlers = routeMap[urlPattern].methods[req.method.toUpperCase()];
                     handler = filter.filterHandlers(req, handlers, options.ignoreHeaders);
                 } else {

@@ -60,7 +60,7 @@ function areContentTypesSame(httpReq, specReq) {
     var expected = getMediaTypeFromSpecReq(specReq);
 
     var result = !expected || actual === expected;
-    logger.log('Matching by request content type:', expected, 'actual:', actual, renderMatchType(result));
+    logger.info('Matching by request content type:', expected, 'actual:', actual, renderMatchType(result));
     return result;
 }
 
@@ -96,7 +96,7 @@ exports.matchesBody = function(httpReq, specReq) {
     var specBody = getBodyContent(specReq, isJson(contentType));
     var result = lodash.isEqual(reqBody, specBody);
 
-    logger.log('Matching by request body content', renderMatchType(result));
+    logger.info('Matching by request body content', renderMatchType(result));
     return result;
 };
 
@@ -114,7 +114,7 @@ exports.matchesSchema = function(httpReq, specReq) {
     var contentType = getMediaTypeFromHttpReq(httpReq);
     var reqBody = getBodyContent(httpReq, isJson(contentType));
     var result =  specSchema.matchWithSchema(reqBody, schema);
-    logger.log('Matching by request body schema', renderMatchType(result.valid));
+    logger.info('Matching by request body schema', renderMatchType(result.valid));
     if (!result.valid) {
         logger.error(result.niceErrors);
     }
@@ -145,7 +145,7 @@ exports.matchesHeader = function(httpReq, specReq, ignoreHeaders) {
         var result = httpReq.headers.hasOwnProperty(httpReqHeader) &&
           httpReq.headers[httpReqHeader] === header.value;
 
-        logger.log('Matching by request header', httpReqHeader, '=', header.value, renderMatchType(result));
+        logger.info('Matching by request header', httpReqHeader, '=', header.value, renderMatchType(result));
         return result;
     }
 

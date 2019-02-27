@@ -39,8 +39,8 @@ function loadConfigFromModule(filePath, cwd) {
     } catch (e) {
         return;
     }
-    logger.log('Loading Configuration:', searchPath.white);
-    logger.log('WARNING'.red, 'All command line arguments will be ignored');
+    logger.info('Loading Configuration:', searchPath.white);
+    logger.info('WARNING'.red, 'All command line arguments will be ignored');
     var processDefaultOptionsFn = addDefaultValue(loadedArgs);
     Object.keys(yargsConfigOptions).forEach(processDefaultOptionsFn);
     return loadedArgs;
@@ -56,8 +56,8 @@ function getPathsFromCwd() {
 }
 
 function loadCommandlineArguments() {
-    logger.log('No configuration files found');
-    logger.log('Loading configuration from CLI');
+    logger.info('No configuration files found');
+    logger.info('Loading configuration from CLI');
     return argv
         .usage('Usage: \n  ./drakov -f <path to blueprint> [-p <server port|3000>]' +
         '\nExactly one of -f or -m is requred' +

@@ -186,7 +186,7 @@ describe('parseContracts', () => {
                     };
 
                     parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
-                    const log = sinon.spy(logger, 'log');
+                    const log = sinon.spy(logger, 'info');
 
                     await contracts.parseContracts(mapping);
 

@@ -25,7 +25,7 @@ exports.debug = function (...args) {
     }
 };
 
-exports.log = function (...args) {
+exports.info = function (...args) {
     if (logLevel >= levels.INFO) {
         console.log('[INFO ]  '.white, args.join(' '));
     }

@@ -10,6 +10,6 @@ exports.getBody = function(req, res, next) {
 };
 
 exports.logger = function(req, res, next) {
-    logger.log(req.method.green, req.url.yellow);
+    logger.info(req.method.green, req.url.yellow);
     next();
 };

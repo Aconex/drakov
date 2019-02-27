@@ -287,9 +287,7 @@ If you have any ideas or questions you are welcome to post an issue.
 * We prefer readability over compact code
 
 ### Logging in your code
-* Include the `lib/logger` module and use `logger.log()`, this allows your logging be properly disabled in Drakov's stealth mode
-* Always have a type qualifier in square brackets in from of your message in white, `logger.log('[TYPE]'.white`, 'Something is happening');`
-* We don't have any guidelines for how to log, except that you should have your type a different colour from your actual message (better logging is in our roadmap)
+* Include the `lib/logger` module. This includes a function for each of the 4 standard log levels. Levels 
 
 ### Functionality that adds CLI arguments
 * Make sure you add the new argument property to the `yargsConfigOptions` object in the [arguments module](https://github.com/Aconex/drakov/blob/master/lib/arguments.js#L3)

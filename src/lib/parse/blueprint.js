@@ -18,7 +18,7 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
         var options = { type: 'ast' };
         drafter.parse(data, options, function(err: Error, result: Blueprint) {
             if (err) {
-                logger.log(err);
+                logger.info(err);
                 return cb(err);
             }
 

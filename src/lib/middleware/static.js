@@ -16,7 +16,7 @@ var setupStaticRoute = function(app, route) {
     } else {
         app.use(express.static(resolvedPath));
     }
-    logger.log(message);
+    logger.info(message);
 };
 
 var splitPathValues = function(pathValue, pathDelimiter) {
