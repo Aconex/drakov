@@ -1,6 +1,6 @@
 
 {
-    "contract-scenario-validation.apib": ["../scenarios"],
-    "contract-scenario-validation2.apib": ["../scenarios2"]
+    "contract-scenario-validation.apib": ["../scenarios/validation"],
+    "contract-scenario-validation2.apib": ["../scenarios/validation2"]
 
 }

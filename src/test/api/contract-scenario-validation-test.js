@@ -4,7 +4,7 @@ const request = helper.getRequest();
 describe('Contract Fixture Validation', () => {
     describe('GIVEN drakov is run in non-validation mode', () => {
         before((done) => {
-            helper.drakov.run({ sourceFiles: 'src/test/example/scenarios/contract-scenario-validation.apib' }, done);
+            helper.drakov.run({ sourceFiles: 'src/test/example/scenarios/validation/contract-scenario-validation.apib' }, done);
         });
 
         after((done) => {

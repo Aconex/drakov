@@ -2,20 +2,28 @@ var content = require('./content');
 var queryComparator = require('./query-comparator');
 var route = require('./route');
 
-var filterRequestHeader = function(req, ignoreHeaders) {
-    return function(handler) {
+var filterRequestHeader = function (req, ignoreHeaders) {
+    return function (handler) {
         return content.matchesHeader(req, handler.request, ignoreHeaders);
     };
 };
 
 function isJsonContent(req) {
-    if(req && req.headers) {
+    if (req && req.headers) {
         return /json/i.test(req.headers['content-type']);
     }
     return false;
 }
 
-exports.filterHandlers = function(req, handlers, ignoreHeaders) {
+function requestHeaderCount(handler) {
+    if (!handler.request || !handler.request.headers) {
+        return 0;
+    }
+
+    return handler.request.headers.length;
+}
+
+exports.filterHandlers = function (req, handlers, ignoreHeaders) {
     if (handlers) {
         var filteredHandlers;
 
@@ -30,8 +38,12 @@ exports.filterHandlers = function(req, handlers, ignoreHeaders) {
         }
 
         filteredHandlers = handlers.filter(filterRequestHeader(req, ignoreHeaders));
+        
+        // prioritize handlers that have more headers where all headers match. 
+        // this allows us to safely ignore extra headers being sent
+        filteredHandlers.sort((handler1, handler2) => requestHeaderCount(handler2) - requestHeaderCount(handler1));
 
-        if(!filteredHandlers.length) {
+        if (!filteredHandlers.length) {
             return null;
         }
 
@@ -40,10 +52,10 @@ exports.filterHandlers = function(req, handlers, ignoreHeaders) {
         });
 
         if (matchRequestBodyHandlers.length > 0) {
-            return addHeaderForSucessfulMatchingStrategy(matchRequestBodyHandlers[0], 'matches-request-body');
+            return addHeaderForSuccessfulMatchingStrategy(matchRequestBodyHandlers[0], 'matches-request-body');
         }
 
-        if(isJsonContent(req)) {
+        if (isJsonContent(req)) {
 
             let validatedHandlers = filteredHandlers.map((handler) => {
                 let result = content.matchesSchema(req, handler.request);
@@ -54,19 +66,19 @@ exports.filterHandlers = function(req, handlers, ignoreHeaders) {
                 };
             });
 
-            var matchSchemaHandlers = validatedHandlers.filter(function(handler) {
+            var matchSchemaHandlers = validatedHandlers.filter(function (handler) {
                 return handler.result.valid;
             });
 
             if (matchSchemaHandlers.length > 0) {
-                return addHeaderForSucessfulMatchingStrategy(matchSchemaHandlers[0].handler, 'matches-request-schema');
+                return addHeaderForSuccessfulMatchingStrategy(matchSchemaHandlers[0].handler, 'matches-request-schema');
             }
 
-            var errorHandlers = validatedHandlers.filter(function(handler) {
+            var errorHandlers = validatedHandlers.filter(function (handler) {
                 return handler.result.niceErrors;
             });
 
-            if(errorHandlers.length > 0) {
+            if (errorHandlers.length > 0) {
                 return route.createErrorHandler(errorHandlers[0]);
             }
         }
@@ -75,8 +87,8 @@ exports.filterHandlers = function(req, handlers, ignoreHeaders) {
     return null;
 };
 
-function addHeaderForSucessfulMatchingStrategy(originalHandler, matchType) {
-    const header = {name: 'X-Matched-By', value: matchType};
+function addHeaderForSuccessfulMatchingStrategy(originalHandler, matchType) {
+    const header = { name: 'X-Matched-By', value: matchType };
     let handler = Object.assign({}, originalHandler);
     if (handler.response.headers) {
         handler.response.headers.push(header);

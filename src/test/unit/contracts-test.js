@@ -355,27 +355,60 @@ describe('removeInvalidFixtures', () => {
                 }
 
             }
+        },
+        'GET': {
+            request: {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+            },
+            response: {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "required": ["question", "choices"],
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "type": "string"
+                    },
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 2
+                    }
+                }
+            }
         }
     };
 
     describe('GIVEN the fixture body matches the contract schema', () => {
-        it('WHEN calling removeInvalidFixtures THEN all actions return', () => {
+        it('WHEN calling removeInvalidFixtures THEN all actions return for both GET and POST', () => {
             const fixtureBody = '{\n"question": "Why?",\n"choices": ["Why not?", "BECAUSE!"]\n}';
-            const action: BlueprintAction = {
+            const postAction: BlueprintAction = {
                 method: 'POST',
                 examples: [{
                     requests: [{ body: fixtureBody }],
                     responses: [{ body: fixtureBody }]
                 }],
             };
+
+            const getAction: BlueprintAction = {
+                method: 'GET',
+                examples: [{
+                    requests: [{ headers: ""}],
+                    responses: [{ body: fixtureBody}]
+                }],
+            };
             const resource: BlueprintResource = {
                 uriTemplate: 'final-url',
-                actions: [action]
+                actions: [postAction, getAction]
             };
 
             matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].response)
                 .returns({ valid: true });
             matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].request)
+                .returns({ valid: true });
+
+            matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['GET'].request)
                 .returns({ valid: true });
 
             assert.deepEqual(contracts.removeInvalidFixtures(resource, contractActions), resource);
@@ -434,7 +467,7 @@ describe('removeInvalidFixtures', () => {
             };
 
             const unmatchedAction: BlueprintAction = {
-                method: 'GET',
+                method: 'DELETE',
                 examples: [{
                     requests: [],
                     responses: [{ body: fixtureBody }]
@@ -455,7 +488,7 @@ describe('removeInvalidFixtures', () => {
             matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].request)
                 .returns({ valid: true });
             assert.deepEqual(contracts.removeInvalidFixtures(resource, contractActions), expectedResource);
-            assert.equal(errorSpy.getCall(0).args[0], 'GET final-url is not in the contract');
+            assert.equal(errorSpy.getCall(0).args[0], 'DELETE final-url is not in the contract');
         });
 
         describe('GIVEN a fixture body is not valid JSON', () => {
@@ -484,14 +517,14 @@ describe('removeInvalidFixtures', () => {
             });
         });
 
-    
+
     });
 
     describe('GIVEN a contract that expects an empty response', () => {
         const action: BlueprintAction = {
             method: 'POST',
             examples: [{
-                requests: [{ body:'{}'}],
+                requests: [{ body: '{}' }],
                 responses: [{ body: '' }]
             }],
         };
@@ -514,6 +547,55 @@ describe('removeInvalidFixtures', () => {
             matchWithSchemaStub.returns({ valid: true });
             assert.deepEqual(contracts.removeInvalidFixtures(resource, emptyResponseAction), resource);
 
+        });
+    });
+
+    describe('GIVEN a contract that expects a response but there is none', () => {
+        const action: BlueprintAction = {
+            method: 'POST',
+            examples: [{
+                requests: [{ body: '{}' }],
+                responses: [{ body: '' }]
+            }],
+        };
+
+        const resource: BlueprintResource = {
+            uriTemplate: 'final-url',
+            actions: [action]
+        };
+
+        const expectedResource: BlueprintResource = {
+            uriTemplate: 'final-url',
+            actions: []
+        };
+
+        it('WHEN calling with an empty response THEN it removes the action and logs a helpful message', () => {
+            matchWithSchemaStub.returns({ valid: true });
+            assert.deepEqual(contracts.removeInvalidFixtures(resource, contractActions), expectedResource);
+            assert.equal(errorSpy.getCall(0).args[0], 'POST final-url example[0] response[0] failed validation: \n\tNo response body found')
+        });
+    });
+
+    describe('GIVEN a contract that has more than one request or response per example', () => {
+        const action: BlueprintAction = {
+            method: 'POST',
+            examples: [{
+                requests: [{ body: '{}' }, { body: '{}' }],
+                responses: [{ body: '' }]
+            }],
+        };
+
+        const resource: BlueprintResource = {
+            uriTemplate: 'final-url',
+            actions: [action]
+        };
+
+
+        it('WHEN calling it THEN it throws an error', () => {
+            matchWithSchemaStub.returns({ valid: true });
+            assert.throws(() => contracts.removeInvalidFixtures(resource, contractActions),
+                //$FlowFixMe        
+                { message: 'Found more than one request or response for example 0. Requests and responses expected in pairs.' });
         });
     });
 });

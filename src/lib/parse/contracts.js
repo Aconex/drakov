@@ -243,12 +243,16 @@ type BodyMetadata = {
 const validateBody = (bodyDescriptor: BodyDescriptor, schema: JsonSchema, bodyType: 'request' | 'response', metadata: BodyMetadata): SchemaValidationResult => {
     let result: SchemaValidationResult;
     try {
-        // the validator throws an error with empty contract  
-        // this validates when you have an empty body in this case
-        if (!bodyDescriptor.body && !schema) {
-            result = { valid: true, niceErrors: [] };
+        // the validator throws an error with empty scenario body  
+        // this validates this case
+        if (!bodyDescriptor.body) {
+            if (schema) {
+                result = { valid: false, niceErrors: ["No response body found"] };
+            } else {
+                result = { valid: true, niceErrors: [] };
+            }
         } else {
-            const parsedBody = JSON.parse(bodyDescriptor.body || "");
+            const parsedBody = JSON.parse(bodyDescriptor.body);
             result = schemaValidator.matchWithSchema(parsedBody, schema);
         }
         if (!result.valid) {
@@ -279,10 +283,13 @@ const removeInvalidFixtures = (resource: BlueprintResource, contractActions: ?Ac
         action.examples.forEach((example, exampleIndex) => {
             const validRequests: Array<BodyDescriptor> = [];
             const validResponses: Array<BodyDescriptor> = [];
+
+            //expect requests and responses in pairs - otherwise it is hard to reason about author's expectations
+            if (example.requests.length > 1 ||  example.responses.length > 1) {
+                throw new Error(`Found more than one request or response for example ${exampleIndex}. Requests and responses expected in pairs.`);
+            }
+
             if (action.method === 'POST' || action.method === 'PUT') {
-                if (example.requests.length !== example.responses.length) {
-                    throw new Error('Number of requests and responses are not equal');
-                }
 
                 for (let requestIndex = 0; requestIndex < example.requests.length; requestIndex++) {
                     const metadata: BodyMetadata = { method: action.method, url: resource.uriTemplate, exampleIndex, bodyIndex: requestIndex };
@@ -305,6 +312,10 @@ const removeInvalidFixtures = (resource: BlueprintResource, contractActions: ?Ac
                     const result = validateBody(response, contractAction.response, 'response', metadata);
 
                     if (result.valid) {
+                        if(example.requests[responseIndex]) { 
+                            // to keep header + meta-data
+                            validRequests.push(example.requests[responseIndex]);  
+                        }
                         validResponses.push(response);
                     }
                 });
