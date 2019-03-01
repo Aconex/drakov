@@ -22,7 +22,7 @@ describe('Contract Scenarios Headers Validation', () => {
                 });
             });
 
-            describe('WHEN calling without a header', () => {
+            describe('WHEN calling with a header', () => {
                 it('THEN it returns the correct response ', (done) => {
                     request.get('/headers')
                     .set('id', 'header')
