@@ -4,3 +4,4 @@ flow-typed/
 atlassian-ide-plugin.xml
 .vscode
 build/
+.DS_Store

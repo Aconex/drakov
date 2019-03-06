@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+/***
+ * Entry for debugging purposes
+ *
+ */
+
+process.title = 'drakov';
+
+require('flow-remove-types/register');
+var drakov = require('./lib/drakov');
+var watcher = require('./lib/watcher');
+var args = require('./lib/arguments');
+
+var argv = args.getArgv();
+drakov.run(argv, function() {
+    watcher(argv);
+});
