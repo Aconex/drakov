@@ -5,7 +5,7 @@ const drafter = require('drafter');
 
 const endpointSorter = require('../middleware/endpoint-sorter');
 const urlParser = require('./url');
-const logger = require('../logger');
+const logger = require('../logging/logger');
 const schemaValidator = require('../spec-schema');
 const http = require('./httpFetch');
 

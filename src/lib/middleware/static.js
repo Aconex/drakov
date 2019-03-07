@@ -2,7 +2,7 @@ var path = require('path');
 var express = require('express');
 require('colors');
 
-var logger = require('../logger');
+var logger = require('../logging/logger');
 
 // route object example
 // { path: '/path/to/static/files', mount: '/www/mount/path' }

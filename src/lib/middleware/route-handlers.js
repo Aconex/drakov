@@ -1,7 +1,7 @@
 var pathToRegexp = require('path-to-regexp');
 var buildRouteMap = require('./route-map');
 var filter = require('../handler-filter');
-var logger = require('../logger');
+var logger = require('../logging/logger');
 
 module.exports = function(options, cb) {
     buildRouteMap(options, function(err, routeMap) {

@@ -2,7 +2,7 @@ var express = require('express');
 var path = require('path');
 require('colors');
 
-var logger = require('./logger');
+var logger = require('./logging/logger');
 var requestUtils = require('./middleware/request');
 var setup = require('./setup');
 var middleware = require('./middleware');

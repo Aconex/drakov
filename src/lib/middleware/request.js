@@ -1,5 +1,5 @@
 require('colors');
-var logger = require('../logger');
+var logger = require('../logging/logger');
 
 exports.getBody = function(req, res, next) {
     req.body = '';

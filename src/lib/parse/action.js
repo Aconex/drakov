@@ -1,5 +1,5 @@
 var route = require('../route');
-var logger = require('../logger');
+var logger = require('../logging/logger');
 
 module.exports = function(parsedUrl, action, routeMap) {
     var key = parsedUrl.url;

@@ -2,7 +2,7 @@ var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var httpShutdown = require('http-shutdown');
-const logger = require('./logger');
+const logger = require('./logging/logger');
 
 var version = require('../../package.json').version;
 

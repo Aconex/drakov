@@ -1,4 +1,4 @@
-var logger = require('./logger');
+var logger = require('./logging/logger');
 var contentTypeChecker = require('./content-type');
 
 exports.notFoundHandler = function(argv) {

@@ -1,7 +1,7 @@
 var chokidar = require('chokidar');
 require('colors');
 
-const logger = require('./logger');
+const logger = require('./logging/logger');
 var drakov = require('./drakov');
 
 // Save these for replay later

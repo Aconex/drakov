@@ -1,7 +1,7 @@
 var path = require('path');
 var argv = require('yargs');
 
-var logger = require('../logger');
+var logger = require('../logging/logger');
 var yargsConfigOptions = require('./arguments');
 
 var RC_FILE = '.drakovrc';

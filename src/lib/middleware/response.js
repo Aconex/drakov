@@ -1,5 +1,5 @@
 require('colors');
-var logger = require('../logger');
+var logger = require('../logging/logger');
 
 exports.delayedResponse = function(delay){
     return function(req, res, next){

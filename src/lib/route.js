@@ -1,4 +1,4 @@
-var logger = require('./logger');
+var logger = require('./logging/logger');
 var specSchema = require('./spec-schema');
 
 var buildResponseBody = function(specBody){

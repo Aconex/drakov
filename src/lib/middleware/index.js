@@ -3,7 +3,7 @@ const process = require('process');
 var routeHandlers = require('./route-handlers');
 var responseUtils = require('./response');
 var staticMiddleware = require('./static');
-const logger = require('../logger');
+const logger = require('../logging/logger');
 const contracts = require('../parse/contracts');
 
 var bootstrapMiddleware = function (app, argv) {

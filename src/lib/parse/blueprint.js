@@ -8,7 +8,7 @@ var urlParser = require('./url');
 var parseParameters = require('./parameters');
 var parseAction = require('./action');
 let contracts = require('./contracts');
-var logger = require('../logger');
+var logger = require('../logging/logger');
 var autoOptionsAction = require('../json/auto-options-action.json');
 import type {Actions, Blueprint, BlueprintResource, Contract, Resources} from '../parse/contracts';
 
@@ -18,7 +18,7 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
         var options = { type: 'ast' };
         drafter.parse(data, options, function(err: Error, result: Blueprint) {
             if (err) {
-                logger.info(err);
+                logger.info(err.message);
                 return cb(err);
             }
 

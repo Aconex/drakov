@@ -6,7 +6,7 @@ const drafter = require('drafter');
 const http = require('../../lib/parse/httpFetch');
 
 const urlParser = require('../../lib/parse/url');
-const logger = require('../../lib/logger');
+const logger = require('../../lib/logging/logger');
 const schemaValidator = require('../../lib/spec-schema');
 const contracts = require('../../lib/parse/contracts');
 

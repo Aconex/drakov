@@ -1,4 +1,4 @@
-const logger = require('../logger')
+const logger = require('../logging/logger')
 module.exports = {
     sourceFiles: {
         alias: 'f',
