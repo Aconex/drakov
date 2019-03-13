@@ -1,40 +1,39 @@
 // @flow
-/* eslint-disable no-global-assign */
+/* eslint-disable no-console */
 import type {Logger} from "./types";
-const util = require('util');
 
-// GCS logging needs this defined on the global object or else it uses a shim that breaks drafter :(
-// $FlowFixMe
-TextEncoder = new util.TextEncoder();
+// GCS Levels
+type Level =  "ERROR" | "WARNING" | "INFO" | "DEBUG";
 
-const {Entry, Logging} = require("@google-cloud/logging");
+function GcsLogger(serviceName: string): Logger {
 
-const projectId = "fubotv-infra";
-
-function GcsLogger(logName: string): Logger {
-
-    const log = new Logging({projectId})
-        .log(logName);
-
-    const makeEntry = (message: string): Entry => {
-        return log.entry({}, message)
+    const serviceContext = {
+        service: serviceName,
+        version: process.env.VERSION || 'unknown',
     };
 
-    this.debug = (message: string) => {
-        log.debug(makeEntry(message))
-            .catch()
+    const makeEntry: (string, Level) => string = (message, severity) => {
+        return JSON.stringify({
+            message,
+            severity,
+            serviceContext,
+        })
     };
 
-    this.info = (message: string) => {
-        log.info(makeEntry(message))
+    this.debug = (message) => {
+        console.log(makeEntry(message, "DEBUG"));
     };
 
-    this.warn = (message: string) => {
-        log.warning(makeEntry(message))
+    this.info = (message) => {
+        console.log(makeEntry(message, "INFO"));
     };
 
-    this.error = (message: string) => {
-        log.critical(makeEntry(message))
+    this.warn = (message) => {
+        console.log(makeEntry(message, "WARNING"));
+    };
+
+    this.error = (message) => {
+        console.error(makeEntry(message, "ERROR"));
     };
 
     return this;

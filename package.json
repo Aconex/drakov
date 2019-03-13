@@ -40,7 +40,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@google-cloud/logging": "^4.4.0",
     "api-blueprint-validator-module": "^1.2.2",
     "async": "^2.1.4",
     "chokidar": "^1.6.1",
