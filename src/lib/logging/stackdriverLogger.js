@@ -5,14 +5,15 @@ import type {Logger} from "./types";
 // GCS Levels
 type Level =  "ERROR" | "WARNING" | "INFO" | "DEBUG";
 
-function GcsLogger(serviceName: string): Logger {
+function StackdriverLogger(serviceName: string): Logger {
 
     const serviceContext = {
         service: serviceName,
         version: process.env.VERSION || 'unknown',
     };
 
-    const makeEntry: (string, Level) => string = (message, severity) => {
+    const formatAsStackdriverPayload: (string, Level) => string = (message, severity) => {
+        //required payload shape (including serviceContext)
         return JSON.stringify({
             message,
             severity,
@@ -21,22 +22,22 @@ function GcsLogger(serviceName: string): Logger {
     };
 
     this.debug = (message) => {
-        console.log(makeEntry(message, "DEBUG"));
+        console.log(formatAsStackdriverPayload(message, "DEBUG"));
     };
 
     this.info = (message) => {
-        console.log(makeEntry(message, "INFO"));
+        console.log(formatAsStackdriverPayload(message, "INFO"));
     };
 
     this.warn = (message) => {
-        console.log(makeEntry(message, "WARNING"));
+        console.log(formatAsStackdriverPayload(message, "WARNING"));
     };
 
     this.error = (message) => {
-        console.error(makeEntry(message, "ERROR"));
+        console.error(formatAsStackdriverPayload(message, "ERROR"));
     };
 
     return this;
 }
 
-module.exports = {GcsLogger};
+module.exports = {StackdriverLogger: StackdriverLogger};

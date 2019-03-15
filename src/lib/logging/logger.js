@@ -2,12 +2,12 @@
 import type {Logger} from "./types";
 
 const {consoleLogger} = require("./consoleLogger");
-const {GcsLogger} = require( "./gcsLogger");
+const {StackdriverLogger} = require( "./stackdriverLogger");
 
-const logName = process.env.GCS_LOG_NAME;
+const serviceName = process.env.STACKDRIVER_SERVICE_NAME;
 
 // Choose logging strategy
-const log: Logger = logName ? new GcsLogger(logName) : consoleLogger;
+const log: Logger = serviceName ? new StackdriverLogger(serviceName) : consoleLogger;
 
 const levels: {[key: string]: number} = {
     NONE: 0,

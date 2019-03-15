@@ -17,6 +17,9 @@ be ignored for matching.
 - When the header `reject-unknown-props: true` is added to a request, any properties not specified in the spec will cause the request to be rejected
 - When request validation fails, a message listing issues will be returned in the response body
 
+## Logging
+To enable stackdriver logging, provide a service name as an env variable `STACKDRIVER_SERVICE_NAME`; otherwise, drakov will default to plain text console logging.
+
 ### Using fixtures with contracts
 
 The server now has an additional running mode where it will read a json config mapping contract
