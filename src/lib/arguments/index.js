@@ -60,7 +60,7 @@ function loadCommandlineArguments() {
     logger.info('Loading configuration from CLI');
     return argv
         .usage('Usage: \n  ./drakov -f <path to blueprint> [-p <server port|3000>]' +
-        '\nExactly one of -f or -m is requred' +
+        '\nExactly one of -f or -m is required' +
         '\n\nExample: \n  ' + './drakov -f ./*.md -p 3000')
         .options(yargsConfigOptions)
         .check((argv) => {
@@ -73,6 +73,7 @@ function loadCommandlineArguments() {
             }
         })
         .conflicts('stealthmode', 'debugMode')
+        .conflicts('diableCORS', 'permissiveCORS')
         .wrap(80)
         .argv;
 }

@@ -13,9 +13,9 @@ var bootstrapMiddleware = function (app, argv) {
     if (argv.staticPaths) {
         staticMiddleware.setupRoutes(app, argv.staticPaths, argv.pathDelimiter);
     }
-    app.use(responseUtils.corsHeaders(argv.disableCORS, argv.header));
+    app.use(responseUtils.corsHeaders(argv.disableCORS, argv.header, argv.permissiveCORS));
     app.use(responseUtils.delayedResponse(argv.delay));
-    app.use(responseUtils.allowMethods(argv.method));
+    app.use(responseUtils.allowMethods(argv.method, argv.permissiveCORS));
 };
 
 exports.init = function (app, argv, cb) {

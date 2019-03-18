@@ -34,6 +34,9 @@ module.exports = {
     disableCORS: {
         description: 'Disable CORS header'
     },
+    permissiveCORS: {
+        description: 'Allows all requested headers and methods from request'
+    },
     sslKeyFile: {
         description: 'Key File for SSL connections'
     },
