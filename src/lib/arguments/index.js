@@ -73,7 +73,7 @@ function loadCommandlineArguments() {
             }
         })
         .conflicts('stealthmode', 'debugMode')
-        .conflicts('diableCORS', 'permissiveCORS')
+        .conflicts('disableCORS', 'permissiveCORS')
         .wrap(80)
         .argv;
 }

@@ -121,7 +121,10 @@ describe('parseContracts', () => {
             const drafterStub = sinon.stub(drafter, 'parseSync');
             fetchStub.withArgs(myContractUrl, sinon.match.object).returns(contractContents);
             drafterStub.withArgs(contractContents).returns(parsedBlueprint);
-            await contracts.parseContracts(mappingWithUrl);
+            const actualContracts = await contracts.parseContracts(mappingWithUrl);
+
+            //if we get this then the fetch stub was called successfully
+            assert.ok(actualContracts);
         });
     });
     describe('GIVEN the file exists', () => {
