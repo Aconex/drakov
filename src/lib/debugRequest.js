@@ -36,6 +36,15 @@ exports.notFoundHandler = function(argv) {
                 res.status(404).json(debugRequest);
                 return;
             }
+            const httpRequest = {
+                "requestMethod": req.method,
+                "requestUrl": req.url,
+                "status": 404,
+                "headers": req.headers
+            };
+
+            let message =  req.method.green + ' ' + req.url.yellow;
+            logger.logHttpRequest(message, httpRequest);
             res.status(404).send('Endpoint not found');
         }
     };

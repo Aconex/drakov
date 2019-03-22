@@ -10,7 +10,7 @@
     describe('Content', function () {
 
         before(function (done) {
-           helper.run({stealthmode: false}, function () {
+           helper.run({stealthmode: false, logLevel: 'DEBUG'}, function () {
                helper.stop(done);
            });
         });
@@ -290,9 +290,9 @@
                 });
 
                 it('should log to console that schema is not matched', function () {
-                    var logOut;
+                    var logOut = "";
                     var hook = stdoutHook.setup(function (string) {
-                        logOut = string;
+                        logOut += string;
                     });
 
                     content.matchesSchema(httpReq, specReq);

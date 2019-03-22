@@ -22,9 +22,16 @@ exports.getRouteHandlers = function (parsedUrl, action) {
             response: example.responses[0],
             request: 'undefined' === typeof example.requests[0] ? null : specSchema.validateAndParseSchema(example.requests[0]),
             execute: function (req, res) {
+                const httpRequest = {
+                    "requestMethod": req.method,
+                    "requestUrl": req.url,
+                    "status": +this.response.name,
+                    "headers": req.headers
+                };
 
-                logger.info( action.method.green, parsedUrl.uriTemplate.yellow,
-                    (this.request && this.request.description ? this.request.description : action.name).blue);
+                const message = [action.method.green, parsedUrl.uriTemplate.yellow,
+                    (this.request && this.request.description ? this.request.description : action.name).blue].join(' ');
+                logger.logHttpRequest(message, httpRequest);
 
                 this.response.headers.forEach(function (header) {
                     res.set(header.name, header.value);
@@ -41,9 +48,16 @@ exports.getRouteHandlers = function (parsedUrl, action) {
 exports.createErrorHandler = function(validatedHandler) {
 
     var execute = function (req, res) {
-        logger.info(this.action.method.green, this.parsedUrl.uriTemplate.yellow,
-            (this.request && this.request.description ? this.request.description : this.action.name).blue);
+        const httpRequest = {
+            "requestMethod": req.method,
+            "requestUrl": req.url,
+            "status": 400,
+            "headers": req.headers
+        };
 
+        const message = [this.action.method.green, this.parsedUrl.uriTemplate.yellow,
+            (this.request && this.request.description ? this.request.description : this.action.name).blue].join(' ');
+        logger.logHttpRequest(message, httpRequest);
         this.response.headers.forEach(function (header) {
             res.set(header.name, header.value);
         });

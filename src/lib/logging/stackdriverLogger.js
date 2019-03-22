@@ -1,24 +1,27 @@
 // @flow
 /* eslint-disable no-console */
-import type {Logger} from "./types";
+import type {HttpRequest, Logger} from "./types";
 
 // GCS Levels
-type Level =  "ERROR" | "WARNING" | "INFO" | "DEBUG";
+type Level = "ERROR" | "WARNING" | "INFO" | "DEBUG";
 
 function StackdriverLogger(serviceName: string): Logger {
 
-    const serviceContext = {
-        service: serviceName,
-        version: process.env.VERSION || 'unknown',
-    };
+    const version = process.env.VERSION || 'unknown';
 
-    const formatAsStackdriverPayload: (string, Level) => string = (message, severity) => {
-        //required payload shape (including serviceContext)
-        return JSON.stringify({
+    const formatAsStackdriverPayload: (string, Level, ?HttpRequest) => string = (message, severity, httpRequest) => {
+        //required payload shape for stackdriver
+        let payload: any = {
+            logName: serviceName,
             message,
             severity,
-            serviceContext,
-        })
+            version,
+        };
+
+        if (httpRequest) {
+            payload.httpRequest = httpRequest;
+        }
+        return JSON.stringify(payload);
     };
 
     this.debug = (message) => {
@@ -35,6 +38,10 @@ function StackdriverLogger(serviceName: string): Logger {
 
     this.error = (message) => {
         console.error(formatAsStackdriverPayload(message, "ERROR"));
+    };
+
+    this.logHttpRequest = (message: string, httpRequest: HttpRequest) => {
+        console.log(formatAsStackdriverPayload(message, "INFO", httpRequest))
     };
 
     return this;

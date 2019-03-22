@@ -19,6 +19,10 @@ const consoleLogger: Logger = {
 
     error: (message) => {
         console.error(colors.red('[ERROR]  '), message);
+    },
+
+    logHttpRequest: (message, httpRequest) => {
+        console.log(colors.white('[INFO ]  '), colors.bold(httpRequest.status + " ") + message + ' ' + JSON.stringify(httpRequest));
     }
 };
 

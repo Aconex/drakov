@@ -1,5 +1,5 @@
 // @flow
-import type {Logger} from "./types";
+import type {HttpRequest, Logger} from "./types";
 
 const {consoleLogger} = require("./consoleLogger");
 const {StackdriverLogger} = require( "./stackdriverLogger");
@@ -22,34 +22,39 @@ exports.levels = Object.keys(levels);
 
 let logLevel = levels.INFO;
 
-exports.setLogLevel = function (level: string) {
+exports.setLogLevel = (level: string) => {
     const newLevel = levels[level];
     if (newLevel !== undefined) {
         logLevel = newLevel;
     }
 };
 
-exports.debug = function (...args: Array<string>) {
+exports.debug = (...args: Array<string>) => {
     if (logLevel >= levels.DEBUG) {
         log.debug(args.join(' '));
     }
 };
 
-exports.info = function (...args: Array<string>) {
+exports.info = (...args: Array<string>) => {
     if (logLevel >= levels.INFO) {
         log.info(args.join(' '));
     }
 };
 
-exports.warn = function (...args: Array<string>) {
+exports.warn = (...args: Array<string>) => {
     if (logLevel >= levels.WARN) {
         log.warn(args.join(' '));
     }
 };
 
-exports.error = function (...args: Array<string>) {
+exports.error = (...args: Array<string>) => {
     if (logLevel >= levels.ERROR) {
         log.error(args.join(' '));
     }
 };
 
+exports.logHttpRequest = (message: string, httpRequest: HttpRequest) => {
+    if (logLevel >= levels.INFO) {
+        log.logHttpRequest(message, httpRequest);
+    }
+};
