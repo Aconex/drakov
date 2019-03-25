@@ -26,7 +26,8 @@ exports.getRouteHandlers = function (parsedUrl, action) {
                     "requestMethod": req.method,
                     "requestUrl": req.url,
                     "status": +this.response.name,
-                    "headers": req.headers
+                    "headers": req.headers,
+                    "userAgent": req.headers && req.headers["user-agent"],
                 };
 
                 const message = [action.method.green, parsedUrl.uriTemplate.yellow,
@@ -52,7 +53,8 @@ exports.createErrorHandler = function(validatedHandler) {
             "requestMethod": req.method,
             "requestUrl": req.url,
             "status": 400,
-            "headers": req.headers
+            "headers": req.headers,
+            "userAgent": req.headers && req.headers["user-agent"],
         };
 
         const message = [this.action.method.green, this.parsedUrl.uriTemplate.yellow,

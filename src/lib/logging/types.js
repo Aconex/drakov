@@ -4,7 +4,8 @@ export type HttpRequest = {
     "requestMethod": string,
     "requestUrl": string,
     "status": number,
-    "headers": {[string]: string}
+    "headers": {[string]: string},
+    "userAgent": string
 }
 
 export interface Logger {

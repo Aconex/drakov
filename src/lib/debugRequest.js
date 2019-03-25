@@ -40,7 +40,8 @@ exports.notFoundHandler = function(argv) {
                 "requestMethod": req.method,
                 "requestUrl": req.url,
                 "status": 404,
-                "headers": req.headers
+                "headers": req.headers,
+                "userAgent": req.headers && req.headers["user-agent"],
             };
 
             let message =  req.method.green + ' ' + req.url.yellow;
