@@ -33,11 +33,20 @@ type Verb = string;
 
 type ResourceSchemas = {
     request: ?JsonSchema,
-    response: ?JsonSchema
+    responses: Array<Response>
+};
+
+type Response = {
+    status: string,
+    schema: ?JsonSchema
 };
 
 type JsonSchema = any // any valid JSON-schema
 
+type BodyValidationResult = {
+    valid: boolean,
+    message: string
+};
 
 // structures for Fixtures and non-validated blueprints as returned by drafter
 type Warning = {
@@ -74,11 +83,13 @@ export type Example = {
 
 export type BodyDescriptor = {
     schema?: string,
-    body?: string
+    body?: string,
+    // name is what the apib parser calls the status code
+    name: string,
 };
 
 function isHttpPath(filePath: string): boolean {
-    return /^http?s:\/\//.test(filePath)
+    return /^https?:\/\//.test(filePath)
 }
 
 const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
@@ -147,7 +158,7 @@ const parseBlueprint = (rawContract: string, contractFilePath: string): Blueprin
         const formatWarning = (warning: Warning): string => {
             return `\t${warning.message}. See: "${rawContract.substring(warning.location[0].index, warning.location[0].index + warning.location[0].length - 1)}"`;
         }
-        logger.info(`Warnings for contract "${contractFilePath}":\n ${parsedContract.warnings.map(formatWarning).join('\n')}`);
+        logger.warn(`Warnings for contract "${contractFilePath}":\n ${parsedContract.warnings.map(formatWarning).join('\n')}`);
     }
 
     return parsedContract;
@@ -159,7 +170,7 @@ const mapBlueprintToResources = (blueprint: Blueprint): Resources => {
 
     blueprint.ast.resourceGroups.forEach(resourceGroup => {
         resourceGroup.resources.forEach(resourceExample => {
-            var url: string = urlParser.parse(resourceExample.uriTemplate).url;
+            let url: string = urlParser.parse(resourceExample.uriTemplate).url;
 
             const resource = resources[url] || {}
             resources[url] = resource;
@@ -217,12 +228,14 @@ const extractSchema = (action: BlueprintAction, url: string): ?ResourceSchemas =
         return;
     }
 
-    const request = example.requests[0] && example.requests[0];
-    const response = example.responses[0] && example.responses[0];
+    const request = example.requests && example.requests[0];
 
     return {
         request: getSchema(request),
-        response: getSchema(response)
+        responses: example.responses && example.responses.map(response => ({
+           status: response.name,
+           schema: getSchema(response)
+        }))
     };
 };
 
@@ -231,37 +244,31 @@ const getSchema = (body: BodyDescriptor): ?JsonSchema => {
 
     const validatedBody: BodyDescriptor = schemaValidator.validateAndParseSchema(body);
     return validatedBody.schema;
-}
-
-type BodyMetadata = {
-    method: string,
-    url: string,
-    exampleIndex: number,
-    bodyIndex: number
 };
 
-const validateBody = (bodyDescriptor: BodyDescriptor, schema: JsonSchema, bodyType: 'request' | 'response', metadata: BodyMetadata): SchemaValidationResult => {
-    let result: SchemaValidationResult;
+
+const validateBody = (fixtureBody?: BodyDescriptor, contractSchema: JsonSchema): BodyValidationResult => {
+    let result: BodyValidationResult;
     try {
         // the validator throws an error with empty scenario body  
         // this validates this case
-        if (!bodyDescriptor.body) {
-            if (schema) {
-                result = { valid: false, niceErrors: ["No response body found"] };
+        if (!fixtureBody || !fixtureBody.body) {
+            if (contractSchema) {
+                result = { valid: false, message: 'Contract has response schema, but fixture has no response body' };
             } else {
-                result = { valid: true, niceErrors: [] };
+                result = { valid: true, message: '' };
             }
         } else {
-            const parsedBody = JSON.parse(bodyDescriptor.body);
-            result = schemaValidator.matchWithSchema(parsedBody, schema);
-        }
-        if (!result.valid) {
-            logger.error(`${metadata.method} ${metadata.url} example[${metadata.exampleIndex}] ${bodyType}[${metadata.bodyIndex}] failed validation: \n\t${result.niceErrors.join('\n\t')}`);
+            const parsedBody = JSON.parse(fixtureBody.body);
+            const validated = schemaValidator.matchWithSchema(parsedBody, contractSchema);
+            result = {
+                valid: validated.valid,
+                message:  validated.niceErrors && `${validated.niceErrors.join('; ')}`,
+            }
         }
     } catch (e) {
         if (e.name === 'SyntaxError') {
-            result = { valid: false, niceErrors: [] };
-            logger.error(`${metadata.method} ${metadata.url} example[${metadata.exampleIndex}] ${bodyType}[${metadata.bodyIndex}] error parsing body\n\t${e.message}`);
+            result = { valid: false, message: `error parsing body\n\t${e.message}` };
         } else {
             throw e;
         }
@@ -269,78 +276,76 @@ const validateBody = (bodyDescriptor: BodyDescriptor, schema: JsonSchema, bodyTy
     return result;
 };
 const removeInvalidFixtures = (resource: BlueprintResource, contractActions: ?Actions): BlueprintResource => {
-    const validActions: Array<BlueprintAction> = []
+    const validActions: Array<BlueprintAction> = [];
 
-    resource.actions.forEach((action) => {
-        const contractAction = contractActions && contractActions[action.method];
+    resource.actions.forEach((fixtureAction) => {
+        const contractAction = contractActions && contractActions[fixtureAction.method];
         if (!contractAction) {
-            logger.error(`${action.method} ${resource.uriTemplate} is not in the contract`);
+            logger.error(`${fixtureAction.method} ${resource.uriTemplate} is not in the contract`);
             return;
         }
-        if (!action.examples) return;
+        if (!fixtureAction.examples || !fixtureAction.examples.length) {
+            logger.error(`${fixtureAction.method} ${resource.uriTemplate} has no examples in the contract`);
+            return;
+        }
         const validExamples: Array<Example> = [];
 
-        action.examples.forEach((example, exampleIndex) => {
-            const validRequests: Array<BodyDescriptor> = [];
-            const validResponses: Array<BodyDescriptor> = [];
+        fixtureAction.examples.forEach((example, exampleIndex) => {
 
-            //expect requests and responses in pairs - otherwise it is hard to reason about author's expectations
+            //enforce requests and responses in pairs - otherwise it is hard to reason about author's expectations
             if (example.requests.length > 1 ||  example.responses.length > 1) {
                 throw new Error(`Found more than one request or response for example ${exampleIndex}. Requests and responses expected in pairs.`);
             }
+            const fixtureRequest = example.requests[0];
+            const fixtureResponse = example.responses[0];
 
-            if (action.method === 'POST' || action.method === 'PUT') {
+            const requestValid = validateBody(fixtureRequest, contractAction.request);
 
-                for (let requestIndex = 0; requestIndex < example.requests.length; requestIndex++) {
-                    const metadata: BodyMetadata = { method: action.method, url: resource.uriTemplate, exampleIndex, bodyIndex: requestIndex };
-
-                    const request = example.requests[requestIndex];
-                    const requestResult = validateBody(request, contractAction.request, 'request', metadata);
-
-                    const response = example.responses[requestIndex];
-                    const responseResult = validateBody(response, contractAction.response, 'response', metadata);
-
-                    if (requestResult.valid && responseResult.valid) {
-                        validRequests.push(request);
-                        validResponses.push(response);
-                    }
-                }
-            } else {
-                // Validate GET and DELETE fixtures
-                example.responses.forEach((response, responseIndex) => {
-                    const metadata: BodyMetadata = { method: action.method, url: resource.uriTemplate, exampleIndex, bodyIndex: responseIndex };
-                    const result = validateBody(response, contractAction.response, 'response', metadata);
-
-                    if (result.valid) {
-                        if(example.requests[responseIndex]) { 
-                            // to keep header + meta-data
-                            validRequests.push(example.requests[responseIndex]);  
-                        }
-                        validResponses.push(response);
-                    }
-                });
+            if (!requestValid.valid) {
+                logger.error(`${fixtureAction.method} ${resource.uriTemplate} example[${exampleIndex}] request ${requestValid.message}`);
+                // if request isn't valid we don't care if responses are
+                return;
             }
-            if (validRequests.length || validResponses.length) {
+
+            let responseValid = false;
+            const errors = [];
+            for (let i = 0; i < contractAction.responses.length; i++) {
+                const contractResponse = contractAction.responses[i];
+                if (fixtureResponse.name !== contractResponse.status) {
+                    errors.push(`For contract response[${i}]: Http status code does not match: fixture=${fixtureResponse.name} contract=${contractResponse.status}`);
+                    continue;
+                }
+
+                const validationResult = validateBody(fixtureResponse, contractResponse.schema);
+                if (validationResult.valid) {
+                    responseValid = true;
+                    break;
+                }
+                errors.push(`For contract response[${i}]: ${validationResult.message}`);
+            }
+            if (responseValid) {
                 validExamples.push({
-                    requests: validRequests,
-                    responses: validResponses
+                    requests: [fixtureRequest],
+                    responses: [fixtureResponse]
                 });
+            } else {
+                logger.error(`${fixtureAction.method} ${resource.uriTemplate} example[${exampleIndex}] response matches no contract response:\n\t${errors.join('\n\t')}`);
             }
         });
 
         if (validExamples.length) {
-            const actionWithValidExamples: BlueprintAction = Object.assign({}, action, { examples: validExamples });
+            const actionWithValidExamples: BlueprintAction = Object.assign({}, fixtureAction, { examples: validExamples });
             validActions.push(actionWithValidExamples);
         } else {
-            logger.error(`${action.method} ${resource.uriTemplate} has no valid examples and has been excluded`);
+            logger.error(`${fixtureAction.method} ${resource.uriTemplate} has no valid examples and has been excluded`);
 
         }
     });
     return Object.assign({}, resource, { actions: validActions });
-}
+};
 
 module.exports = {
     removeInvalidFixtures,
     parseContracts,
     readContractFixtureMap,
-}
+};

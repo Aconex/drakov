@@ -14,6 +14,7 @@ import type {Actions, Blueprint, BlueprintResource, Contract, Resources} from '.
 
 module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, contract?: Contract) {
     return function(cb: (err: ?Error) => void) {
+        logger.info(`Loading file ${filePath}`)
         var data = fs.readFileSync(filePath, {encoding: 'utf8'});
         var options = { type: 'ast' };
         drafter.parse(data, options, function(err: Error, result: Blueprint) {
