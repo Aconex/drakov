@@ -1,6 +1,8 @@
+"use strict"
 var content = require('./content');
 var queryComparator = require('./query-comparator');
 var route = require('./route');
+var _ = require('lodash')
 
 var filterRequestHeader = function (req, ignoreHeaders) {
     return function (handler) {
@@ -38,8 +40,8 @@ exports.filterHandlers = function (req, handlers, ignoreHeaders) {
         }
 
         filteredHandlers = handlers.filter(filterRequestHeader(req, ignoreHeaders));
-        
-        // prioritize handlers that have more headers where all headers match. 
+
+        // prioritize handlers that have more headers where all headers match.
         // this allows us to safely ignore extra headers being sent
         filteredHandlers.sort((handler1, handler2) => requestHeaderCount(handler2) - requestHeaderCount(handler1));
 
@@ -89,11 +91,14 @@ exports.filterHandlers = function (req, handlers, ignoreHeaders) {
 
 function addHeaderForSuccessfulMatchingStrategy(originalHandler, matchType) {
     const header = { name: 'X-Matched-By', value: matchType };
-    let handler = Object.assign({}, originalHandler);
-    if (handler.response.headers) {
-        handler.response.headers.push(header);
-    } else {
-        handler.response.headers = [header];
+
+    let handler = _.cloneDeep(originalHandler)
+
+    if (!handler.response.headers) {
+        handler.response.headers = []
     }
-    return handler;
+
+    handler.response.headers.push(header)
+
+    return handler
 }

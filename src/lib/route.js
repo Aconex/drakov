@@ -16,7 +16,7 @@ var buildResponseBody = function(specBody){
 
 exports.getRouteHandlers = function (parsedUrl, action) {
      return action.examples.map(function (example) {
-        return {
+        let obj = {
             action: action,
             parsedUrl: parsedUrl,
             response: example.responses[0],
@@ -43,6 +43,9 @@ exports.getRouteHandlers = function (parsedUrl, action) {
 
             }
         };
+
+         obj.response = Object.freeze(obj.response)
+         return obj
     });
 };
 
