@@ -27,7 +27,7 @@ describe('Multipart Requests', function() {
             .send()
             .expect(400)
             .expect('Content-type', 'application/json; charset=utf-8')
-            .expect([ 'No handler matches after filtering required headers (including content-type)' ])
+            .expect([ 'Found URL but request doesn\'t contain required headers to match against any known fixture' ])
             .end(helper.endCb(done));
         });
     });

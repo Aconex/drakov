@@ -31,12 +31,12 @@ exports.filterHandlers = function (req, handlers, ignoreHeaders) {
 
         filteredHandlers = handlers.filter(filterRequestHeader(req, ignoreHeaders));
         if (filteredHandlers.length === 0) {
-            return route.createErrorHandler(handlers[0],["No handler matches after filtering required headers (including content-type)"])
+            return route.createErrorHandler(handlers[0],["Found URL but request doesn't contain required headers to match against any known fixture"])
         }
 
         filteredHandlers = urlQueryParams.filterForRequired(req, filteredHandlers);
         if (filteredHandlers.length === 0) {
-            return route.createErrorHandler(handlers[0],["No handler matches after filtering required query parameters"])
+            return route.createErrorHandler(handlers[0],["Found URL but request doesn't contain required query parameters to match against any known fixture"])
 
         }
 
