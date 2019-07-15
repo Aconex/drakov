@@ -1,9 +1,9 @@
 var helper = require('../lib');
 var request = helper.getRequest();
 
-describe('CORS', function(){
+describe('CORS', function () {
 
-    describe('/headers', function() {
+    describe('/headers', function () {
         before(function (done) {
             helper.drakov.run(null, done);
         });
@@ -19,7 +19,7 @@ describe('CORS', function(){
         });
     });
 
-    describe('/headers', function() {
+    describe('/headers', function () {
         before(function (done) {
             helper.drakov.run({disableCORS: true}, done);
         });
@@ -30,11 +30,11 @@ describe('CORS', function(){
 
         it('should NOT respond with CORS header', function (done) {
             request.get('/api/things')
-                .end(function(err, res){
-                    if (err){
+                .end(function (err, res) {
+                    if (err) {
                         done(err);
                     }
-                    if (res.header['access-control-allow-origin']){
+                    if (res.header['access-control-allow-origin']) {
                         done('Response should NOT include "Access-Control-Allow-Origin" header');
                     }
                     done();

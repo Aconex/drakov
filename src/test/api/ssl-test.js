@@ -1,7 +1,7 @@
 var helper = require('../lib');
 var request = helper.getRequest(true);
 
-describe('SSL', function(){
+describe('SSL', function () {
     before(function (done) {
         var drakovArgs = {
             sourceFiles: 'src/test/example/md/headers.md',

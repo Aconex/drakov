@@ -1,4 +1,3 @@
-
 //cache updated maps
 const schemaMap = new Map();
 
@@ -13,7 +12,7 @@ exports.getStrictSchema = (schema) => {
 };
 
 function setAdditionalPropsFalse(schema) {
-    let newSchema = Object.assign({}, schema, { additionalProperties: false });
+    let newSchema = Object.assign({}, schema, {additionalProperties: false});
 
     if (newSchema.properties) {
         newSchema.properties = Object.assign({}, newSchema.properties);

@@ -21,7 +21,7 @@ module.exports = {
         alias: 'd',
         description: 'Delimiter for mount point in static path (defaults is "=")'
     },
-    logLevel :{
+    logLevel: {
         alias: 'l',
         description: 'Log level. Overridden by stealthmode or debugMode',
         choices: logger.levels,

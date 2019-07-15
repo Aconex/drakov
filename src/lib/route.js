@@ -1,7 +1,7 @@
 var logger = require('./logging/logger');
 var specSchema = require('./spec-schema');
 
-var buildResponseBody = function(specBody){
+var buildResponseBody = function (specBody) {
     switch (typeof specBody) {
         case 'boolean':
         case 'number':
@@ -15,7 +15,7 @@ var buildResponseBody = function(specBody){
 };
 
 exports.getRouteHandlers = function (parsedUrl, action, queryParams) {
-     return action.examples.map(function (example) {
+    return action.examples.map(function (example) {
         let obj = {
             action: action,
             parsedUrl: parsedUrl,
@@ -45,12 +45,12 @@ exports.getRouteHandlers = function (parsedUrl, action, queryParams) {
             }
         };
 
-         obj.response = Object.freeze(obj.response)
-         return obj
+        obj.response = Object.freeze(obj.response)
+        return obj
     });
 };
 
-exports.createErrorHandler = function(handler, formattedErrors) {
+exports.createErrorHandler = function (handler, formattedErrors) {
 
     var execute = function (req, res) {
         const httpRequest = {

@@ -7,7 +7,7 @@ var logger = require('../logging/logger');
 // route object example
 // { path: '/path/to/static/files', mount: '/www/mount/path' }
 // 'mount' property is optional and may be undefined or null
-var setupStaticRoute = function(app, route) {
+var setupStaticRoute = function (app, route) {
     var resolvedPath = path.resolve(route.path.trim());
     var message = 'Setup static path: ' + resolvedPath.yellow;
     if (route.mount) {
@@ -19,7 +19,7 @@ var setupStaticRoute = function(app, route) {
     logger.info(message);
 };
 
-var splitPathValues = function(pathValue, pathDelimiter) {
+var splitPathValues = function (pathValue, pathDelimiter) {
     if (!pathDelimiter) {
         pathDelimiter = '=';
     }
@@ -30,8 +30,8 @@ var splitPathValues = function(pathValue, pathDelimiter) {
     };
 };
 
-exports.setupRoutes = function(app, routeList, pathDelimiter) {
-    var processRoute = function(routeString) {
+exports.setupRoutes = function (app, routeList, pathDelimiter) {
+    var processRoute = function (routeString) {
         setupStaticRoute(app, splitPathValues(routeString, pathDelimiter));
     };
 

@@ -1,10 +1,10 @@
 var helper = require('../lib');
 var request = helper.getRequest();
 
-describe('Debug Mode', function(){
+describe('Debug Mode', function () {
 
 
-    describe('Debug mode disabled', function(){
+    describe('Debug mode disabled', function () {
 
         before(function (done) {
             helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md'}, done);
@@ -14,10 +14,10 @@ describe('Debug Mode', function(){
             helper.drakov.stop(done);
         });
 
-        it('should respond with spec response', function(done){
+        it('should respond with spec response', function (done) {
             request.post('/api/things-not-found')
                 .set('Content-type', 'application/json')
-                .send({ key1: 'value1', key2: 2 })
+                .send({key1: 'value1', key2: 2})
                 .expect(404)
                 .expect('Content-type', 'text/html; charset=utf-8')
                 .expect('Endpoint not found')
@@ -26,7 +26,7 @@ describe('Debug Mode', function(){
         });
     });
 
-    describe('Debug mode enabled', function(){
+    describe('Debug mode enabled', function () {
 
         before(function (done) {
             helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md', debugMode: true}, done);
@@ -36,18 +36,18 @@ describe('Debug Mode', function(){
             helper.drakov.stop(done);
         });
 
-        it('should respond with spec response', function(done){
+        it('should respond with spec response', function (done) {
             function matchingReturnedBody(expectedBody) {
-                 return function (response) {
+                return function (response) {
                     var actualBodyString = JSON.stringify(response.body.body);
                     var expectedBodyString = JSON.stringify(expectedBody);
                     if (actualBodyString !== expectedBodyString) {
-                      throw new Error('Expected: ' + expectedBodyString + ', but got: ' + actualBodyString);
+                        throw new Error('Expected: ' + expectedBodyString + ', but got: ' + actualBodyString);
                     }
-                 };
+                };
             }
 
-            var content = { key1: 'value1', key2: 2 };
+            var content = {key1: 'value1', key2: 2};
             request.post('/api/things-not-found')
                 .set('Content-type', 'application/json')
                 .send(content)

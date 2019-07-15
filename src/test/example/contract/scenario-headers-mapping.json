@@ -1,4 +1,5 @@
-
 {
-    "scenario-headers-validation.apib": ["../scenarios/headers"]
+    "scenario-headers-validation.apib": [
+        "../scenarios/headers"
+    ]
 }

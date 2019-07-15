@@ -2,14 +2,14 @@
 import type {HttpRequest, Logger} from "./types";
 
 const {consoleLogger} = require("./consoleLogger");
-const {StackdriverLogger} = require( "./stackdriverLogger");
+const {StackdriverLogger} = require("./stackdriverLogger");
 
 const serviceName = process.env.STACKDRIVER_SERVICE_NAME;
 
 // Choose logging strategy
 const log: Logger = serviceName ? new StackdriverLogger(serviceName) : consoleLogger;
 
-const levels: {[key: string]: number} = {
+const levels: { [key: string]: number } = {
     NONE: 0,
     ERROR: 1,
     WARN: 2,

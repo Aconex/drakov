@@ -1,78 +1,106 @@
 <html>
-    <head>
-        <title>All The Things</title>
-        <script>
-            (function() {
-                var Dom = function( parent ) {
-                    this.stack = [ parent ];
-                };
-                Dom.prototype = {
-                    top: function() { return this.stack[ this.stack.length - 1]; },
-                    el: function( tag ) { var el = document.createElement( tag ); this.stack.push( el ); return this; },
-                    onclick: function( handle ) { this.top().addEventListener( "click", handle ); return this; },
-                    cls: function( cls ) { this.top().className = cls; return this; },
-                    data: function( name, value ) { this.top().dataset[ name ] = value; return this; },
-                    text: function( label ) { this.top().textContent = label; return this; },
-                    end: function() { var el = this.stack.pop(); this.top().appendChild( el ); return this; }
-                };
+<head>
+    <title>All The Things</title>
+    <script>
+        (function () {
+            var Dom = function (parent) {
+                this.stack = [parent];
+            };
+            Dom.prototype = {
+                top: function () {
+                    return this.stack[this.stack.length - 1];
+                },
+                el: function (tag) {
+                    var el = document.createElement(tag);
+                    this.stack.push(el);
+                    return this;
+                },
+                onclick: function (handle) {
+                    this.top().addEventListener("click", handle);
+                    return this;
+                },
+                cls: function (cls) {
+                    this.top().className = cls;
+                    return this;
+                },
+                data: function (name, value) {
+                    this.top().dataset[name] = value;
+                    return this;
+                },
+                text: function (label) {
+                    this.top().textContent = label;
+                    return this;
+                },
+                end: function () {
+                    var el = this.stack.pop();
+                    this.top().appendChild(el);
+                    return this;
+                }
+            };
 
-                function ajax( method, url, body, success ) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open( method, url );
-                    xhr.responseType = "json";
-                    xhr.onreadystatechange = function() {
-                        if( xhr.readyState === 4 ) {
-                            success( xhr.response );
-                        }
-                    };
-                    if( body ) {
-                        xhr.setRequestHeader("Content-Type", "application/json");
-                        xhr.send( JSON.stringify( body ) );
-                    } else {
-                        xhr.send();
+            function ajax(method, url, body, success) {
+                var xhr = new XMLHttpRequest();
+                xhr.open(method, url);
+                xhr.responseType = "json";
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        success(xhr.response);
                     }
+                };
+                if (body) {
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.send(JSON.stringify(body));
+                } else {
+                    xhr.send();
                 }
-                function msg( msg ) { alert( JSON.stringify( msg ) ); }
-                function like_handler( ev ) {
-                    var id = ev.target.parentNode.dataset.id;
-                    ajax( "PUT", "/api/things/" + id + "/like", null, msg );
-                }
-                function update_handler( ev ) {
-                    var id = ev.target.parentNode.dataset.id;
-                    ajax( "POST", "/api/things/" + id, { "text": "Hyperspeed jet", "id": "1" }, msg );
-                }
-                function generateThing( spec ) {
-                    new Dom( document.body )
-                        .el("DIV").cls("thing").data( "id", spec.id ).text( spec.text )
-                            .el("BUTTON").text("PUT").onclick( like_handler ).end()
-                            .el("BUTTON").text("POST").onclick( update_handler).end()
-                        .end();
-                }
-
-                document.addEventListener("DOMContentLoaded", function() {
-                    ajax("GET", "/api/things", null, function( results ) {
-                        results.forEach( generateThing );
-                    });
-                });
-            })();
-        </script>
-        <style>
-            DIV {
-                float: left;
-                height: 172px;
-                width: 250px;
-                text-align: center;
-                font-family: Impact, sans-serif;
-                font-weight: 900;
-                font-size: 32px;
-                color: white;
-                text-shadow: 3px 3px 1px black;
-                line-height: 306px;
-                background-image: url(/allthethings.png);
-                background-size: cover;
             }
-        </style>
-    </head>
-    <body>
-    </body>
+
+            function msg(msg) {
+                alert(JSON.stringify(msg));
+            }
+
+            function like_handler(ev) {
+                var id = ev.target.parentNode.dataset.id;
+                ajax("PUT", "/api/things/" + id + "/like", null, msg);
+            }
+
+            function update_handler(ev) {
+                var id = ev.target.parentNode.dataset.id;
+                ajax("POST", "/api/things/" + id, {"text": "Hyperspeed jet", "id": "1"}, msg);
+            }
+
+            function generateThing(spec) {
+                new Dom(document.body)
+                    .el("DIV").cls("thing").data("id", spec.id).text(spec.text)
+                    .el("BUTTON").text("PUT").onclick(like_handler).end()
+                    .el("BUTTON").text("POST").onclick(update_handler).end()
+                    .end();
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                ajax("GET", "/api/things", null, function (results) {
+                    results.forEach(generateThing);
+                });
+            });
+        })();
+    </script>
+    <style>
+        DIV {
+            float: left;
+            height: 172px;
+            width: 250px;
+            text-align: center;
+            font-family: Impact, sans-serif;
+            font-weight: 900;
+            font-size: 32px;
+            color: white;
+            text-shadow: 3px 3px 1px black;
+            line-height: 306px;
+            background-image: url(/allthethings.png);
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+</body>
 </html>

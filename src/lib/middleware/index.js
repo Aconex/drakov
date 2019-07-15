@@ -31,13 +31,13 @@ exports.init = function (app, argv, cb) {
                     ignoreHeaders: argv.ignoreHeader,
                 };
             }).then(options => {
-                routeHandlers(options, function (err, middleware) {
-                    cb(err, middleware);
-                });
-            }).catch(err => {
-                logger.error(err.message);
-                process.exitCode = 1;
+            routeHandlers(options, function (err, middleware) {
+                cb(err, middleware);
             });
+        }).catch(err => {
+            logger.error(err.message);
+            process.exitCode = 1;
+        });
 
     } else {
         var options = {

@@ -11,19 +11,19 @@ var logger = require('../logging/logger');
 var autoOptionsAction = require('../json/auto-options-action.json');
 import type {Actions, Blueprint, BlueprintResource, Contract, Resources} from '../parse/contracts';
 
-module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, contract?: Contract) {
-    return function(cb: (err: ?Error) => void) {
+module.exports = function (filePath: string, autoOptions: boolean, routeMap: {}, contract?: Contract) {
+    return function (cb: (err: ?Error) => void) {
         logger.info(`Loading file ${filePath}`)
         var data = fs.readFileSync(filePath, {encoding: 'utf8'});
-        var options = { type: 'ast' };
-        drafter.parse(data, options, function(err: Error, result: Blueprint) {
+        var options = {type: 'ast'};
+        drafter.parse(data, options, function (err: Error, result: Blueprint) {
             if (err) {
                 logger.info(err.message);
                 return cb(err);
             }
 
             var allRoutesList = [];
-            result.ast.resourceGroups.forEach(function(resourceGroup){
+            result.ast.resourceGroups.forEach(function (resourceGroup) {
                 if (contract) {
                     const existingContract = contract;
                     resourceGroup.resources.forEach((resource) => {
@@ -43,7 +43,7 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
 
             function validateAndAddFixturesToServer(fixtureResource: BlueprintResource, contract: Contract) {
                 const fixtureUrl = urlParser.parse(fixtureResource.uriTemplate).url;
-               
+
                 const contractActions: ?Actions = getActions(fixtureUrl, contract.resources);
 
                 let validatedResource: BlueprintResource = contracts.removeInvalidFixtures(fixtureResource, contractActions);
@@ -70,9 +70,9 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
 
                 const params = separatePathAndQueryParams(parsedUrl, resource);
 
-                routeMap[key] = routeMap[key] || { urlExpression: key, methods: {} };
+                routeMap[key] = routeMap[key] || {urlExpression: key, methods: {}};
                 routeMap[key].pathParams = params.pathParams;
-                resource.actions.forEach(function(action){
+                resource.actions.forEach(function (action) {
                     parseAction(parsedUrl, action, routeMap, params.queryParams);
                     saveRouteToTheList(parsedUrl, action);
                 });

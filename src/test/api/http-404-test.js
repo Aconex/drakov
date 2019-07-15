@@ -1,7 +1,7 @@
 var helper = require('../lib');
 var request = helper.getRequest();
 
-describe('HTTP 404', function(){
+describe('HTTP 404', function () {
 
     before(function (done) {
         helper.drakov.run({sourceFiles: 'src/test/example/md/simple-api.md'}, done);
@@ -11,10 +11,10 @@ describe('HTTP 404', function(){
         helper.drakov.stop(done);
     });
 
-    it('should return http 404', function(done){
+    it('should return http 404', function (done) {
         request.get('/notMappedResource')
-        .expect(404)
-        .end(helper.endCb(done));
+            .expect(404)
+            .end(helper.endCb(done));
     });
 
 });

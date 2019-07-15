@@ -4,8 +4,10 @@ var request = helper.getRequest();
 describe('matches-by-headers', () => {
 
     before((done) => {
-        helper.drakov.run({sourceFiles: 'src/test/example/md/matched-by-headers-api.apib',
-          ignoreHeader: ['Cookie']}, done);
+        helper.drakov.run({
+            sourceFiles: 'src/test/example/md/matched-by-headers-api.apib',
+            ignoreHeader: ['Cookie']
+        }, done);
     });
 
     after((done) => {
@@ -21,10 +23,10 @@ describe('matches-by-headers', () => {
         describe('when validating the request', () => {
             it('the request is matched by schema and the response should have the `x-matched-by: matches-request-schema` header', (done) => {
                 request.post('/demo')
-                .send(validBodyThatIsNotExactMatchWithSpecBody)
-                .expect(200)
-                .expect('X-Matched-By', 'matches-request-schema')
-                .end(helper.endCb(done));
+                    .send(validBodyThatIsNotExactMatchWithSpecBody)
+                    .expect(200)
+                    .expect('X-Matched-By', 'matches-request-schema')
+                    .end(helper.endCb(done));
             });
         });
     });
@@ -37,10 +39,10 @@ describe('matches-by-headers', () => {
         describe('when validating the request', () => {
             it('the request is matched by body and the response should have the `x-matched-by: matches-request-body` header', (done) => {
                 request.post('/demo')
-                .send(bodyThatMatchesSpecBodyExactly)
-                .expect(200)
-                .expect('X-Matched-By', 'matches-request-body')
-                .end(helper.endCb(done));
+                    .send(bodyThatMatchesSpecBodyExactly)
+                    .expect(200)
+                    .expect('X-Matched-By', 'matches-request-body')
+                    .end(helper.endCb(done));
             });
         });
     });

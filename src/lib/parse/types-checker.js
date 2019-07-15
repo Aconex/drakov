@@ -1,7 +1,7 @@
 //@flow
 
 const isArray = (subject: any): boolean => {
-    if(Array.isArray(subject)) {
+    if (Array.isArray(subject)) {
         return true;
     }
 
@@ -15,7 +15,7 @@ const isArray = (subject: any): boolean => {
 };
 
 const isBoolean = (subject: any): boolean => {
-    if(typeof subject === 'boolean') {
+    if (typeof subject === 'boolean') {
         return true;
     }
 
@@ -29,7 +29,7 @@ const isBoolean = (subject: any): boolean => {
 };
 
 const isNumber = (subject: any): boolean => {
-    if(typeof subject === 'number') {
+    if (typeof subject === 'number') {
         return true;
     }
     // Number('') == 0
@@ -43,7 +43,7 @@ const isNumber = (subject: any): boolean => {
 
 const isObject = (subject: any): boolean => {
     // js `typeof array === object` ...sigh
-    if(typeof subject === 'object' && !Array.isArray(subject)) {
+    if (typeof subject === 'object' && !Array.isArray(subject)) {
         return true;
     }
 
@@ -71,9 +71,9 @@ exports.typeMatches = (subject: any, type: string): boolean => {
         case "boolean":
             return isBoolean(subject);
         case "number":
-           return isNumber(subject);
+            return isNumber(subject);
         case "object":
-           return isObject(subject);
+            return isObject(subject);
         case "string":
             return isString(subject);
         default:

@@ -4,7 +4,7 @@ const request = helper.getRequest();
 describe('Contract Fixture Validation', () => {
     describe('GIVEN drakov is run in non-validation mode', () => {
         before((done) => {
-            helper.drakov.run({ sourceFiles: 'src/test/example/scenarios/validation/contract-scenario-validation.apib' }, done);
+            helper.drakov.run({sourceFiles: 'src/test/example/scenarios/validation/contract-scenario-validation.apib'}, done);
         });
 
         after((done) => {
@@ -41,7 +41,7 @@ describe('Contract Fixture Validation', () => {
                         "title": "Ultimate anwser"
                     })
                     .expect(200)
-                    .expect( {
+                    .expect({
                         "choices": ["hmmmmm?!"]
                     })
                     .end(done);
@@ -109,7 +109,7 @@ describe('Contract Fixture Validation', () => {
 
     describe('WHEN running in validation mode', () => {
         before((done) => {
-            helper.drakov.run({ contractFixtureMap: 'src/test/example/contract/contract-scenario-mapping.json' }, done);
+            helper.drakov.run({contractFixtureMap: 'src/test/example/contract/contract-scenario-mapping.json'}, done);
         });
 
         after((done) => {
@@ -205,7 +205,7 @@ describe('Contract Fixture Validation', () => {
 
     describe('WHEN running with multiple contracts', () => {
         before((done) => {
-            helper.drakov.run({ contractFixtureMap: 'src/test/example/contract/mapping-with-two-contracts.json' }, done);
+            helper.drakov.run({contractFixtureMap: 'src/test/example/contract/mapping-with-two-contracts.json'}, done);
         });
 
         after((done) => {

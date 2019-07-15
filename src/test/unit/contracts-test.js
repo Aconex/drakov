@@ -11,12 +11,12 @@ const schemaValidator = require('../../lib/spec-schema');
 const contracts = require('../../lib/parse/contracts');
 
 import type {
-    BodyDescriptor,
-    Blueprint,
-    BlueprintResource,
-    BlueprintAction,
-    Contract,
     Actions,
+    Blueprint,
+    BlueprintAction,
+    BlueprintResource,
+    BodyDescriptor,
+    Contract,
     Example,
     Mappings
 } from '../../lib/parse/contracts'
@@ -36,7 +36,7 @@ describe('readContractFixtureMap', () => {
             const expectedMessage = 'Unable to read contract fixture map file "myFile"';
             readFileStub.throws();
             //$FlowFixMe
-            assert.throws(() => contracts.readContractFixtureMap('myFile'), { message: expectedMessage });
+            assert.throws(() => contracts.readContractFixtureMap('myFile'), {message: expectedMessage});
         });
     });
 
@@ -48,31 +48,31 @@ describe('readContractFixtureMap', () => {
                 const expectedMessage = /^Unable to parse contract fixture map contents "myFile"/;
 
                 //$FlowFixMe
-                assert.throws(() => contracts.readContractFixtureMap('myFile'), { message: expectedMessage });
+                assert.throws(() => contracts.readContractFixtureMap('myFile'), {message: expectedMessage});
             });
         });
         describe('AND the file is parsable', () => {
             it('WHEN calling readContractFixtureMap' +
                 'THEN it returns a map of contracts to fixtures with the relative path added to non-http paths', () => {
-                    const mappingFileContents: Mappings = {
-                        'https://contract1': ['fixture1'],
-                        'contract2': ['fixture2']
-                    };
+                const mappingFileContents: Mappings = {
+                    'https://contract1': ['fixture1'],
+                    'contract2': ['fixture2']
+                };
 
-                    const expectedMapping: Mappings = {
-                        'https://contract1': ['relative/path/fixture1'],
-                        'relative/path/contract2': ['relative/path/fixture2']
-                    };
-                    readFileStub.withArgs('relative/path/1').returns(JSON.stringify(mappingFileContents));
-                    assert.deepEqual(contracts.readContractFixtureMap('relative/path/1'), expectedMapping);
-                });
+                const expectedMapping: Mappings = {
+                    'https://contract1': ['relative/path/fixture1'],
+                    'relative/path/contract2': ['relative/path/fixture2']
+                };
+                readFileStub.withArgs('relative/path/1').returns(JSON.stringify(mappingFileContents));
+                assert.deepEqual(contracts.readContractFixtureMap('relative/path/1'), expectedMapping);
+            });
 
         });
     });
 });
 
 describe('parseContracts', () => {
-    const mapping: Mappings = { 'contract': ['fixture'] };
+    const mapping: Mappings = {'contract': ['fixture']};
 
     let validateSchemaStub;
     let urlStub;
@@ -92,14 +92,14 @@ describe('parseContracts', () => {
         it('WHEN calling readContractFixtureMap THEN it logs the file name AND throws error', async () => {
             readFileStub.throws('some error');
             //$FlowFixMe
-            await assert.rejects(async () => await contracts.parseContracts(mapping), { message: 'Unable to read contract file "contract"' });
+            await assert.rejects(async () => await contracts.parseContracts(mapping), {message: 'Unable to read contract file "contract"'});
         });
     });
 
     describe('GIVEN the contract file starts with "http(s)://"', () => {
         const myContractUrl = 'https://myContractUrl';
 
-        const mappingWithUrl: Mappings = { [myContractUrl]: ['fixture'] };
+        const mappingWithUrl: Mappings = {[myContractUrl]: ['fixture']};
         const contractContents = 'myOnlineContract';
 
         it('WHEN calling readContractFixtureMap THEN it will try to fetch the file online', async () => {
@@ -148,7 +148,7 @@ describe('parseContracts', () => {
                 const expectedErr = 'Error parsing contract contents "contract"\n\tCause: parsing error for test';
 
                 //$FlowFixMe
-                await assert.rejects(async () => await contracts.parseContracts(mapping), { message: expectedErr });
+                await assert.rejects(async () => await contracts.parseContracts(mapping), {message: expectedErr});
             });
         });
 
@@ -232,7 +232,7 @@ describe('parseContracts', () => {
                     validateSchemaStub.withArgs(badBody).throws(new Error('test-err'));
                     parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
                     //$FlowFixMe
-                    await assert.rejects(async () => await contracts.parseContracts(mapping), { message: 'test-err' });
+                    await assert.rejects(async () => await contracts.parseContracts(mapping), {message: 'test-err'});
                 });
             });
 
@@ -251,7 +251,7 @@ describe('parseContracts', () => {
 
                     parseBlueprintStub.withArgs(blueprintContents).returns(parsedBlueprint);
                     //$FlowFixMe
-                    await assert.rejects(async () => await contracts.parseContracts(mapping), { message: 'No resources found for "contract"' });
+                    await assert.rejects(async () => await contracts.parseContracts(mapping), {message: 'No resources found for "contract"'});
                 });
             });
 
@@ -413,16 +413,16 @@ describe('removeInvalidFixtures', () => {
             const postAction: BlueprintAction = {
                 method: 'POST',
                 examples: [{
-                    requests: [{name:'', body: fixtureBody}],
-                    responses: [{name:'', body: fixtureBody}]
+                    requests: [{name: '', body: fixtureBody}],
+                    responses: [{name: '', body: fixtureBody}]
                 }],
             };
 
             const getAction: BlueprintAction = {
                 method: 'GET',
                 examples: [{
-                    requests: [{name:'', headers: ""}],
-                    responses: [{name:'', body: fixtureBody}]
+                    requests: [{name: '', headers: ""}],
+                    responses: [{name: '', body: fixtureBody}]
                 }],
             };
             const fixture: BlueprintResource = {
@@ -460,7 +460,7 @@ describe('removeInvalidFixtures', () => {
                 method: 'POST',
                 examples: [{
                     requests: [{name: '', body: fixtureBody}],
-                    responses: [{name:'',  body: badFixtureBody}]
+                    responses: [{name: '', body: badFixtureBody}]
                 }],
             };
 
@@ -481,7 +481,7 @@ describe('removeInvalidFixtures', () => {
 
             matchWithSchemaStub.withArgs(JSON.parse(badFixtureBody), contractActions['POST'].responses[0].schema)
                 .returns({valid: false, formattedErrors: ['some error passed from the validator']});
-                assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), expectedResource);
+            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], 'POST /sample-url example[0] response matches no contract response:\n' +
                 '\tFor contract response[0]: some error passed from the validator\n' +
                 '\tFor contract response[1]: Http status code does not match: fixture= contract=409')
@@ -615,8 +615,8 @@ describe('removeInvalidFixtures', () => {
         const fixtureAction: BlueprintAction = {
             method: 'POST',
             examples: [{
-                requests: [{name:'', body: '{}'}],
-                responses: [{name:'', body: ''}]
+                requests: [{name: '', body: '{}'}],
+                responses: [{name: '', body: ''}]
             }],
         };
 
@@ -634,7 +634,7 @@ describe('removeInvalidFixtures', () => {
 \tFor contract response[0]: Contract has response schema, but fixture has no response body
 \tFor contract response[1]: Http status code does not match: fixture= contract=409`;
         it('WHEN calling with an empty response THEN it removes the action and logs a helpful message', () => {
-            matchWithSchemaStub.returns({ valid: true });
+            matchWithSchemaStub.returns({valid: true});
             assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], expectedErr)
         });
@@ -669,11 +669,11 @@ describe('removeInvalidFixtures', () => {
             examples: [
                 {
                     requests: [{name: '', body: '{}'}],
-                    responses: [{name: '409', body:'{}'}]
+                    responses: [{name: '409', body: '{}'}]
                 },
                 {
                     requests: [{name: '', body: '{}'}],
-                    responses: [{name: '', body:'{}'}]
+                    responses: [{name: '', body: '{}'}]
                 }
             ],
         };

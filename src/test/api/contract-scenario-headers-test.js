@@ -5,7 +5,7 @@ describe('Contract Scenarios Headers Validation', () => {
 
     describe('GIVEN drakov running in validation mode', () => {
         before((done) => {
-            helper.drakov.run({ contractFixtureMap: 'src/test/example/contract/scenario-headers-mapping.json' }, done);
+            helper.drakov.run({contractFixtureMap: 'src/test/example/contract/scenario-headers-mapping.json'}, done);
         });
 
         after((done) => {
@@ -25,7 +25,7 @@ describe('Contract Scenarios Headers Validation', () => {
             describe('WHEN calling with a header', () => {
                 it('THEN it returns the correct response ', (done) => {
                     request.get('/headers')
-                    .set('id', 'header')
+                        .set('id', 'header')
                         .expect(200)
                         .expect('"Has Header"\n')
                         .end(done);

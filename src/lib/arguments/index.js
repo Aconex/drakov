@@ -7,7 +7,7 @@ var yargsConfigOptions = require('./arguments');
 var RC_FILE = '.drakovrc';
 
 function addDefaultValue(args) {
-    return function(argKey) {
+    return function (argKey) {
         var defaultValue = yargsConfigOptions[argKey].default;
         if (!args[argKey] && defaultValue !== undefined) {
             args[argKey] = defaultValue;
@@ -60,8 +60,8 @@ function loadCommandlineArguments() {
     logger.info('Loading configuration from CLI');
     return argv
         .usage('Usage: \n  ./drakov -f <path to blueprint> [-p <server port|3000>]' +
-        '\nExactly one of -f or -m is required' +
-        '\n\nExample: \n  ' + './drakov -f ./*.md -p 3000')
+            '\nExactly one of -f or -m is required' +
+            '\n\nExample: \n  ' + './drakov -f ./*.md -p 3000')
         .options(yargsConfigOptions)
         .check((argv) => {
             if (argv.sourceFiles && argv.contractFixtureMap) {
@@ -78,7 +78,7 @@ function loadCommandlineArguments() {
         .argv;
 }
 
-exports.getArgv = function() {
+exports.getArgv = function () {
     var preloadedArgs = loadConfiguration();
     if (preloadedArgs) {
         return preloadedArgs;

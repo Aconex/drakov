@@ -109,7 +109,7 @@ describe('type checker', () => {
     });
 
     describe('GIVEN the type is unexpected', () => {
-        it('THEN it throws error',() =>{
+        it('THEN it throws error', () => {
             assert.throws(() => types.typeMatches(null, 'shmergenbergen'));
         });
     });

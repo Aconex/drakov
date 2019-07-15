@@ -3,7 +3,7 @@
 
 const fetchInternal = require('node-fetch');
 
-const fetch = (url: string, options?: {[string]: any}): Promise<string>  => {
+const fetch = (url: string, options?: { [string]: any }): Promise<string> => {
     return fetchInternal(url, options)
         .then(res => res.text());
 }

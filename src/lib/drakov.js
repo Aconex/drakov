@@ -10,7 +10,7 @@ var debugRequest = require('./debugRequest');
 
 var server = null;
 
-exports.run = function(argv, cb) {
+exports.run = function (argv, cb) {
 
     if (argv.debugMode) {
         logger.setLogLevel('DEBUG');
@@ -31,7 +31,7 @@ exports.run = function(argv, cb) {
 
     // SETUP RESPONSE MIDDLEWARE
     argv.drakovHeader = true;
-    middleware.init(app, argv, function(err, middlewareFunction) {
+    middleware.init(app, argv, function (err, middlewareFunction) {
         if (err) {
             throw err;
         }
@@ -56,14 +56,14 @@ exports.run = function(argv, cb) {
     });
 };
 
-exports.stop = function(cb) {
-    var runCb = function() {
+exports.stop = function (cb) {
+    var runCb = function () {
         if (cb) {
             cb();
         }
     };
     try {
-        server.forceShutdown(function() {
+        server.forceShutdown(function () {
             logger.info('   DRAKOV STOPPED   '.red.bold.inverse);
             runCb();
         });

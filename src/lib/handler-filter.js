@@ -31,12 +31,12 @@ exports.filterHandlers = function (req, handlers, ignoreHeaders) {
 
         filteredHandlers = handlers.filter(filterRequestHeader(req, ignoreHeaders));
         if (filteredHandlers.length === 0) {
-            return route.createErrorHandler(handlers[0],["Found URL but request doesn't contain required headers to match against any known fixture"])
+            return route.createErrorHandler(handlers[0], ["Found URL but request doesn't contain required headers to match against any known fixture"])
         }
 
         filteredHandlers = urlQueryParams.filterForRequired(req, filteredHandlers);
         if (filteredHandlers.length === 0) {
-            return route.createErrorHandler(handlers[0],["Found URL but request doesn't contain required query parameters to match against any known fixture"])
+            return route.createErrorHandler(handlers[0], ["Found URL but request doesn't contain required query parameters to match against any known fixture"])
 
         }
 
@@ -99,7 +99,7 @@ exports.filterHandlers = function (req, handlers, ignoreHeaders) {
 };
 
 function addHeaderForSuccessfulMatchingStrategy(originalHandler, matchType) {
-    const header = { name: 'X-Matched-By', value: matchType };
+    const header = {name: 'X-Matched-By', value: matchType};
 
     let handler = _.cloneDeep(originalHandler)
 

@@ -8,14 +8,14 @@ var URL_SPLIT_REGEX = /\{?\?/;
 exports.parse = function (url) {
     var urlArr = url.split(URL_SPLIT_REGEX);
 
-    var processPathname = function(path){
+    var processPathname = function (path) {
         return path.replace(PATHNAME_REGEX, ':$1');
     };
-    var processQueryParameters = function(queryParams) {
+    var processQueryParameters = function (queryParams) {
         if (!queryParams) {
             return {};
         }
-        return qs.parse(queryParams.replace(/\{|\}/g,'').replace(/,/g,'&').replace(PARAMETER_OPERATORS_REGEX, ''));
+        return qs.parse(queryParams.replace(/\{|\}/g, '').replace(/,/g, '&').replace(PARAMETER_OPERATORS_REGEX, ''));
     };
 
     return {

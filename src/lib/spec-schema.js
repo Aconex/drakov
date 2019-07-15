@@ -12,18 +12,18 @@ function validateSchema(schema) {
     }
 }
 
-exports.hasSchema = function(spec) {
+exports.hasSchema = function (spec) {
     return !!spec.schema;
 };
 
-exports.matchWithSchema = function(json, schema) {
+exports.matchWithSchema = function (json, schema) {
 
     let result = tv4.validateMultiple(json, schema);
 
     let formattedErrors = [];
     if (!result.valid) {
 
-        result.errors.forEach(function(error) {
+        result.errors.forEach(function (error) {
             formattedErrors.push(error.dataPath + ' ' + error.message);
         });
 
@@ -33,7 +33,7 @@ exports.matchWithSchema = function(json, schema) {
     return result;
 };
 
-exports.validateAndParseSchema = function(spec) {
+exports.validateAndParseSchema = function (spec) {
     if (this.hasSchema(spec)) {
         spec.schema = JSON.parse(spec.schema);
         validateSchema(spec.schema);

@@ -10,9 +10,9 @@
     describe('Content', function () {
 
         before(function (done) {
-           helper.run({stealthmode: false, logLevel: 'DEBUG'}, function () {
-               helper.stop(done);
-           });
+            helper.run({stealthmode: false, logLevel: 'DEBUG'}, function () {
+                helper.stop(done);
+            });
         });
 
         describe('contentTypeComparator', function () {
@@ -25,7 +25,7 @@
                     }
                 };
 
-                var specB ={
+                var specB = {
                     request: {
                         headers: [
                             {name: 'Content-Type', value: 'application/json'}
@@ -45,7 +45,7 @@
                     }
                 };
 
-                var specB ={
+                var specB = {
                     request: {
                         headers: [
                             {name: 'Content-Type', value: 'application/json'}
@@ -77,7 +77,7 @@
 
             context('when body is empty and spec schema is defined', () => {
                 it('should return false', () => {
-                    let specReq = {schema:{}};
+                    let specReq = {schema: {}};
                     let httpReq = '';
                     assert.deepStrictEqual(content.matchesBody(httpReq, specReq), false);
                 });
@@ -87,7 +87,7 @@
                 body: '{"text": "Hyperspeed jet"}',
             };
 
-            context('when spec is not defined', function ()  {
+            context('when spec is not defined', function () {
 
                 it('should return true', function () {
                     var specReq = null;
@@ -114,11 +114,11 @@
                 });
             });
 
-            context('when body correspond to spec', function ()  {
+            context('when body correspond to spec', function () {
 
-                context('when content type is json', function ()  {
+                context('when content type is json', function () {
 
-                    before(function ()  {
+                    before(function () {
                         httpReq.headers = {
                             'content-type': 'application/json',
                         };
@@ -132,7 +132,7 @@
                     });
                 });
 
-                context('when content type is not json', function ()  {
+                context('when content type is not json', function () {
 
                     before(function () {
                         httpReq.headers = {
@@ -167,9 +167,9 @@
                 });
             });
 
-            context('when body do not correspond to spec', function ()  {
+            context('when body do not correspond to spec', function () {
 
-                context('when content type is json', function ()  {
+                context('when content type is json', function () {
 
                     before(function () {
                         httpReq.headers = {
@@ -186,7 +186,7 @@
                     });
                 });
 
-                context('when content type is not json', function ()  {
+                context('when content type is not json', function () {
 
                     before(function () {
                         httpReq.headers = {
@@ -340,7 +340,7 @@
 
             context('when spec is empty', function () {
 
-                var specReq = { headers: '' };
+                var specReq = {headers: ''};
 
                 it('should return true', function () {
                     assert.equal(content.matchesHeader(httpReq, specReq), true);
@@ -447,7 +447,7 @@
                     }
                 };
 
-                context('when spec does not define content-type', function ()  {
+                context('when spec does not define content-type', function () {
 
                     var specReq = {
                         headers: [
@@ -469,7 +469,7 @@
                     });
                 });
 
-                context('when headers correspond to spec', function ()  {
+                context('when headers correspond to spec', function () {
 
                     var specReq = {
                         headers: [
@@ -491,7 +491,7 @@
                     });
                 });
 
-                context('when headers do not correspond to spec', function ()  {
+                context('when headers do not correspond to spec', function () {
 
                     var specReq = {
                         headers: [

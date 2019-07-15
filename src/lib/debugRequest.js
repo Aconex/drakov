@@ -1,12 +1,12 @@
 var logger = require('./logging/logger');
 var contentTypeChecker = require('./content-type');
 
-exports.notFoundHandler = function(argv) {
+exports.notFoundHandler = function (argv) {
 
-    function debug(req){
+    function debug(req) {
 
         function getBody(req) {
-            if (contentTypeChecker.isJson(req.get('Content-Type'))){
+            if (contentTypeChecker.isJson(req.get('Content-Type'))) {
                 try {
                     return JSON.parse(req.body);
                 } catch (e) {
@@ -29,7 +29,7 @@ exports.notFoundHandler = function(argv) {
     }
 
     return function (req, res) {
-        if (!res.headersSent){
+        if (!res.headersSent) {
             if (argv.debugMode) {
                 var debugRequest = debug(req);
                 logger.debug('Mismatching request:', JSON.stringify(debugRequest));
@@ -44,7 +44,7 @@ exports.notFoundHandler = function(argv) {
                 "userAgent": req.headers && req.headers["user-agent"],
             };
 
-            let message =  req.method.green + ' ' + req.url.yellow;
+            let message = req.method.green + ' ' + req.url.yellow;
             logger.logHttpRequest(message, httpRequest);
             res.status(404).send('Endpoint not found');
         }

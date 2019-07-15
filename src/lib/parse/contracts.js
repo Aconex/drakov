@@ -92,7 +92,7 @@ const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
     const basePath = path.dirname(contractFixtureMapFile);
     let contents: string;
     try {
-        contents = fs.readFileSync(contractFixtureMapFile, { encoding: 'utf8' });
+        contents = fs.readFileSync(contractFixtureMapFile, {encoding: 'utf8'});
     } catch (e) {
         const message = `Unable to read contract fixture map file "${contractFixtureMapFile}"`
         throw new Error(message);
@@ -118,7 +118,6 @@ const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
 };
 
 
-
 const readFile = async (filePath: string): Promise<string> => {
     let fileContents: string;
     try {
@@ -129,7 +128,7 @@ const readFile = async (filePath: string): Promise<string> => {
                 }
             });
         } else {
-            fileContents = fs.readFileSync(filePath, { encoding: 'utf8' });
+            fileContents = fs.readFileSync(filePath, {encoding: 'utf8'});
         }
     } catch (e) {
         const message = `Unable to read contract file "${filePath}"`
@@ -142,7 +141,7 @@ const readFile = async (filePath: string): Promise<string> => {
 
 const parseBlueprint = (rawContract: string, contractFilePath: string): Blueprint => {
     let parsedContract: Blueprint;
-    const options = { type: 'ast' };
+    const options = {type: 'ast'};
     try {
         parsedContract = drafter.parseSync(rawContract, options);
     } catch (e) {
@@ -229,8 +228,8 @@ const extractSchema = (action: BlueprintAction, url: string): ?ResourceSchemas =
     return {
         request: getSchema(request),
         responses: example.responses && example.responses.map(response => ({
-           status: response.name,
-           schema: getSchema(response)
+            status: response.name,
+            schema: getSchema(response)
         }))
     };
 };
@@ -250,21 +249,21 @@ const validateBody = (fixtureBody?: BodyDescriptor, contractSchema: JsonSchema):
         // this validates this case
         if (!fixtureBody || !fixtureBody.body) {
             if (contractSchema) {
-                result = { valid: false, message: 'Contract has response schema, but fixture has no response body' };
+                result = {valid: false, message: 'Contract has response schema, but fixture has no response body'};
             } else {
-                result = { valid: true, message: '' };
+                result = {valid: true, message: ''};
             }
         } else {
             const parsedBody = JSON.parse(fixtureBody.body);
             const validated = schemaValidator.matchWithSchema(parsedBody, contractSchema);
             result = {
                 valid: validated.valid,
-                message:  validated.formattedErrors && `${validated.formattedErrors.join('; ')}`,
+                message: validated.formattedErrors && `${validated.formattedErrors.join('; ')}`,
             }
         }
     } catch (e) {
         if (e.name === 'SyntaxError') {
-            result = { valid: false, message: `error parsing body\n\t${e.message}` };
+            result = {valid: false, message: `error parsing body\n\t${e.message}`};
         } else {
             throw e;
         }
@@ -289,7 +288,7 @@ const removeInvalidFixtures = (resource: BlueprintResource, contractActions: ?Ac
         fixtureAction.examples.forEach((example, exampleIndex) => {
 
             //enforce requests and responses in pairs - otherwise it is hard to reason about author's expectations
-            if (example.requests.length > 1 ||  example.responses.length > 1) {
+            if (example.requests.length > 1 || example.responses.length > 1) {
                 throw new Error(`Found more than one request or response for example ${exampleIndex}. Requests and responses expected in pairs.`);
             }
             const fixtureRequest = example.requests[0];
@@ -330,14 +329,14 @@ const removeInvalidFixtures = (resource: BlueprintResource, contractActions: ?Ac
         });
 
         if (validExamples.length) {
-            const actionWithValidExamples: BlueprintAction = Object.assign({}, fixtureAction, { examples: validExamples });
+            const actionWithValidExamples: BlueprintAction = Object.assign({}, fixtureAction, {examples: validExamples});
             validActions.push(actionWithValidExamples);
         } else {
             logger.error(`${fixtureAction.method} ${resource.uriTemplate} has no valid examples and has been excluded`);
 
         }
     });
-    return Object.assign({}, resource, { actions: validActions });
+    return Object.assign({}, resource, {actions: validActions});
 };
 
 module.exports = {

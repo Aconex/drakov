@@ -17,11 +17,11 @@ describe('DELAYED', function () {
         helper.drakov.stop(done);
     });
 
-    beforeEach(function(){
+    beforeEach(function () {
         startTimestamp = Date.now();
     });
 
-    afterEach(function(){
+    afterEach(function () {
         assert.ok(Date.now() - startTimestamp >= TIME_DELAY);
     });
 

@@ -4,14 +4,17 @@ export type HttpRequest = {
     "requestMethod": string,
     "requestUrl": string,
     "status": number,
-    "headers": {[string]: string},
+    "headers": { [string]: string },
     "userAgent": string
 }
 
 export interface Logger {
     debug(message: string): void;
+
     info(message: string): void;
+
     warn(message: string): void;
+
     error(message: string): void;
 
     logHttpRequest(message: string, httpRequest: HttpRequest): void;

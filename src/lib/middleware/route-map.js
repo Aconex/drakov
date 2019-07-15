@@ -3,7 +3,7 @@ const glob = require('glob');
 const async = require('async');
 const parseBlueprint = require('../parse/blueprint');
 const endpointSorter = require('./endpoint-sorter');
-import type { Contract } from '../parse/contracts';
+import type {Contract} from '../parse/contracts';
 
 type Options = {
     sourceFiles: ?Array<string>,

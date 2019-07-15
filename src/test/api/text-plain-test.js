@@ -1,7 +1,7 @@
 var helper = require('../lib');
 var request = helper.getRequest();
 
-describe('text/plain media type', function(){
+describe('text/plain media type', function () {
     before(function (done) {
         helper.drakov.run({sourceFiles: 'src/test/example/md/text-plain.md'}, done);
     });
@@ -10,16 +10,16 @@ describe('text/plain media type', function(){
         helper.drakov.stop(done);
     });
 
-    describe('/login', function(){
-        describe('POST', function(){
-            it('should respond with spec response', function(done){
+    describe('/login', function () {
+        describe('POST', function () {
+            it('should respond with spec response', function (done) {
                 request.post('/login')
                     .set('noredirect', true)
                     .set('Content-type', 'text/plain')
                     .send('username=username&password=password')
                     .expect(200)
                     .expect('Content-type', 'application/json; charset=utf-8')
-                    .expect( {'status':'ok'})
+                    .expect({'status': 'ok'})
                     .end(helper.endCb(done));
             });
         });

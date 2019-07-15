@@ -9,15 +9,15 @@ var CACHED_ARGV = [];
 
 var RESTART_COUNT = 0;
 
-var changeHandler = function(filePath) {
+var changeHandler = function (filePath) {
     ++RESTART_COUNT;
     logger.info('Change', filePath.green, ('Restarting ' + RESTART_COUNT).blue);
-    drakov.stop(function(){
+    drakov.stop(function () {
         drakov.run(CACHED_ARGV);
     });
 };
 
-module.exports = function(argv) {
+module.exports = function (argv) {
     if (!argv.watch) {
         return;
     }

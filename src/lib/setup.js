@@ -12,7 +12,7 @@ exports.startServer = function (argv, app, cb) {
 
     var server = null;
 
-    var startCb = function() {
+    var startCb = function () {
         logger.info(('   Drakov ' + version + '     ').bold.inverse, 'Listening on port ' + argv.serverPort.toString().bold.red);
 
         if (argv.public) {
@@ -20,15 +20,15 @@ exports.startServer = function (argv, app, cb) {
         }
 
         if (cb) {
-          cb();
+            cb();
         }
     };
 
     if (argv.sslKeyFile && argv.sslCrtFile) {
         exports.isSSL = true;
         var sslOptions = {
-            key: fs.readFileSync(argv.sslKeyFile, 'utf8' ),
-            cert: fs.readFileSync(argv.sslCrtFile, 'utf8' ),
+            key: fs.readFileSync(argv.sslKeyFile, 'utf8'),
+            cert: fs.readFileSync(argv.sslCrtFile, 'utf8'),
             rejectUnauthorized: false
         };
         server = https.createServer(sslOptions, app);
@@ -36,7 +36,7 @@ exports.startServer = function (argv, app, cb) {
         //server = app;
         server = http.createServer(app);
     }
-    
+
     server = httpShutdown(server);
 
 

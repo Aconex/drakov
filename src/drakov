@@ -12,6 +12,6 @@ var watcher = require('./lib/watcher');
 var args = require('./lib/arguments');
 
 var argv = args.getArgv();
-drakov.run(argv, function() {
+drakov.run(argv, function () {
     watcher(argv);
 });

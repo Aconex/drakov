@@ -1,6 +1,6 @@
-const assert = require ('assert');
+const assert = require('assert');
 const strictSchemas = require('../../lib/strict-schemas');
-const schema =  {
+const schema = {
     type: 'object',
     required: ['id'],
     properties: {

@@ -3,7 +3,7 @@ var request = helper.getRequest();
 
 describe('Reject additional properties', () => {
     before((done) => {
-        helper.drakov.run({ sourceFiles: 'src/test/example/md/strict-schema.md' }, done);
+        helper.drakov.run({sourceFiles: 'src/test/example/md/strict-schema.md'}, done);
     });
 
     after((done) => {
@@ -13,11 +13,12 @@ describe('Reject additional properties', () => {
     describe('POST with additional properties', () => {
         const bodyWithUnexpectedProps = {
             id: 1,
-            data: { 
+            data: {
                 subdata: {
                     subsubdata: 'blah',
                     subsubMoo: 'moo',
-                }},
+                }
+            },
             moo: 'moo',
         };
 

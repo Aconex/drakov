@@ -1,7 +1,7 @@
 var helper = require('../lib');
 var request = helper.getRequest();
 
-describe('/api/multiple', function(){
+describe('/api/multiple', function () {
 
     before(function (done) {
         helper.drakov.run({sourceFiles: 'src/test/example/md/multiple-examples-api.md'}, done);
@@ -11,17 +11,17 @@ describe('/api/multiple', function(){
         helper.drakov.stop(done);
     });
 
-    describe('GET', function(){
-        it('should respond with json object from the first header example', function(done){
+    describe('GET', function () {
+        it('should respond with json object from the first header example', function (done) {
             request.get('/api/multiple')
-            .set('Custom-header', 'First')
-            .expect(200)
-            .expect('Content-type', 'application/json;charset=UTF-8')
-            .expect({'first': 'response'})
-            .end(helper.endCb(done));
+                .set('Custom-header', 'First')
+                .expect(200)
+                .expect('Content-type', 'application/json;charset=UTF-8')
+                .expect({'first': 'response'})
+                .end(helper.endCb(done));
         });
 
-        it('should respond with json object from the second header example', function(done){
+        it('should respond with json object from the second header example', function (done) {
             request.get('/api/multiple')
                 .set('Custom-header', 'Second')
                 .expect(200)
@@ -30,7 +30,7 @@ describe('/api/multiple', function(){
                 .end(helper.endCb(done));
         });
 
-        it('should respond with preferred status code', function(done) {
+        it('should respond with preferred status code', function (done) {
             request.get('/api/multiple')
                 .set('Prefer', 'status=400')
                 .expect(400)
@@ -40,8 +40,8 @@ describe('/api/multiple', function(){
         });
     });
 
-    describe('POST', function(){
-        describe('Json content-type', function() {
+    describe('POST', function () {
+        describe('Json content-type', function () {
             it('should respond with json object from the first body example', function (done) {
                 request.post('/api/multiple')
                     .set('Content-type', 'application/json')
@@ -63,7 +63,7 @@ describe('/api/multiple', function(){
             });
         });
 
-        describe('Non-Json content-type', function() {
+        describe('Non-Json content-type', function () {
             it('should respond with json object from the first body example', function (done) {
                 request.post('/api/multiple')
                     .set('Content-type', 'application/x-www-form-urlencoded')
@@ -86,8 +86,8 @@ describe('/api/multiple', function(){
         });
     });
 
-    describe('PUT', function() {
-        it('should respond with 400', function(done) {
+    describe('PUT', function () {
+        it('should respond with 400', function (done) {
             request.put('/api/multiple')
                 .set('Content-type', 'application/json')
                 .send({'id': 2, 'title': 'hello'})
@@ -96,7 +96,7 @@ describe('/api/multiple', function(){
                 .end(helper.endCb(done));
         });
 
-        it('should respond with 201', function(done) {
+        it('should respond with 201', function (done) {
             request.put('/api/multiple')
                 .set('Content-type', 'application/json')
                 .send({'id': 1, 'title': 'hello'})
