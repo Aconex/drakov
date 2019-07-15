@@ -116,7 +116,7 @@ exports.matchesSchema = function(httpReq, specReq) {
     var result =  specSchema.matchWithSchema(reqBody, schema);
     logger.debug('Matching by request body schema', renderMatchType(result.valid));
     if (!result.valid) {
-        logger.debug(result.niceErrors);
+        logger.debug(result.formattedErrors);
     }
     return result;
 };

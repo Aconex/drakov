@@ -27,17 +27,23 @@ function addRequestHeaderCount(handler) {
 
 exports.filterHandlers = function (req, handlers, ignoreHeaders) {
     if (handlers) {
-        var filteredHandlers;
+        let filteredHandlers;
 
-        handlers.sort(content.contentTypeComparator);
+        filteredHandlers = handlers.filter(filterRequestHeader(req, ignoreHeaders));
+        if (filteredHandlers.length === 0) {
+            return route.createErrorHandler(handlers[0],["Found URL but request doesn't contain required headers to match against any known fixture"])
+        }
 
-        filteredHandlers = urlQueryParams.filterForRequired(req, handlers);
+        filteredHandlers = urlQueryParams.filterForRequired(req, filteredHandlers);
+        if (filteredHandlers.length === 0) {
+            return route.createErrorHandler(handlers[0],["Found URL but request doesn't contain required query parameters to match against any known fixture"])
+
+        }
+
         let queryParams = req.query;
         urlQueryParams.countMatchingQueryParams(handlers, queryParams);
 
-        filteredHandlers = filteredHandlers.filter(filterRequestHeader(req, ignoreHeaders));
-
-        // prioritize handlers that have more headers where all headers match. 
+        // prioritize handlers that have more headers where all headers match.
         // this allows us to safely ignore extra headers being sent
         // then prioritize based on query params
         filteredHandlers.forEach(addRequestHeaderCount);
@@ -80,11 +86,11 @@ exports.filterHandlers = function (req, handlers, ignoreHeaders) {
             }
 
             var errorHandlers = validatedHandlers.filter(function (handler) {
-                return handler.result.niceErrors;
+                return handler.result.formattedErrors;
             });
 
             if (errorHandlers.length > 0) {
-                return route.createErrorHandler(errorHandlers[0]);
+                return route.createErrorHandler(errorHandlers[0].handler, errorHandlers[0].result.formattedErrors);
             }
         }
     }

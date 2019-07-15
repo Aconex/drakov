@@ -50,7 +50,7 @@ exports.getRouteHandlers = function (parsedUrl, action, queryParams) {
     });
 };
 
-exports.createErrorHandler = function(validatedHandler) {
+exports.createErrorHandler = function(handler, formattedErrors) {
 
     var execute = function (req, res) {
         const httpRequest = {
@@ -64,13 +64,11 @@ exports.createErrorHandler = function(validatedHandler) {
         const message = [this.action.method.green, this.parsedUrl.uriTemplate.yellow,
             (this.request && this.request.description ? this.request.description : this.action.name).blue].join(' ');
         logger.logHttpRequest(message, httpRequest);
-        this.response.headers.forEach(function (header) {
-            res.set(header.name, header.value);
-        });
 
+        res.set("Content-type", "application/json");
         res.status(400);
-        res.send(buildResponseBody(validatedHandler.result.niceErrors));
+        res.send(buildResponseBody(formattedErrors));
     };
 
-    return Object.assign({}, validatedHandler.handler, {execute: execute});
+    return Object.assign({}, handler, {execute: execute});
 };

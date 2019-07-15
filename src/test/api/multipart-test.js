@@ -25,8 +25,9 @@ describe('Multipart Requests', function() {
             request.post('/api/multipart')
             .set('Content-type', 'application/json')
             .send()
-            .expect(404)
-            .expect('Content-type', 'text/html; charset=utf-8')
+            .expect(400)
+            .expect('Content-type', 'application/json; charset=utf-8')
+            .expect([ 'Found URL but request doesn\'t contain required headers to match against any known fixture' ])
             .end(helper.endCb(done));
         });
     });
