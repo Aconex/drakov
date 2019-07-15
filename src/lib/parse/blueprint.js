@@ -5,7 +5,6 @@ var _ = require('lodash');
 var pathToRegexp = require('path-to-regexp');
 
 var urlParser = require('./url');
-var parseParameters = require('./parameters');
 var parseAction = require('./action');
 let contracts = require('./contracts');
 var logger = require('../logging/logger');
@@ -68,10 +67,13 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
             function addResourceToServer(resource: BlueprintResource) {
                 var parsedUrl = urlParser.parse(resource.uriTemplate);
                 var key = parsedUrl.url;
+
+                const params = separatePathAndQueryParams(parsedUrl, resource);
+
                 routeMap[key] = routeMap[key] || { urlExpression: key, methods: {} };
-                parseParameters(parsedUrl, resource.parameters, routeMap);
+                routeMap[key].pathParams = params.pathParams;
                 resource.actions.forEach(function(action){
-                    parseAction(parsedUrl, action, routeMap);
+                    parseAction(parsedUrl, action, routeMap, params.queryParams);
                     saveRouteToTheList(parsedUrl, action);
                 });
             }
@@ -110,3 +112,23 @@ module.exports = function(filePath: string, autoOptions: boolean, routeMap: {}, 
         });
     };
 };
+
+// resource parameters contains both path and query params
+function separatePathAndQueryParams(parsedUrl, resource) {
+    const queryParamKeys = Object.keys(parsedUrl.queryParams);
+    let queryParams = {};
+    let pathParams = {};
+
+    resource.parameters && resource.parameters.forEach(param => {
+        if (queryParamKeys.includes(param.name)) {
+            queryParams[param.name] = param;
+        } else {
+            pathParams[param.name] = param;
+        }
+    });
+
+    return {
+        pathParams,
+        queryParams,
+    };
+}

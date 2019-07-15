@@ -30,6 +30,22 @@ To access files on github, you must provide a `GIT_TOKEN` as an environmental va
 
 This mode is mutually exclusive with the existing mode; either a source file glob (`-f`) or a path to the mapping file (`-m`) must be provided.
 
+## Matching endpoint parameters
+
+The original drakov had no support for actually checking path or query parameter types; additionally, required query parameters were not checked 
+(assuming all path parameters are required). These validations listed in the apib are now being enforced for primitive types and shallowly for arrays and objects; 
+drakov will check that the parameters can be properly coerced into the listed type. For path and required query parameters, non-matching values
+cause the endpoint to not be found.
+
+### Endpoint matching priorities
+In the case that multiple version of an endpoint satisfy the required attributes, drakov picks the best match in the following order:
+1. Highest number of matching headers (Currently only exact value matches are supported)
+2. Query parameters that match literal values in the fixture url
+3. Highest number of total matching query parameters (including optional)
+4. Lowest number of missing optional query parameters
+
+After this the behavior is undefined.
+
 ## Community
 
 We have setup a google group to assist with the answering of questions any users of Drakov may have.

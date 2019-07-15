@@ -10,10 +10,6 @@ const schemaValidator = require('../spec-schema');
 const http = require('./httpFetch');
 
 export type Mappings = { [string]: Array<string> };
-export type SchemaValidationResult = {
-    valid: boolean,
-    niceErrors: Array<string>
-};
 
 // structures for Contracts
 export type Contract = {

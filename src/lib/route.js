@@ -14,11 +14,12 @@ var buildResponseBody = function(specBody){
     }
 };
 
-exports.getRouteHandlers = function (parsedUrl, action) {
+exports.getRouteHandlers = function (parsedUrl, action, queryParams) {
      return action.examples.map(function (example) {
         let obj = {
             action: action,
             parsedUrl: parsedUrl,
+            queryParamsInfo: queryParams,
             response: example.responses[0],
             request: 'undefined' === typeof example.requests[0] ? null : specSchema.validateAndParseSchema(example.requests[0]),
             execute: function (req, res) {

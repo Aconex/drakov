@@ -1,26 +1,43 @@
 var assert = require ('assert');
-var queryComparator = require('../../lib/query-comparator');
+var queryComparator = require('../../lib/query-params');
 
-describe('Query Comparator', function() {
+describe('Query params', function() {
 
-    describe('noParamComparator', function() {
-        it('Should sort by number of query parameters in the specification', function(){
-            var requests = [
-                {parsedUrl: {queryParams: {'param1': ''}}},
-                {parsedUrl: {queryParams: {'param1': '', 'param2': '', 'param3': ''}}},
-                {parsedUrl: {queryParams: {'param3': '', 'param4': ''}}},
-                {parsedUrl: {queryParams: {'param2': '', 'param4': '', 'param1': '12345'}}}
-            ];
+    describe('filterForRequired', () => {
+        it('should remove any handler where a required param is missing from the request', () => {
+            const matchingHandler = {queryParamsInfo:  {param1: {name: 'param1', required: true }}};
+            const nonMatchingHandler = {queryParamsInfo: {param2: {name: 'param2', required: true }}};
 
-            var expected = [
-                {parsedUrl: {queryParams: {'param1': ''}}},
-                {parsedUrl: {queryParams: {'param3': '', 'param4': ''}}},
-                {parsedUrl: {queryParams: {'param1': '', 'param2': '', 'param3': ''}}},
-                {parsedUrl: {queryParams: {'param2': '', 'param4': '', 'param1': '12345'}}}
-            ];
+            const handlers = [matchingHandler, nonMatchingHandler];
+            const expected = [matchingHandler];
 
-            requests.sort(queryComparator.noParamComparator);
-            assert.deepEqual(requests, expected);
+            const actual = queryComparator.filterForRequired({query: {param1: 'abc'}}, handlers);
+            assert.deepStrictEqual(actual, expected);
+
+        });
+
+        it('should remove any handler where a required param is has the wrong type from the request', () => {
+            const matchingHandler = {queryParamsInfo:  {param1: {name: 'param1', required: true }}};
+            const nonMatchingHandler = {queryParamsInfo: {param2: {name: 'param2', required: true, type: "number" }}};
+
+            const handlers = [matchingHandler, nonMatchingHandler];
+            const expected = [matchingHandler];
+
+            const actual = queryComparator.filterForRequired({query: {param1: 'abc', param2: 'yyz'}}, handlers);
+            assert.deepStrictEqual(actual, expected);
+
+        });
+
+        it('should keep any handler where a non required param is has the wrong type from the request', () => {
+            const matchingHandler = {queryParamsInfo:  {param1: {name: 'param1', required: true }}};
+            const nonMatchingHandler = {queryParamsInfo: {param2: {name: 'param2', required: false, type: "number" }}};
+
+            const handlers = [matchingHandler, nonMatchingHandler];
+            const expected = [matchingHandler, nonMatchingHandler];
+
+            const actual = queryComparator.filterForRequired({query: {param1: 'abc', param2: 'yyz'}}, handlers);
+            assert.deepStrictEqual(actual, expected);
+
         });
     });
 
@@ -43,11 +60,11 @@ describe('Query Comparator', function() {
             ];
 
             requests.sort(queryComparator.queryParameterComparator);
-            assert.deepEqual(requests, expected);
+            assert.deepStrictEqual(requests, expected);
         });
     });
 
-    describe('countMatchingQueryParms', function() {
+    describe('countMatchingQueryParams', function() {
         var requestParams = {
             'param1': '12345',
             'param2': '6789',
@@ -57,7 +74,7 @@ describe('Query Comparator', function() {
         var handlers = null;
 
         beforeEach(function(){
-            queryComparator.countMatchingQueryParms(handlers, requestParams);
+            queryComparator.countMatchingQueryParams(handlers, requestParams);
         });
 
         context('when no value is given', function() {

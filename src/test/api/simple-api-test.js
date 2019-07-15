@@ -29,7 +29,7 @@ describe('Simple-API', function(){
     });
 
     describe('/api/things/{thingId}', function(){
-        describe('GET', function(){
+        describe('GET /api/things/1111', function(){
             it('should respond with json object from contract example', function(done){
                 request.get('/api/things/1111')
                 .expect(200)
@@ -37,6 +37,17 @@ describe('Simple-API', function(){
                 .expect([{text: 'Zip2', id: '1'}
                     ])
                 .end(helper.endCb(done));
+            });
+        });
+
+        describe('GET /api/things/abc', function(){
+            it('should not be found ("abc" is not a number")', function(done){
+                request.get('/api/things/1111')
+                    .expect(200)
+                    .expect('Content-type', 'application/json;charset=UTF-8')
+                    .expect([{text: 'Zip2', id: '1'}
+                    ])
+                    .end(helper.endCb(done));
             });
         });
 
@@ -61,6 +72,18 @@ describe('Simple-API', function(){
                     .expect(200)
                     .expect('Content-type', 'application/json')
                     .expect({'charset':'not present', 'id': '1'})
+                    .end(helper.endCb(done));
+            });
+        });
+    });
+
+    describe('/api/things/{thing1}/{thingBool}/{thingNum}', function() {
+        describe('GET /api/things/thing1/true/42', function () {
+            it('should respond with json object from contract example', function (done) {
+                request.get('/api/things/string1/true/42')
+                    .expect(200)
+                    .expect('Content-type', 'application/json;charset=UTF-8')
+                    .expect({ "many": "things" })
                     .end(helper.endCb(done));
             });
         });

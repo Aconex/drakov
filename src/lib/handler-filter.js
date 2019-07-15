@@ -1,6 +1,6 @@
 "use strict"
 var content = require('./content');
-var queryComparator = require('./query-comparator');
+var urlQueryParams = require('./query-params');
 var route = require('./route');
 var _ = require('lodash')
 
@@ -17,12 +17,12 @@ function isJsonContent(req) {
     return false;
 }
 
-function requestHeaderCount(handler) {
+function addRequestHeaderCount(handler) {
     if (!handler.request || !handler.request.headers) {
-        return 0;
+        handler.headerCount = 0;
+    } else {
+        handler.headerCount = handler.request.headers.length;
     }
-
-    return handler.request.headers.length;
 }
 
 exports.filterHandlers = function (req, handlers, ignoreHeaders) {
@@ -31,19 +31,22 @@ exports.filterHandlers = function (req, handlers, ignoreHeaders) {
 
         handlers.sort(content.contentTypeComparator);
 
-        var queryParams = req.query;
-        if (Object.keys(queryParams).length === 0) {
-            handlers.sort(queryComparator.noParamComparator);
-        } else {
-            queryComparator.countMatchingQueryParms(handlers, queryParams);
-            handlers.sort(queryComparator.queryParameterComparator);
-        }
+        filteredHandlers = urlQueryParams.filterForRequired(req, handlers);
+        let queryParams = req.query;
+        urlQueryParams.countMatchingQueryParams(handlers, queryParams);
 
-        filteredHandlers = handlers.filter(filterRequestHeader(req, ignoreHeaders));
+        filteredHandlers = filteredHandlers.filter(filterRequestHeader(req, ignoreHeaders));
 
-        // prioritize handlers that have more headers where all headers match.
+        // prioritize handlers that have more headers where all headers match. 
         // this allows us to safely ignore extra headers being sent
-        filteredHandlers.sort((handler1, handler2) => requestHeaderCount(handler2) - requestHeaderCount(handler1));
+        // then prioritize based on query params
+        filteredHandlers.forEach(addRequestHeaderCount);
+        filteredHandlers.sort((handler1, handler2) => {
+            if (handler2.headerCount === handler1.headerCount) {
+                return urlQueryParams.queryParameterComparator(handler1, handler2);
+            }
+            return handler2.headerCount - handler1.headerCount
+        });
 
         if (!filteredHandlers.length) {
             return null;

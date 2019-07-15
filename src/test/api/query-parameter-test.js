@@ -15,7 +15,7 @@ describe('Query Parameters', function(){
             request.get('/api/query')
             .expect(200)
             .expect('Content-type', 'application/json;charset=UTF-8')
-            .expect({id: 'raw'})
+            .expect({id: 'no_params'})
             .end(helper.endCb(done));
         });
     });
@@ -104,4 +104,25 @@ describe('Query Parameters', function(){
                 .end(helper.endCb(done));
         });
     });
+
+    describe('when the parameter does not match the specified type, it falls back to the no parameter endpoint', function(){
+        it('should respond with response specified in a endpoint with no parameters', function(done){
+            request.get('/api/query?boolparam=123')
+                .expect(200)
+                .expect('Content-type', 'application/json;charset=UTF-8')
+                .expect({id: 'no_params'})
+                .end(helper.endCb(done));
+        });
+    });
+
+    describe('boolean parameters will get parsed properly', function(){
+        it('should respond with response specified in a endpoint with no parameters', function(done){
+            request.get('/api/query?numberparam=123')
+                .expect(200)
+                .expect('Content-type', 'application/json;charset=UTF-8')
+                .expect({id: 'boolean'})
+                .end(helper.endCb(done));
+        });
+    });
+
 });

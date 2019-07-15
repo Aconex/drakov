@@ -64,7 +64,7 @@ Create a new thing
 ## Things [/api/things/{thingId}]
 
 + Parameters
-    + thingId (string, `12345`) ... ID of the desired thing.
+    + thingId (number, `12345`) ... ID of the desired thing.
 
 ### Retrieve all a thing by it's id [GET]
 
@@ -126,3 +126,18 @@ Update the text of the thing
                 "charset":"not present",
                 "id": "1"
             }
+
+## Things with several different type params [/api/things/{thing1}/{thingBool}/{thingNum}]
+
++ Parameters
+    + thingNum (number)
+    + thing1 (string)
+    + thingBool (boolean)
+    
+### Get some things [GET]
+
++ Response 200 (application/json;charset=UTF-8)
+
+    + Body
+    
+            { "many": "things" }
