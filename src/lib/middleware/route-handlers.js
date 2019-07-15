@@ -3,6 +3,7 @@ var buildRouteMap = require('./route-map');
 var filter = require('../handler-filter');
 var logger = require('../logging/logger');
 const types = require('../parse/types-checker');
+const route = require("../route");
 
 module.exports = function (options, cb) {
     buildRouteMap(options, function (err, routeMap) {
@@ -11,32 +12,35 @@ module.exports = function (options, cb) {
         }
 
         var middleware = function (req, res, next) {
-            var handler = null;
-
+            let handler = null;
             Object.keys(routeMap).forEach(function (urlPattern) {
                 if (handler) {
                     return; // continue if we've already got handlers
                 }
-                var regex = pathToRegexp(urlPattern);
+                let regex = pathToRegexp(urlPattern);
 
                 // req.path allows us to delegate query string handling to the route handler functions
-                var match = regex.exec(req.path);
+                let match = regex.exec(req.path);
 
                 if (match) {
                     let paramValues = mapParameterNamesToCapturedValues(match, regex.keys);
-                    const specParams = routeMap[urlPattern].pathParams;
-                    for (let paramName in specParams) {
-                        if (!types.typeMatches(paramValues[paramName], specParams[paramName].type)) {
-                            logger.debug('Matching by url pattern:', urlPattern.yellow, 'NOT_MATCHED'.red,
-                                ' For parameter:', paramName.cyan, 'expected type:', specParams[paramName].type.cyan,
-                                'actual value:', paramValues[paramName].cyan);
-                            return;
-                        }
-                    }
+
 
                     logger.debug('Matching by url pattern:', urlPattern.yellow, 'MATCHED'.green);
-                    var handlers = routeMap[urlPattern].methods[req.method.toUpperCase()];
+                    let handlers = routeMap[urlPattern].methods[req.method.toUpperCase()];
                     if (handlers && handlers.length) {
+                        const specParams = routeMap[urlPattern].pathParams;
+                        for (let paramName in specParams) {
+                            if (!types.typeMatches(paramValues[paramName], specParams[paramName].type)) {
+                                const message = `Matching by url parameters: ${urlPattern} ${'NOT_MATCHED'}. `
+                                    + `Parameter: ${paramName} expected type '${specParams[paramName].type}' but had actual value '${paramValues[paramName]}'`;
+                                handler = route.createErrorHandler(handlers[0], [message]);
+                                logger.debug(`Matching by url parameters: ${urlPattern.yellow} ${'NOT_MATCHED'.red}. `
+                                    + `Parameter: ${paramName.cyan} expected type '${specParams[paramName].type.cyan}' but had actual value '${paramValues[paramName].cyan}'`);
+                                return;
+                            }
+                        }
+
                         handler = filter.filterHandlers(req, handlers, options.ignoreHeaders);
                     } else {
                         logger.debug('Matching by method:', req.method.toUpperCase().yellow, 'NOT_MATCHED'.red)

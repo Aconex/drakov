@@ -25,8 +25,9 @@ describe('Multipart Requests', function() {
             request.post('/api/multipart')
             .set('Content-type', 'application/json')
             .send()
-            .expect(404)
-            .expect('Content-type', 'text/html; charset=utf-8')
+            .expect(400)
+            .expect('Content-type', 'application/json; charset=utf-8')
+            .expect([ 'No handler matches after filtering required headers (including content-type)' ])
             .end(helper.endCb(done));
         });
     });

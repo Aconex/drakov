@@ -480,7 +480,7 @@ describe('removeInvalidFixtures', () => {
                 .returns({valid: true});
 
             matchWithSchemaStub.withArgs(JSON.parse(badFixtureBody), contractActions['POST'].responses[0].schema)
-                .returns({valid: false, niceErrors: ['some error passed from the validator']});
+                .returns({valid: false, formattedErrors: ['some error passed from the validator']});
                 assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], 'POST /sample-url example[0] response matches no contract response:\n' +
                 '\tFor contract response[0]: some error passed from the validator\n' +

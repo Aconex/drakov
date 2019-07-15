@@ -286,7 +286,7 @@
                 it('should contain valid === false and a nice error message', function () {
                     var result = content.matchesSchema(httpReq, specReq);
                     assert.equal(result.valid, false);
-                    assert.equal(result.niceErrors, '/first Invalid type: string (expected number)');
+                    assert.equal(result.formattedErrors, '/first Invalid type: string (expected number)');
                 });
 
                 it('should log to console that schema is not matched', function () {

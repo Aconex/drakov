@@ -61,7 +61,7 @@ describe('Spec Schema', function() {
         });
 
         describe('when the body does not match schema', function() {
-            var expected = Object.assign({niceErrors: ['Do you feel lucky, punk?']}, invalid);
+            var expected = Object.assign({formattedErrors: ['Do you feel lucky, punk?']}, invalid);
             it('Should return false when json is not validated against schema and log ERROR', function () {
                 assert.deepEqual(specSchema.matchWithSchema({idea: 1}, schema), expected);
 

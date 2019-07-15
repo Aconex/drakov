@@ -259,7 +259,7 @@ const validateBody = (fixtureBody?: BodyDescriptor, contractSchema: JsonSchema):
             const validated = schemaValidator.matchWithSchema(parsedBody, contractSchema);
             result = {
                 valid: validated.valid,
-                message:  validated.niceErrors && `${validated.niceErrors.join('; ')}`,
+                message:  validated.formattedErrors && `${validated.formattedErrors.join('; ')}`,
             }
         }
     } catch (e) {
