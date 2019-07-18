@@ -10,8 +10,7 @@
 
         ```json
             {
-                "question": "Why?",
-                "choices": ["Why not?", "BECAUSE!"]
+                "id": "valid1"
             }
         ```
 
@@ -24,7 +23,7 @@ Valid request/response pair
    
          ```json
             {
-                "title": "Meaning of life?"
+                "requestProp": "validProp"
             }
         ```
 
@@ -34,8 +33,7 @@ Valid request/response pair
 
         ```json
             {
-                "question": "Why?",
-                "choices": ["42", "Forty-two!"]
+                "id": "validPair"
             }
         ```
 
@@ -46,7 +44,7 @@ Valid request/response pair
    
          ```json
             {
-                "title": "Ultimate anwser"
+                "requestProp": "bad prop"
             }
         ```
 
@@ -56,7 +54,7 @@ Valid request/response pair
 
         ```json
             {
-                "choices": ["hmmmmm?!"]
+                "notId": "good request bad response"
             }
         ```
 
@@ -68,7 +66,7 @@ Bad request good response
    
          ```json
             {
-                "title": "Meaning of liffff?"
+                "notRequestProp": "this is wrong"
             }
         ```
 
@@ -78,52 +76,91 @@ Bad request good response
 
         ```json
             {
-                "question": "Y?",
-                "choices": ["37", "Forty!"]
+               "id": "bad request good response"
             }
         ```
 
-## Request with path parameter [/demo/path-param]
+## Request with path parameter specified wrong type [/demo1/path-param]
 
-### Get note by param [GET] 
+### Get [GET] 
 + Response 200 (application/json)
 
     + Body
 
         ```json
             {
-                "question": "Who?",
-                "choices": ["Me", "Not Me!"]
+                "id": "path value wrong type"
             }
         ```
 
-## Request with missing property in response body [/demo/missing]
+## Request with path parameter specified correct type [/demo/123]
 
-### Get With non-matching body [GET] 
+### Get [GET] 
 + Response 200 (application/json)
 
     + Body
 
         ```json
             {
-                "question": "?"
+                "id": "path value valid"
+            }
+        ```
+
+## Request with path parameter left as variable but not specified [/demo2/{pathparam}]
+
+### Get  [GET] 
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "id": "param unspecified"
+            }
+        ```
+
+## Request with path parameter left as variable specified correctly [/demo/{pathparam}]
+
++ Parameters
+    + pathparam (number)
+
+### Get  [GET] 
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "id": "number param"
             }
         ```
         
-## Request similar with same start as another with a path param [/demo/detail]
+## Request path param as value [/demo/detail]
 
-### Get demo detail [GET] 
+### Get [GET] 
 + Response 200 (application/json)
     + Body
 
         ```json
             {
-                "query": "How Many?",
-                "answers": [1,42]
+                "id": "path parameter value"
             }
         ```
 
-## Request with query parameters [/demo?query=value]
+## Request with query parameter as variable [/demo{?query}]
+
+### query parameters [GET]
++ Response 200 (application/json)
+
+    + Body
+
+        ```json
+            {
+                "id": "query variable"
+            }
+        ```
+        
+## Request with query parameter with defined value [/demo?query=value]
 
 ### Request with query parameters [GET]
 + Response 200 (application/json)
@@ -132,12 +169,9 @@ Bad request good response
 
         ```json
             {
-                "question": "When?",
-                "choices": ["Now", "Later"]
+                "id": "query value"
             }
         ```
-
-
 
 # Group 2
 
@@ -146,3 +180,10 @@ Bad request good response
 ### Unknown [GET]
 
 + Response 200 (application/json)
+    + Body
+
+        ```json
+            {
+                "id": "unknown"
+            }
+        ```

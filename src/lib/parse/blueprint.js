@@ -1,15 +1,19 @@
 //@flow
+
+import type {Contract, Resource} from "./contracts";
+import type {Blueprint, BlueprintResource, ParsedUrl} from "./resources";
+
 var fs = require('fs');
+const res = require("./resources");
+const resources = require("./resources");
 var drafter = require('drafter');
 var _ = require('lodash');
-var pathToRegexp = require('path-to-regexp');
 
 var urlParser = require('./url');
 var parseAction = require('./action');
-let contracts = require('./contracts');
+const contracts = require('./contracts');
 var logger = require('../logging/logger');
 var autoOptionsAction = require('../json/auto-options-action.json');
-import type {Actions, Blueprint, BlueprintResource, Contract, Resources} from '../parse/contracts';
 
 module.exports = function (filePath: string, autoOptions: boolean, routeMap: {}, contract?: Contract) {
     return function (cb: (err: ?Error) => void) {
@@ -22,7 +26,7 @@ module.exports = function (filePath: string, autoOptions: boolean, routeMap: {},
                 return cb(err);
             }
 
-            var allRoutesList = [];
+            var allRoutesList = {};
             result.ast.resourceGroups.forEach(function (resourceGroup) {
                 if (contract) {
                     const existingContract = contract;
@@ -34,6 +38,7 @@ module.exports = function (filePath: string, autoOptions: boolean, routeMap: {},
                 }
             });
 
+
             // add OPTIONS route where its missing - this must be done after all routes are parsed
             if (autoOptions) {
                 addOptionsRoutesWhereMissing(allRoutesList);
@@ -42,33 +47,25 @@ module.exports = function (filePath: string, autoOptions: boolean, routeMap: {},
             cb();
 
             function validateAndAddFixturesToServer(fixtureResource: BlueprintResource, contract: Contract) {
-                const fixtureUrl = urlParser.parse(fixtureResource.uriTemplate).url;
+                const fixtureUrl: ParsedUrl = urlParser.parse(fixtureResource.uriTemplate);
 
-                const contractActions: ?Actions = getActions(fixtureUrl, contract.resources);
+                const contractResource: ?Resource = res.selectAndValidateResource(fixtureUrl, fixtureResource.parameters, contract.resources);
+                if (!contractResource) {
+                    return;
+                }
 
-                let validatedResource: BlueprintResource = contracts.removeInvalidFixtures(fixtureResource, contractActions);
+                let validatedResource: BlueprintResource = contracts.removeInvalidFixtures(fixtureResource, contractResource);
                 if (!validatedResource.actions.length) {
                     return;
                 }
                 addResourceToServer(validatedResource);
             }
 
-            // `contractResources` is expected to already be sorted in match-priority order.
-            function getActions(fixtureUrl: string, contractResources: Resources): ?Actions {
-                for (const contractResourceUrl in contractResources) {
-                    var regex = pathToRegexp(contractResourceUrl);
-                    var match = regex.exec(fixtureUrl);
-                    if (match) {
-                        return contractResources[contractResourceUrl];
-                    }
-                }
-            }
-
             function addResourceToServer(resource: BlueprintResource) {
                 var parsedUrl = urlParser.parse(resource.uriTemplate);
                 var key = parsedUrl.url;
 
-                const params = separatePathAndQueryParams(parsedUrl, resource);
+                const params = resources.separatePathAndQueryParams(parsedUrl, resource);
 
                 routeMap[key] = routeMap[key] || {urlExpression: key, methods: {}};
                 routeMap[key].pathParams = params.pathParams;
@@ -80,10 +77,8 @@ module.exports = function (filePath: string, autoOptions: boolean, routeMap: {},
 
             /**
              * Adds route and its action to the allRoutesList. It appends the action when route already exists in the list.
-             * @param resource Route URI
-             * @param action HTTP action
              */
-            function saveRouteToTheList(parsedUrl, action) {
+            function saveRouteToTheList(parsedUrl: ParsedUrl, action) {
                 // used to add options routes later
                 if (typeof allRoutesList[parsedUrl.url] === 'undefined') {
                     allRoutesList[parsedUrl.url] = [];
@@ -113,22 +108,4 @@ module.exports = function (filePath: string, autoOptions: boolean, routeMap: {},
     };
 };
 
-// resource parameters contains both path and query params
-function separatePathAndQueryParams(parsedUrl, resource) {
-    const queryParamKeys = Object.keys(parsedUrl.queryParams);
-    let queryParams = {};
-    let pathParams = {};
 
-    resource.parameters && resource.parameters.forEach(param => {
-        if (queryParamKeys.includes(param.name)) {
-            queryParams[param.name] = param;
-        } else {
-            pathParams[param.name] = param;
-        }
-    });
-
-    return {
-        pathParams,
-        queryParams,
-    };
-}

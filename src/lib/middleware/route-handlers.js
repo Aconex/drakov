@@ -4,6 +4,7 @@ var filter = require('../handler-filter');
 var logger = require('../logging/logger');
 const types = require('../parse/types-checker');
 const route = require("../route");
+const resources = require("../parse/resources");
 
 module.exports = function (options, cb) {
     buildRouteMap(options, function (err, routeMap) {
@@ -23,7 +24,7 @@ module.exports = function (options, cb) {
                 let match = regex.exec(req.path);
 
                 if (match) {
-                    let paramValues = mapParameterNamesToCapturedValues(match, regex.keys);
+                    let paramValues = resources.mapParameterNamesToCapturedValues(match, regex.keys);
 
 
                     logger.debug('Matching by url pattern:', urlPattern.yellow, 'MATCHED'.green);
@@ -60,14 +61,4 @@ module.exports = function (options, cb) {
     });
 
 };
-
-function mapParameterNamesToCapturedValues(match, keys) {
-    let matches = {};
-    keys.forEach((key, i) => {
-        // the first match is always the full url
-        matches[key.name] = match[i + 1]
-    });
-
-    return matches;
-}
 

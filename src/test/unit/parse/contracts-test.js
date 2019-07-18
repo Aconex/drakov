@@ -3,23 +3,22 @@ const sinon = require('sinon');
 const assert = require('assert');
 const fs = require('fs');
 const drafter = require('drafter');
-const http = require('../../lib/parse/httpFetch');
+const http = require('../../../lib/parse/httpFetch');
+const urlParser = require('../../../lib/parse/url');
 
-const urlParser = require('../../lib/parse/url');
-const logger = require('../../lib/logging/logger');
-const schemaValidator = require('../../lib/spec-schema');
-const contracts = require('../../lib/parse/contracts');
+const logger = require('../../../lib/logging/logger');
+const schemaValidator = require('../../../lib/spec-schema');
+const contracts = require('../../../lib/parse/contracts');
 
 import type {
-    Actions,
     Blueprint,
     BlueprintAction,
     BlueprintResource,
     BodyDescriptor,
-    Contract,
     Example,
-    Mappings
-} from '../../lib/parse/contracts'
+    ParsedUrl
+} from "../../../lib/parse/resources";
+import type {Actions, Contract, Mappings, Resource,} from '../../../lib/parse/contracts'
 
 let readFileStub: typeof sinon.stub;
 beforeEach(() => {
@@ -43,8 +42,8 @@ describe('readContractFixtureMap', () => {
     describe('GIVEN the file exists', () => {
         describe('AND the file cannot be parsed', () => {
             it('WHEN calling readContractFixtureMap THEN it logs the file name AND throws error', () => {
-                const unparsableContents = 'justTryToParseME!!!!!!!!!!';
-                readFileStub.returns(unparsableContents);
+                const unParsableContents = 'justTryToParseME!!!!!!!!!!';
+                readFileStub.returns(unParsableContents);
                 const expectedMessage = /^Unable to parse contract fixture map contents "myFile"/;
 
                 //$FlowFixMe
@@ -80,8 +79,15 @@ describe('parseContracts', () => {
     const responseBody: BodyDescriptor = {name: '200', schema: 'response schema'};
 
     beforeEach(() => {
+        const parsedUrl: ParsedUrl = {
+            url: '/sample-url',
+            queryParams: {
+                someQuery: "",
+            }
+        };
+
         urlStub = sinon.stub(urlParser, 'parse');
-        urlStub.withArgs('blueprint url').returns({url: '/sample-url'});
+        urlStub.withArgs('blueprint url').returns(parsedUrl);
 
         validateSchemaStub = sinon.stub(schemaValidator, 'validateAndParseSchema');
         validateSchemaStub.withArgs(requestBody).returns(requestBody);
@@ -116,6 +122,7 @@ describe('parseContracts', () => {
                 ast: {
                     resourceGroups: [{
                         resources: [{
+                            parameters: [],
                             uriTemplate: 'blueprint url',
                             actions: [fixtureAction]
                         }]
@@ -154,7 +161,6 @@ describe('parseContracts', () => {
 
         describe('AND the file is parsable', () => {
 
-
             const example: Example = {
                 requests: [requestBody],
                 responses: [responseBody]
@@ -167,9 +173,26 @@ describe('parseContracts', () => {
                 fixtureFolders: ['fixture'],
                 resources: {
                     '/sample-url': {
-                        'POST': {
-                            request: 'request schema',
-                            responses: [{status: "200", schema: 'response schema'}]
+                        pathParams: {
+                            somePath: {
+                                name: "somePath",
+                                type: "string",
+                                required: true,
+                            }
+                        },
+                        queryParams: {
+                            someQuery: {
+                                name: "someQuery",
+                                type: "string",
+                                required: true,
+                            }
+                        },
+                        actions: {
+                            'POST': {
+
+                                request: 'request schema',
+                                responses: [{status: "200", schema: 'response schema'}]
+                            }
                         }
                     }
                 }
@@ -181,6 +204,7 @@ describe('parseContracts', () => {
                         ast: {
                             resourceGroups: [{
                                 resources: [{
+                                    parameters: [],
                                     uriTemplate: 'blueprint url',
                                     actions: []
                                 }]
@@ -221,6 +245,7 @@ describe('parseContracts', () => {
                         ast: {
                             resourceGroups: [{
                                 resources: [{
+                                    parameters: [],
                                     uriTemplate: 'blueprint url',
                                     actions: [fixtureAction]
                                 }]
@@ -258,10 +283,21 @@ describe('parseContracts', () => {
             it('WHEN calling parseContracts THEN it returns a map of contracts to fixtures', async () => {
 
                 // mirror actual drafter results
-                const parsedBlueprint = {
+                const parsedBlueprint: Blueprint = {
                     ast: {
                         resourceGroups: [{
                             resources: [{
+                                parameters: [
+                                    {
+                                        name: "someQuery",
+                                        type: "string",
+                                        required: true,
+                                    },
+                                    {
+                                        "name": "somePath",
+                                        "required": true,
+                                        "type": "string"
+                                    }],
                                 uriTemplate: 'blueprint url',
                                 actions: [fixtureAction]
                             }]
@@ -286,6 +322,18 @@ describe('parseContracts', () => {
                         ast: {
                             resourceGroups: [{
                                 resources: [{
+                                    parameters: [
+                                        {
+                                            name: "someQuery",
+                                            type: "string",
+                                            required: true,
+                                        },
+                                        {
+                                            "name": "somePath",
+                                            "required": true,
+                                            "type": "string"
+                                        }
+                                    ],
                                     uriTemplate: 'blueprint url',
                                     actions: [fixtureAction, badAction]
                                 }]
@@ -310,6 +358,18 @@ describe('parseContracts', () => {
                         ast: {
                             resourceGroups: [{
                                 resources: [{
+                                    parameters: [
+                                        {
+                                            name: "someQuery",
+                                            type: "string",
+                                            required: true,
+                                        },
+                                        {
+                                            "name": "somePath",
+                                            "required": true,
+                                            "type": "string"
+                                        }
+                                    ],
                                     uriTemplate: 'blueprint url',
                                     actions: [fixtureAction, fixtureAction]
                                 }]
@@ -407,6 +467,12 @@ describe('removeInvalidFixtures', () => {
         }
     };
 
+    const contractResource: Resource = {
+        actions: contractActions,
+        pathParams: {},
+        queryParams: {},
+    };
+
     describe('GIVEN the fixture body matches the contract schema', () => {
         it('WHEN calling removeInvalidFixtures THEN all actions return for both GET and POST', () => {
             const fixtureBody = '{\n"question": "Why?",\n"choices": ["Why not?", "BECAUSE!"]\n}';
@@ -426,6 +492,7 @@ describe('removeInvalidFixtures', () => {
                 }],
             };
             const fixture: BlueprintResource = {
+                parameters: [],
                 uriTemplate: '/sample-url',
                 actions: [postAction, getAction]
             };
@@ -442,7 +509,7 @@ describe('removeInvalidFixtures', () => {
             matchWithSchemaStub.withArgs(parsedBody, contractActions['GET'].request)
                 .returns({valid: true});
 
-            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), fixture);
+            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractResource), fixture);
         });
     });
     describe('GIVEN the a fixture body  does not match the contract schema', () => {
@@ -465,11 +532,13 @@ describe('removeInvalidFixtures', () => {
             };
 
             const fixture: BlueprintResource = {
+                parameters: [],
                 uriTemplate: '/sample-url',
                 actions: [goodAction, badAction]
             };
 
             const expectedResource: BlueprintResource = {
+                parameters: [],
                 uriTemplate: '/sample-url',
                 actions: [goodAction]
             };
@@ -481,7 +550,7 @@ describe('removeInvalidFixtures', () => {
 
             matchWithSchemaStub.withArgs(JSON.parse(badFixtureBody), contractActions['POST'].responses[0].schema)
                 .returns({valid: false, formattedErrors: ['some error passed from the validator']});
-            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), expectedResource);
+            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractResource), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], 'POST /sample-url example[0] response matches no contract response:\n' +
                 '\tFor contract response[0]: some error passed from the validator\n' +
                 '\tFor contract response[1]: Http status code does not match: fixture= contract=409')
@@ -507,11 +576,13 @@ describe('removeInvalidFixtures', () => {
                 }],
             };
             const fixture: BlueprintResource = {
+                parameters: [],
                 uriTemplate: '/sample-url',
                 actions: [validAction, unmatchedAction]
             };
 
             const expectedResource: BlueprintResource = {
+                parameters: [],
                 uriTemplate: '/sample-url',
                 actions: [validAction]
             };
@@ -520,7 +591,7 @@ describe('removeInvalidFixtures', () => {
                 .returns({valid: true});
             matchWithSchemaStub.withArgs(JSON.parse(fixtureBody), contractActions['POST'].request)
                 .returns({valid: true});
-            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), expectedResource);
+            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractResource), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], 'DELETE /sample-url is not in the contract');
         });
 
@@ -536,16 +607,18 @@ describe('removeInvalidFixtures', () => {
                     }],
                 };
                 const fixture: BlueprintResource = {
+                    parameters: [],
                     uriTemplate: '/sample-url',
                     actions: [fixtureAction]
                 };
 
                 const expectedResource: BlueprintResource = {
+                    parameters: [],
                     uriTemplate: '/sample-url',
                     actions: []
                 };
 
-                assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), expectedResource);
+                assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractResource), expectedResource);
                 assert.equal(errorSpy.getCall(0).args[0], 'POST /sample-url example[0] request error parsing body\n\tUnexpected token T in JSON at position 0');
             });
         });
@@ -563,12 +636,15 @@ describe('removeInvalidFixtures', () => {
         };
 
         const fixture: BlueprintResource = {
+            parameters: [],
             uriTemplate: '/sample-url',
             actions: [fixtureAction]
         };
 
         const emptyResponseAction: Actions = {
             'POST': {
+                pathParams: {},
+                queryParams: {},
                 request: {
                     "$schema": "http://json-schema.org/draft-07/schema#",
                     "type": "object"
@@ -576,9 +652,15 @@ describe('removeInvalidFixtures', () => {
                 responses: [{status: '', schema: ''}]
             }
         };
+
+        const emptyContractResource: Resource = {
+            actions: emptyResponseAction,
+            pathParams: {},
+            queryParams: {},
+        };
         it('WHEN calling with an empty response THEN it passes validation', () => {
             matchWithSchemaStub.returns({valid: true});
-            assert.deepEqual(contracts.removeInvalidFixtures(fixture, emptyResponseAction), fixture);
+            assert.deepEqual(contracts.removeInvalidFixtures(fixture, emptyContractResource), fixture);
         });
     });
 
@@ -592,18 +674,20 @@ describe('removeInvalidFixtures', () => {
         };
 
         const fixture: BlueprintResource = {
+            parameters: [],
             uriTemplate: '/sample-url',
             actions: [fixtureAction]
         };
 
         const expectedResource: BlueprintResource = {
+            parameters: [],
             uriTemplate: '/sample-url',
             actions: []
         };
 
         it('WHEN calling it THEN it fails with helpful message', () => {
             matchWithSchemaStub.returns({valid: true});
-            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), expectedResource);
+            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractResource), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], 'POST /sample-url example[0] response matches no contract response:\n' +
                 '\tFor contract response[0]: Http status code does not match: fixture=200 contract=\n' +
                 '\tFor contract response[1]: Http status code does not match: fixture=200 contract=409');
@@ -621,11 +705,13 @@ describe('removeInvalidFixtures', () => {
         };
 
         const fixture: BlueprintResource = {
+            parameters: [],
             uriTemplate: '/sample-url',
             actions: [fixtureAction]
         };
 
         const expectedResource: BlueprintResource = {
+            parameters: [],
             uriTemplate: '/sample-url',
             actions: []
         };
@@ -635,7 +721,7 @@ describe('removeInvalidFixtures', () => {
 \tFor contract response[1]: Http status code does not match: fixture= contract=409`;
         it('WHEN calling with an empty response THEN it removes the action and logs a helpful message', () => {
             matchWithSchemaStub.returns({valid: true});
-            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), expectedResource);
+            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractResource), expectedResource);
             assert.equal(errorSpy.getCall(0).args[0], expectedErr)
         });
     });
@@ -650,6 +736,7 @@ describe('removeInvalidFixtures', () => {
         };
 
         const fixture: BlueprintResource = {
+            parameters: [],
             uriTemplate: '/sample-url',
             actions: [fixtureAction]
         };
@@ -657,7 +744,7 @@ describe('removeInvalidFixtures', () => {
 
         it('WHEN calling it THEN it throws an error', () => {
             matchWithSchemaStub.returns({valid: true});
-            assert.throws(() => contracts.removeInvalidFixtures(fixture, contractActions),
+            assert.throws(() => contracts.removeInvalidFixtures(fixture, contractResource),
                 //$FlowFixMe
                 {message: 'Found more than one request or response for example 0. Requests and responses expected in pairs.'});
         });
@@ -679,13 +766,14 @@ describe('removeInvalidFixtures', () => {
         };
 
         const fixture: BlueprintResource = {
+            parameters: [],
             uriTemplate: '/sample-url',
             actions: [fixtureAction]
         };
 
         it('WHEN calling with two different valid responses THEN it passes validation AND does not log any errors', () => {
             matchWithSchemaStub.returns({valid: true});
-            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractActions), fixture);
+            assert.deepEqual(contracts.removeInvalidFixtures(fixture, contractResource), fixture);
             assert.ok(errorSpy.notCalled);
         });
     });

@@ -1,5 +1,16 @@
 // @flow 
+import type {
+    Blueprint,
+    BlueprintAction,
+    BlueprintResource,
+    BodyDescriptor,
+    Example,
+    Params,
+    ParsedUrl, Warning
+} from "./resources";
+
 const fs = require('fs');
+const res = require("./resources");
 const path = require('path');
 const drafter = require('drafter');
 
@@ -14,13 +25,19 @@ export type Mappings = { [string]: Array<string> };
 // structures for Contracts
 export type Contract = {
     fixtureFolders: Array<string>,
-    resources: Resources
+    resources: Resources,
 };
 
 export type Resources = {
-    [Url]: Actions
+    [Url]: Resource
 };
 type Url = string;
+
+export type Resource = {
+    pathParams: Params,
+    queryParams: Params,
+    actions: Actions,
+}
 
 export type Actions = {
     [Verb]: ResourceSchemas
@@ -28,7 +45,7 @@ export type Actions = {
 type Verb = string;
 
 type ResourceSchemas = {
-    request: ?JsonSchema,
+    request?: JsonSchema,
     responses: Array<Response>
 };
 
@@ -44,46 +61,6 @@ type BodyValidationResult = {
     message: string
 };
 
-// structures for Fixtures and non-validated blueprints as returned by drafter
-type Warning = {
-    message: string,
-    location: Array<{ index: number, length: number }>
-};
-
-export type Blueprint = {
-    ast: {
-        resourceGroups: Array<ResourceGroup>
-    },
-    warnings: Array<Warning>
-};
-
-export type ResourceGroup = {
-    resources: Array<BlueprintResource>
-};
-
-export type BlueprintResource = {
-    uriTemplate: string,
-    actions: Array<BlueprintAction>,
-    parameters?: Array<any>
-};
-
-export type BlueprintAction = {
-    method: string,
-    examples: ?Array<Example>
-};
-
-export type Example = {
-    requests: Array<BodyDescriptor>,
-    responses: Array<BodyDescriptor>
-};
-
-export type BodyDescriptor = {
-    schema?: string,
-    body?: string,
-    // name is what the apib parser calls the status code
-    name: string,
-};
-
 function isHttpPath(filePath: string): boolean {
     return /^https?:\/\//.test(filePath)
 }
@@ -94,7 +71,7 @@ const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
     try {
         contents = fs.readFileSync(contractFixtureMapFile, {encoding: 'utf8'});
     } catch (e) {
-        const message = `Unable to read contract fixture map file "${contractFixtureMapFile}"`
+        const message = `Unable to read contract fixture map file "${contractFixtureMapFile}"`;
         throw new Error(message);
     }
 
@@ -110,8 +87,7 @@ const readContractFixtureMap = (contractFixtureMapFile: string): Mappings => {
 
     Object.keys(rawContractFixtureMap).forEach((key) => {
         const contractPath = isHttpPath(key) ? key : path.join(basePath, key);
-        const fixturesPaths = rawContractFixtureMap[key].map(fixturePath => path.join(basePath, fixturePath));
-        contractFixtureMap[contractPath] = fixturesPaths;
+        contractFixtureMap[contractPath] = rawContractFixtureMap[key].map(fixturePath => path.join(basePath, fixturePath));
     });
 
     return contractFixtureMap;
@@ -131,12 +107,12 @@ const readFile = async (filePath: string): Promise<string> => {
             fileContents = fs.readFileSync(filePath, {encoding: 'utf8'});
         }
     } catch (e) {
-        const message = `Unable to read contract file "${filePath}"`
+        const message = `Unable to read contract file "${filePath}"`;
         throw new Error(message);
     }
 
     return fileContents;
-}
+};
 
 
 const parseBlueprint = (rawContract: string, contractFilePath: string): Blueprint => {
@@ -152,12 +128,12 @@ const parseBlueprint = (rawContract: string, contractFilePath: string): Blueprin
     if (parsedContract.warnings.length) {
         const formatWarning = (warning: Warning): string => {
             return `\t${warning.message}. See: "${rawContract.substring(warning.location[0].index, warning.location[0].index + warning.location[0].length - 1)}"`;
-        }
+        };
         logger.warn(`Warnings for contract "${contractFilePath}":\n ${parsedContract.warnings.map(formatWarning).join('\n')}`);
     }
 
     return parsedContract;
-}
+};
 
 
 const mapBlueprintToResources = (blueprint: Blueprint): Resources => {
@@ -165,19 +141,26 @@ const mapBlueprintToResources = (blueprint: Blueprint): Resources => {
 
     blueprint.ast.resourceGroups.forEach(resourceGroup => {
         resourceGroup.resources.forEach(resourceExample => {
-            let url: string = urlParser.parse(resourceExample.uriTemplate).url;
-
-            const resource = resources[url] || {}
-            resources[url] = resource;
+            let parsedUrl: ParsedUrl = urlParser.parse(resourceExample.uriTemplate);
+            const url = parsedUrl.url;
+            if (!resources[url]) {
+                const params = res.separatePathAndQueryParams(parsedUrl, resourceExample);
+                resources[url] = {
+                    pathParams: params.pathParams,
+                    queryParams: params.queryParams,
+                    actions: {},
+                };
+            }
+            const resource = resources[url];
 
             resourceExample.actions.forEach((action: BlueprintAction) => {
-                if (resource[action.method]) {
+                if (resource.actions[action.method]) {
                     logger.error(`${action.method} "${url}" is defined more than once; ignoring additional schema`);
 
                 } else {
                     const schema: ?ResourceSchemas = extractSchema(action, url);
                     if (schema) {
-                        resource[action.method] = schema;
+                        resource.actions[action.method] = schema;
                     }
                 }
             });
@@ -185,7 +168,7 @@ const mapBlueprintToResources = (blueprint: Blueprint): Resources => {
     });
 
     return resources;
-}
+};
 
 const parseContracts = async (mappings: Mappings): Promise<Array<Contract>> => {
     const contracts: Array<Contract> = [];
@@ -270,11 +253,11 @@ const validateBody = (fixtureBody?: BodyDescriptor, contractSchema: JsonSchema):
     }
     return result;
 };
-const removeInvalidFixtures = (resource: BlueprintResource, contractActions: ?Actions): BlueprintResource => {
+const removeInvalidFixtures = (resource: BlueprintResource, contractEndpoint: ?Resource): BlueprintResource => {
     const validActions: Array<BlueprintAction> = [];
 
     resource.actions.forEach((fixtureAction) => {
-        const contractAction = contractActions && contractActions[fixtureAction.method];
+        const contractAction = contractEndpoint && contractEndpoint.actions[fixtureAction.method];
         if (!contractAction) {
             logger.error(`${fixtureAction.method} ${resource.uriTemplate} is not in the contract`);
             return;

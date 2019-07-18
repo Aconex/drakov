@@ -11,47 +11,33 @@
         ```json
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "required": ["question", "choices"],
+              "required": ["id"],
               "type": "object",
               "properties": {
-                "question": {
+                "id": {
                   "type": "string"
-                },
-                "choices": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "minItems": 2
                 }
               }
              
             }
         ```
 
-
 ### Post note schema [POST]
 
 + Request
-
     + Body
- 
-        ```json
-            {
-              "question": "Y?",
-              "choices": ["37", "Forty!"]
-            }
-        ```
-
+    
+            For validator
+    
     + Schema
     
         ```json
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "required": ["title"],
+              "required": ["requestProp"],
               "type": "object",
               "properties": {
-                "title": {
+                "requestProp": {
                   "type": "string"
                 }
               }
@@ -65,18 +51,11 @@
         ```json
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "required": ["question", "choices"],
+              "required": ["id"],
               "type": "object",
               "properties": {
-                "question": {
+                "id": {
                   "type": "string"
-                },
-                "choices": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "minItems": 2
                 }
               }
              
@@ -85,32 +64,20 @@
 
 ### Bad Request [PUT]
 + Request
- 
     + Body
- 
-        ```json
-            {
-              "question": "Y?",
-              "choices": ["37", "Forty!"]
-            }
-        ```
+    
+            For validator
+    
     + Schema
     
         ```json
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "required": ["question", "choices"],
+              "required": ["id"],
               "type": "object",
               "properties": {
-                "question": {
+                "id": {
                   "type": "string"
-                },
-                "choices": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "minItems": 2
                 }
               }
              
@@ -124,24 +91,20 @@
         ```json
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "required": ["question", "choices"],
+              "required": ["id"],
               "type": "object",
               "properties": {
-                "question": {
+                "id": {
                   "type": "string"
-                },
-                "choices": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "minItems": 2
                 }
               }
              
             }
         ```
-## Request with path parameter [/demo/:pathparam]
+## Request with path parameter as number [/demo/{pathparam}]
+
++ Parameters
+    + pathparam (number)
 
 ### Get note by param [GET] 
 + Response 200 (application/json)
@@ -151,18 +114,57 @@
         ```json
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "required": ["question", "choices"],
+              "required": ["id"],
               "type": "object",
               "properties": {
-                "question": {
+                "id": {
                   "type": "string"
-                },
-                "choices": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "minItems": 2
+                }
+              }
+             
+            }
+        ```
+## Request with path parameter as number [/demo1/{pathparam}]
+
++ Parameters
+    + pathparam (number)
+
+### Get note by param [GET] 
++ Response 200 (application/json)
+
+    + Schema
+    
+        ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["id"],
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+             
+            }
+        ```
+## Request with path parameter as number [/demo2/{pathparam}]
+
++ Parameters
+    + pathparam (number)
+
+### Get note by param abc [GET] 
++ Response 200 (application/json)
+
+    + Schema
+    
+        ```json
+            {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "required": ["id"],
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
                 }
               }
              
@@ -179,18 +181,11 @@
         ```json
             {
               "$schema": "http://json-schema.org/draft-07/schema#",
-              "required": ["query", "answers"],
+              "required": ["id"],
               "type": "object",
               "properties": {
-                "query": {
+                "id": {
                   "type": "string"
-                },
-                "answers": {
-                  "type": "array",
-                  "items": {
-                    "type": "number"
-                  },
-                  "minItems": 2
                 }
               }
              
@@ -198,8 +193,10 @@
         ```
 
 ## Request with query parameters [/demo?query={query}]
-
-### [GET]
++ Parameters
+    + query (number)
+    
+### GET [GET]
 
 + Response 200 (application/json)
 
