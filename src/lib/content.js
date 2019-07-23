@@ -3,6 +3,7 @@ var lodash = require('lodash');
 var specSchema = require('./spec-schema');
 var contentTypeChecker = require('./content-type');
 var strictSchemas = require('./strict-schemas');
+var types = require('./parse/types-checker');
 
 var isJson = contentTypeChecker.isJson;
 
@@ -142,16 +143,39 @@ exports.matchesHeader = function (httpReq, specReq, ignoreHeaders) {
                 !shouldIgnoreHeader(header.name));
     }
 
-    function containsHeader(header) {
-        var httpReqHeader = header.name.toLowerCase();
-        var result = httpReq.headers.hasOwnProperty(httpReqHeader) &&
-            httpReq.headers[httpReqHeader] === header.value;
+    function isValidHeader(specHeader) {
+        const headerName = specHeader.name.toLowerCase();
+        if (!httpReq.headers.hasOwnProperty(headerName)) {
+            if (specHeader.required) {
+                logger.debug(`Matching by request header: For "${headerName}" is required but missing ${'NOT_MATCHED'.red}`);
+                return false;
+            } else {
+                logger.debug(`Matching by request header: Optional header ${headerName} omitted`);
+                return true;
+            }
+        }
 
-        logger.debug('Matching by request header', httpReqHeader, '=', header.value, renderMatchType(result));
-        return result;
+        const reqValue = httpReq.headers[headerName];
+        if (specHeader.type) {
+            if (!types.typeMatches(reqValue, specHeader.type)) {
+                logger.debug(`Matching by request header: For "${headerName}" expected type "${specHeader.type}" but got value "${reqValue}" ${'NOT_MATCHED'.red}`);
+                return false;
+            } else {
+                logger.debug(`Matching by request header: "${headerName}" ${'MATCHED'.green}`);
+                return true;
+            }
+        }
+
+        if (reqValue !== specHeader.value) {
+            logger.debug(`Matching by request header: For "${headerName}" expected value "${specHeader.value}" but got value "${reqValue}" ${'NOT_MATCHED'.red}`);
+            return false;
+        }
+
+        logger.debug(`Matching by request header: "${headerName}" ${'MATCHED'.green}`);
+        return true;
     }
 
-    return specReq.headers.filter(headersForEvaluation).every(containsHeader) &&
+    return specReq.headers.filter(headersForEvaluation).every(isValidHeader) &&
         (shouldIgnoreHeader('content-type') || areContentTypesSame(httpReq, specReq));
 };
 

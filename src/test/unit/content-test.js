@@ -399,7 +399,7 @@
                         {name: 'Content-Type', value: 'application/json'},
                         {name: 'Custom-header', value: 'test'},
                         {name: 'Hello', value: 'World'},
-                        {name: 'some-another-header', value: 'some value'},
+                        {name: 'some-another-header', value: 'some value', required: true},
                     ]
                 };
 

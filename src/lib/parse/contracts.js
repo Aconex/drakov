@@ -1,4 +1,4 @@
-// @flow 
+// @flow
 import type {
     Blueprint,
     BlueprintAction,
@@ -6,8 +6,10 @@ import type {
     BodyDescriptor,
     Example,
     Params,
-    ParsedUrl, Warning
+    ParsedUrl,
+    Warning
 } from "./resources";
+import type {HeaderDef} from "./headers";
 
 const fs = require('fs');
 const res = require("./resources");
@@ -19,6 +21,7 @@ const urlParser = require('./url');
 const logger = require('../logging/logger');
 const schemaValidator = require('../spec-schema');
 const http = require('./httpFetch');
+const headers = require('./headers');
 
 export type Mappings = { [string]: Array<string> };
 
@@ -45,13 +48,19 @@ export type Actions = {
 type Verb = string;
 
 type ResourceSchemas = {
-    request?: JsonSchema,
-    responses: Array<Response>
+    request: Request,
+    responses: Array<Response>,
 };
+
+
+type Request = {
+    headers: Array<HeaderDef>,
+    schema: ?JsonSchema
+}
 
 type Response = {
     status: string,
-    schema: ?JsonSchema
+    schema: ?JsonSchema,
 };
 
 type JsonSchema = any // any valid JSON-schema
@@ -195,7 +204,6 @@ const parseContracts = async (mappings: Mappings): Promise<Array<Contract>> => {
     return contracts;
 };
 
-
 const extractSchema = (action: BlueprintAction, url: string): ?ResourceSchemas => {
 
     const httpVerb = action.method;
@@ -206,10 +214,14 @@ const extractSchema = (action: BlueprintAction, url: string): ?ResourceSchemas =
         return;
     }
 
-    const request = example.requests && example.requests[0];
+    const request = (example.requests && example.requests[0]) || {};
+    request.headers = request.headers || [];
 
     return {
-        request: getSchema(request),
+        request: {
+            headers: request.headers.map(headers.parseHeaderValue),
+            schema: getSchema(request),
+        },
         responses: example.responses && example.responses.map(response => ({
             status: response.name,
             schema: getSchema(response)
@@ -246,7 +258,7 @@ const validateBody = (fixtureBody?: BodyDescriptor, contractSchema: JsonSchema):
         }
     } catch (e) {
         if (e.name === 'SyntaxError') {
-            result = {valid: false, message: `error parsing body\n\t${e.message}`};
+            result = {valid: false, message: `Error parsing body: ${e.message}`};
         } else {
             throw e;
         }
@@ -277,10 +289,12 @@ const removeInvalidFixtures = (resource: BlueprintResource, contractEndpoint: ?R
             const fixtureRequest = example.requests[0];
             const fixtureResponse = example.responses[0];
 
-            const requestValid = validateBody(fixtureRequest, contractAction.request);
+            const fixtureHeaders = (fixtureRequest && fixtureRequest.headers) || [];
+            const headersValid = headers.compareFixtureAndContractHeaders(fixtureHeaders, contractAction.request.headers);
+            const requestValid = validateBody(fixtureRequest, contractAction.request.schema);
 
-            if (!requestValid.valid) {
-                logger.error(`${fixtureAction.method} ${resource.uriTemplate} example[${exampleIndex}] request ${requestValid.message}`);
+            if (!requestValid.valid || !headersValid.valid) {
+                logger.error(`${fixtureAction.method} ${resource.uriTemplate} example[${exampleIndex}] request has the following errors:\n\t${headersValid.messages.concat(requestValid.message).join('\n\t')}`);
                 // if request isn't valid we don't care if responses are
                 return;
             }

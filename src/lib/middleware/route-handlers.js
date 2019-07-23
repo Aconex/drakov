@@ -32,12 +32,12 @@ module.exports = function (options, cb) {
                     if (handlers && handlers.length) {
                         const specParams = routeMap[urlPattern].pathParams;
                         for (let paramName in specParams) {
-                            if (!types.typeMatches(paramValues[paramName], specParams[paramName].type)) {
+                            if (specParams[paramName].type && !types.typeMatches(paramValues[paramName], specParams[paramName].type)) {
                                 const message = `Matching by url parameters: ${urlPattern} ${'NOT_MATCHED'}. `
                                     + `Parameter: ${paramName} expected type '${specParams[paramName].type}' but had actual value '${paramValues[paramName]}'`;
                                 handler = route.createErrorHandler(handlers[0], [message]);
                                 logger.debug(`Matching by url parameters: ${urlPattern.yellow} ${'NOT_MATCHED'.red}. `
-                                    + `Parameter: ${paramName.cyan} expected type '${specParams[paramName].type.cyan}' but had actual value '${paramValues[paramName].cyan}'`);
+                                    + `Parameter: ${paramName.cyan} expected type '${specParams[paramName].type.cyan}' but had actual value '${(paramValues[paramName] ||'').cyan}'`);
                                 return;
                             }
                         }

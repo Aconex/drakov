@@ -1,4 +1,4 @@
-# Headers Group 1
+# Headers
 
 ## Headers request [/headers]
 
@@ -14,3 +14,17 @@
               "type": "string"
             }
         ```
+        
+## Headers with types [/header-types/{test_type}]
+
+### GET
+
++ Request
+    + Headers
+      
+              stringRequired: (string)
+              numberRequired: (number)
+              stringOptional: (string, optional)
+              value: some value
+    
++ Response 200

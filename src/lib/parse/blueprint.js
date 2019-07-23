@@ -14,6 +14,7 @@ var parseAction = require('./action');
 const contracts = require('./contracts');
 var logger = require('../logging/logger');
 var autoOptionsAction = require('../json/auto-options-action.json');
+const headers = require('./headers');
 
 module.exports = function (filePath: string, autoOptions: boolean, routeMap: {}, contract?: Contract) {
     return function (cb: (err: ?Error) => void) {
@@ -27,7 +28,17 @@ module.exports = function (filePath: string, autoOptions: boolean, routeMap: {},
             }
 
             var allRoutesList = {};
-            result.ast.resourceGroups.forEach(function (resourceGroup) {
+            result.ast.resourceGroups.forEach(resourceGroup => {
+                resourceGroup.resources.forEach(resource => {
+                    resource.actions.forEach(action =>{
+                        action.examples && action.examples.forEach(example => {
+                            example.requests.forEach(request => {
+                                request.headers = request.headers && request.headers.map(headers.parseHeaderValue);
+                            });
+                        });
+                    });
+                });
+
                 if (contract) {
                     const existingContract = contract;
                     resourceGroup.resources.forEach((resource) => {

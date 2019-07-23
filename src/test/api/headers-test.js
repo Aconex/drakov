@@ -78,4 +78,28 @@ describe('HEADERS', function () {
         });
     });
 
+    describe('keys with types', function () {
+
+        describe('WHEN all keys match, omitting optional keys', function () {
+            it('should respond with HTTP 200', function (done) {
+                request.get('/type-headers')
+                    .set('string-key','string')
+                    .set('num-key', 123)
+                    .expect(200)
+                    .end(helper.endCb(done));
+            });
+        });
+
+        describe('WHEN types are wrong, even for optional', function () {
+            it('should respond with HTTP 400', function (done) {
+                request.get('/type-headers')
+                    .set('string-key','string')
+                    .set('num-key', '123')
+                    .set('optional-key', 'not a number')
+                    .expect(400)
+                    .end(helper.endCb(done));
+            });
+        });
+    });
+
 });

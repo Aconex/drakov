@@ -7,6 +7,7 @@ var drakovDefault = {
     sourceFiles: 'test/example/**/*.md',
     serverPort: require('./port'),
     stealthmode: true,
+    logLevel: 'DEBUG',
     disableCORS: false,
 };
 

@@ -73,3 +73,17 @@ Check Cookie header
             {
                  "header":"json"
             }
+
+## Headers [/type-headers]
+
+### With types [GET]
+
++ Request
+
+    + Headers
+
+            string-key: (string)
+            num-key: 123 (number)
+            optional-key: optional (number, optional)
+
++ Response 200

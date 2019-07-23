@@ -30,16 +30,42 @@ To access files on github, you must provide a `GIT_TOKEN` as an environmental va
 
 This mode is mutually exclusive with the existing mode; either a source file glob (`-f`) or a path to the mapping file (`-m`) must be provided.
 
-## Matching endpoint parameters
-
+## Endpoint matching
+ 
+### Query and path parameters
 The original drakov had no support for actually checking path or query parameter types; additionally, required query parameters were not checked 
 (assuming all path parameters are required). These validations listed in the apib are now being enforced for primitive types and shallowly for arrays and objects; 
 drakov will check that the parameters can be properly coerced into the listed type. For path and required query parameters, non-matching values
 cause the endpoint to not be found.
 
+### Header matching
+The original drakov, and indeed the apib format, has no concept of a header variable, but we found this problematic in matching requests and enforcing headers.
+The format is based on the MSON format that apib uses: 
+```
+    <header name>: `<example value>` (<type>, required | optional) - <description>
+```
+Headers that have only an example value will be an exact match as drakov has always worked; otherwise, they will match
+as long as they are the proper type.
+
+The headers still need to be in a pre-formatted block, with one header per line
+and must **not** have a list item marker (+ or -) in front, unlike parameters. This is to allow
+continued use of the existing parsing library which does not recognize this format.
+ 
+### Running fixtures with parameters in validation mode
+All headers and parameters must have the same strictness or be stricter in how they deal with parameter and
+must have matching types. Thus the following changes are valid:
++ A header or param that is optional in the contract can be required in a fixture
++ A header or param that has a type in the contract can be a value (of appropriate type) 
++ Additional headers can be added to the fixture to allow users to pick specific examples to return that might otherwise have identical requests.
+Any fixtures that do not match the requirements of the contract will not be served, with a log message 
+emitted during startup explaining the reason that particular example is excluded.
+
+### Note on optionality
+For all parameters above, *required is the default optionality*.
+
 ### Endpoint matching priorities
 In the case that multiple version of an endpoint satisfy the required attributes, drakov picks the best match in the following order:
-1. Highest number of matching headers (Currently only exact value matches are supported)
+1. Highest number of matching headers 
 2. Query parameters that match literal values in the fixture url
 3. Highest number of total matching query parameters (including optional)
 4. Lowest number of missing optional query parameters

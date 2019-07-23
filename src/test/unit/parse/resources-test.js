@@ -7,45 +7,52 @@ const resources = require('../../../lib/parse/resources');
 
 describe('separatePathAndQueryParams', () => {
     describe('Given a list of parameters in a resource', () => {
-        const paramA: Parameter = {
+        const pathA: Parameter = {
             name: "A",
             type: "",
             required: true,
         };
 
-        const paramB: Parameter = {
+        const queryB: Parameter = {
             name: "B",
             type: "",
             required: true,
         };
 
-        const paramC: Parameter = {
+        const pathC: Parameter = {
             name: "C",
             type: "",
             required: true,
         };
 
-        const paramD: Parameter = {
+        const queryD: Parameter = {
             name: "D",
             type: "",
             required: true,
         };
 
+        const unmatchedE: Parameter = {
+            name: "E",
+            type: "",
+            required: true,
+        };
+
+
         const resource: BlueprintResource = {
             actions: [],
-            parameters: [paramA, paramB, paramC, paramD],
+            parameters: [pathA, queryB, pathC, queryD, unmatchedE],
             uriTemplate: '',
         };
 
         const parsedUrl: ParsedUrl = {
-            url: '',
+            url: '/:A/:C',
             queryParams: {'B': '', 'D': ''},
         };
 
-        it('WHEN calling separatePathAndQueryParams, it returns correct params', () => {
+        it('WHEN calling separatePathAndQueryParams, it returns correct params, an ignores unknown', () => {
             const expected = {
-                pathParams: {'A': paramA, 'C': paramC},
-                queryParams: {'B': paramB, 'D': paramD},
+                pathParams: {'A': pathA, 'C': pathC},
+                queryParams: {'B': queryB, 'D': queryD},
             };
 
             assert.deepStrictEqual(resources.separatePathAndQueryParams(parsedUrl, resource), expected);

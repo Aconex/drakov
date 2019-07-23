@@ -6,9 +6,9 @@ var buildResponseBody = function (specBody) {
         case 'boolean':
         case 'number':
         case 'string':
-            return new Buffer(specBody);
+            return Buffer.from(specBody);
         case 'object':
-            return new Buffer(JSON.stringify(specBody));
+            return Buffer.from(JSON.stringify(specBody));
         default:
             return specBody;
     }
@@ -45,7 +45,7 @@ exports.getRouteHandlers = function (parsedUrl, action, queryParams) {
             }
         };
 
-        obj.response = Object.freeze(obj.response)
+        obj.response = Object.freeze(obj.response);
         return obj
     });
 };

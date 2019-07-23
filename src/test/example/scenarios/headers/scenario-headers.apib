@@ -1,4 +1,4 @@
-# Headers Group 1
+# Headers 
 
 ## Headers request [/headers]
 
@@ -26,3 +26,67 @@
         ```json
         "Has Header"
         ```
+
+## Headers with types [/header-types/full-match]
+
+### GET
+
++ Request
+    + Headers
+        
+            stringRequired: (string)
+            numberRequired: (number)
+            stringOptional: (string, optional)
+            value: some value
+
++ Response 200
+
+## Headers with types [/header-types/only-required-match]
+
+### GET
++ Request
+    + Headers
+        
+            stringRequired: (string)
+            numberRequired: (number)
+            value: some value
+
++ Response 200
+
+## Headers with types [/header-types/missing-required]
+
+### GET
++ Request
+    + Headers
+        
+            numberRequired: (number)
+            stringOptional: (string, optional)
+            value: some value
+
++ Response 200
+
+## Headers with types [/header-types/wrong-type]
+
+### GET
++ Request
+    + Headers
+        
+            stringRequired: (string)
+            numberRequired: (string)
+            stringOptional: (string, optional)
+            value: some value
+
++ Response 200
+
+## Headers with types [/header-types/missing-value]
+
+### GET
++ Request
+    + Headers
+        
+            stringRequired: (string)
+            numberRequired: (number)
+            stringOptional: (string, optional)
+
++ Response 200
+

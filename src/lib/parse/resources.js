@@ -1,6 +1,7 @@
 //@flow
 // structures for Fixtures and non-validated blueprints as returned by drafter
 import type {Resource, Resources} from "./contracts";
+import type {HeaderDef} from "./headers";
 
 const pathToRegexp = require('path-to-regexp');
 const logger = require('../logging/logger');
@@ -44,6 +45,7 @@ export type Example = {
 };
 
 export type BodyDescriptor = {
+    headers?: Array<HeaderDef>,
     schema?: string,
     body?: string,
     // name is what the apib parser calls the status code
@@ -61,14 +63,16 @@ export type ParsedUrl = {
 
 const separatePathAndQueryParams = function (parsedUrl: ParsedUrl, resource: BlueprintResource): { pathParams: Params, queryParams: Params } {
     const queryParamKeys = Object.keys(parsedUrl.queryParams);
+    const pathParamKeys = pathToRegexp(parsedUrl.url).keys.map(key => key.name);
     let queryParams = {};
     let pathParams = {};
-
     resource.parameters && resource.parameters.forEach(param => {
         if (queryParamKeys.includes(param.name)) {
             queryParams[param.name] = param;
-        } else {
+        } else if (pathParamKeys.includes(param.name)) {
             pathParams[param.name] = param;
+        } else {
+            logger.warn(`For ${parsedUrl.url}, param ${param.name} was not found in url and has been ignored`);
         }
     });
 
