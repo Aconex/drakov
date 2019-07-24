@@ -57,6 +57,39 @@ describe('separatePathAndQueryParams', () => {
 
             assert.deepStrictEqual(resources.separatePathAndQueryParams(parsedUrl, resource), expected);
         });
+    });
+
+    describe('Given a parameter with an unexpected type', () => {
+        const pathA: Parameter = {
+            name: 'A',
+            type: 'unknown',
+            required: true,
+        };
+
+        const resource: BlueprintResource = {
+            actions: [],
+            parameters: [pathA],
+            uriTemplate: '',
+        };
+        const expectedParam: Parameter = {
+            name: 'A',
+            type: '',
+            required: true,
+        };
+
+        const parsedUrl: ParsedUrl = {
+            url: '/:A/:C',
+            queryParams: {},
+        };
+
+        it('WHEN calling separatePathAndQueryParams, it returns the param with type removed', () => {
+            const expected = {
+                pathParams: {'A': expectedParam},
+                queryParams: {},
+            };
+
+            assert.deepStrictEqual(resources.separatePathAndQueryParams(parsedUrl, resource), expected);
+        });
 
     });
 });
@@ -85,7 +118,7 @@ describe('removeInvalidFixtures', () => {
     describe('WHEN the fixture is valid', () => {
         const fixtureUrl: ParsedUrl = {
             uriTemplate: '/demo/{pathparam}',
-            queryParams: {'q':''},
+            queryParams: {'q': ''},
             url: '/demo/:pathparam'
         };
 
@@ -110,7 +143,7 @@ describe('removeInvalidFixtures', () => {
     describe('WHEN the fixture is valid', () => {
         const fixtureUrl: ParsedUrl = {
             uriTemplate: '/demo/{pathparam}',
-            queryParams: {'q':''},
+            queryParams: {'q': ''},
             url: '/demo/:pathparam'
         };
 
@@ -160,7 +193,7 @@ describe('removeInvalidFixtures', () => {
     describe('WHEN the fixture has query parameter of wrong type', () => {
         const fixtureUrl: ParsedUrl = {
             uriTemplate: '/demo/{pathparam}',
-            queryParams: {'q':''},
+            queryParams: {'q': ''},
             url: '/demo/:pathparam'
         };
 
@@ -185,7 +218,7 @@ describe('removeInvalidFixtures', () => {
     describe('WHEN the fixture has query value that is wrong type', () => {
         const fixtureUrl: ParsedUrl = {
             uriTemplate: '/demo/{pathparam}',
-            queryParams: {'q':'asd'},
+            queryParams: {'q': 'asd'},
             url: '/demo/:pathparam'
         };
 
@@ -210,7 +243,7 @@ describe('removeInvalidFixtures', () => {
     describe('WHEN the fixture has a query parameter not required that is in the contract', () => {
         const fixtureUrl: ParsedUrl = {
             uriTemplate: '/demo/{pathparam}',
-            queryParams: {'q':''},
+            queryParams: {'q': ''},
             url: '/demo/:pathparam'
         };
 
@@ -235,7 +268,7 @@ describe('removeInvalidFixtures', () => {
     describe('WHEN the fixture is missing path parameter details', () => {
         const fixtureUrl: ParsedUrl = {
             uriTemplate: '/demo/{pathparam}',
-            queryParams: {'q':''},
+            queryParams: {'q': ''},
             url: '/demo/:pathparam'
         };
 
@@ -255,7 +288,7 @@ describe('removeInvalidFixtures', () => {
     describe('WHEN the fixture has a path parameter not correct type', () => {
         const fixtureUrl: ParsedUrl = {
             uriTemplate: '/demo/abc',
-            queryParams: {'q':''},
+            queryParams: {'q': ''},
             url: '/demo/abc'
         };
 
@@ -280,7 +313,7 @@ describe('removeInvalidFixtures', () => {
     describe('WHEN the fixture has a path parameter as wrong type', () => {
         const fixtureUrl: ParsedUrl = {
             uriTemplate: '/demo/{pathparam}',
-            queryParams: {'q':''},
+            queryParams: {'q': ''},
             url: '/demo/:pathparam'
         };
 

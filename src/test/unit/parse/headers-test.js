@@ -28,14 +28,14 @@ describe('parseHeaderValue', () => {
     describe('GIVEN a value that has a type and optionality is left out', () => {
         const rawHeader: HeaderDef = {
             name: 'name',
-            value: 'value (type)',
+            value: 'value (string)',
             type: '',
         };
 
         const expected: HeaderDef = {
             name: 'name',
             value: 'value',
-            type: 'type',
+            type: 'string',
             required: true
         };
 
@@ -47,14 +47,14 @@ describe('parseHeaderValue', () => {
     describe('GIVEN a value that has a type and optionality is `optional`', () => {
         const rawHeader: HeaderDef = {
             name: 'name',
-            value: 'value (type, optional)',
+            value: 'value (string, optional)',
             type: '',
         };
 
         const expected: HeaderDef = {
             name: 'name',
             value: 'value',
-            type: 'type',
+            type: 'string',
             required: false
         };
 
@@ -66,7 +66,7 @@ describe('parseHeaderValue', () => {
     describe('GIVEN a value that has a type and optionality is not `optional` or `required`', () => {
         const rawHeader: HeaderDef = {
             name: 'name',
-            value: 'value (type, some other value)',
+            value: 'value (string, some other value)',
             type: '',
         };
 
@@ -78,13 +78,13 @@ describe('parseHeaderValue', () => {
     describe('GIVEN value in back ticks', () => {
         const rawHeader: HeaderDef = {
             name: 'name',
-            value: '`some value` (type)',
+            value: '`some value` (string)',
             type: '',
         };
         const expected: HeaderDef = {
             name: 'name',
             value: 'some value',
-            type: 'type',
+            type: 'string',
             required: true
         };
 
@@ -96,17 +96,35 @@ describe('parseHeaderValue', () => {
     describe('GIVEN value with trailing whitespace', () => {
         const rawHeader: HeaderDef = {
             name: 'name',
-            value: 'some value          (type)',
+            value: 'some value          (string)',
             type: '',
         };
         const expected: HeaderDef = {
             name: 'name',
             value: 'some value',
-            type: 'type',
+            type: 'string',
             required: true
         };
 
         it('THEN it returns trimmed value', () => {
+            assert.deepEqual(headers.parseHeaderValue(rawHeader), expected);
+        });
+    });
+
+    describe('GIVEN unexpected type', () => {
+        const rawHeader: HeaderDef = {
+            name: 'name',
+            value: 'some value (not a type)',
+            type: '',
+        };
+        const expected: HeaderDef = {
+            name: 'name',
+            value: 'some value',
+            type: '',
+            required: true
+        };
+
+        it('THEN it returns empty type', () => {
             assert.deepEqual(headers.parseHeaderValue(rawHeader), expected);
         });
     });

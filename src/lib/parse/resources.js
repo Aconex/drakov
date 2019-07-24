@@ -67,6 +67,11 @@ const separatePathAndQueryParams = function (parsedUrl: ParsedUrl, resource: Blu
     let queryParams = {};
     let pathParams = {};
     resource.parameters && resource.parameters.forEach(param => {
+        if (param.type && !types.isExpectedType(param.type)) {
+            logger.warn(`For parameter "${param.name}" found unknown type: ${param.type}; type checking will be disabled for this parameter.`);
+            param.type = '';
+        }
+
         if (queryParamKeys.includes(param.name)) {
             queryParams[param.name] = param;
         } else if (pathParamKeys.includes(param.name)) {

@@ -1,5 +1,5 @@
 //@flow
-
+const logger = require('../logging/logger');
 const isArray = (subject: any): boolean => {
     if (Array.isArray(subject)) {
         return true;
@@ -77,7 +77,23 @@ exports.typeMatches = (subject: any, type: string): boolean => {
         case "string":
             return isString(subject);
         default:
-            throw new Error(`trying to test for unknown type ${type}`)
+            logger.warn(`Trying to do type check for unknown type ${type}. Allowing match.`)
+            return true;
     }
 };
 
+const expectedTypes = [
+    "string",
+    "number",
+    "boolean",
+    "object",
+    "array",
+];
+
+exports.isExpectedType = (type: string): boolean => {
+    // allow 'array[<type>]
+    if (type.startsWith("array")) {
+        return true;
+    }
+    return expectedTypes.includes(type);
+};

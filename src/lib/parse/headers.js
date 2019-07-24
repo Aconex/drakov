@@ -1,7 +1,8 @@
-"use strict"
+"use strict";
 //@flow
 
 const types = require('./types-checker');
+const logger = require('../logging/logger');
 
 export type HeaderDef = {
     name: string,
@@ -42,10 +43,16 @@ const parseHeaderValue = (rawHeader: HeaderDef): HeaderDef => {
             default:
                 throw new Error(`For header "${rawHeader.name}", unrecognized optionality: "${match.groups.required}"`);
         }
+        let type = match.groups.type;
+        if (type && !types.isExpectedType(type)){
+            logger.warn(`For header "${rawHeader.name}" found unknown type: ${type}; type checking will be disabled for this header.`);
+            type = '';
+        }
+
         return {
             name: rawHeader.name,
             value: match.groups.value,
-            type: match.groups.type,
+            type: type,
             required: required,
         };
     }
