@@ -9,7 +9,7 @@ function StackdriverLogger(serviceName: string): Logger {
 
     const version = process.env.VERSION || 'unknown';
 
-    const formatAsStackdriverPayload: (string, Level, ?HttpRequest) => string = (message, severity, httpRequest) => {
+    const formatAsStackdriverPayload = (message: string, severity: Level, httpRequest?: HttpRequest, errors?: Array<string>): string => {
         //required payload shape for stackdriver
         let payload: any = {
             logName: serviceName,
@@ -20,6 +20,10 @@ function StackdriverLogger(serviceName: string): Logger {
 
         if (httpRequest) {
             payload.httpRequest = httpRequest;
+        }
+
+        if (errors) {
+            payload.errors = errors;
         }
         return JSON.stringify(payload);
     };
@@ -40,8 +44,8 @@ function StackdriverLogger(serviceName: string): Logger {
         console.error(formatAsStackdriverPayload(message, "ERROR"));
     };
 
-    this.logHttpRequest = (message: string, httpRequest: HttpRequest) => {
-        console.log(formatAsStackdriverPayload(message, "INFO", httpRequest))
+    this.logHttpRequest = (message: string, httpRequest: HttpRequest, errors?: Array<string>) => {
+        console.log(formatAsStackdriverPayload(message, "INFO", httpRequest, errors))
     };
 
     return this;

@@ -53,8 +53,8 @@ exports.error = (...args: Array<string>) => {
     }
 };
 
-exports.logHttpRequest = (message: string, httpRequest: HttpRequest) => {
+exports.logHttpRequest = (message: string, httpRequest: HttpRequest, errors: Array<string>) => {
     if (logLevel >= levels.INFO) {
-        log.logHttpRequest(message, httpRequest);
+        log.logHttpRequest(message, httpRequest, errors);
     }
 };

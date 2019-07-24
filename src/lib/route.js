@@ -63,7 +63,7 @@ exports.createErrorHandler = function (handler, formattedErrors) {
 
         const message = [this.action.method.green, this.parsedUrl.uriTemplate.yellow,
             (this.request && this.request.description ? this.request.description : this.action.name).blue].join(' ');
-        logger.logHttpRequest(message, httpRequest);
+        logger.logHttpRequest(message, httpRequest, formattedErrors);
 
         res.set("Content-type", "application/json");
         res.status(400);

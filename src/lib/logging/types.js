@@ -17,5 +17,5 @@ export interface Logger {
 
     error(message: string): void;
 
-    logHttpRequest(message: string, httpRequest: HttpRequest): void;
+    logHttpRequest(message: string, httpRequest: HttpRequest, errors?: Array<string>): void;
 }

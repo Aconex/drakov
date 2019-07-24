@@ -21,8 +21,12 @@ const consoleLogger: Logger = {
         console.error(colors.red('[ERROR]  '), message);
     },
 
-    logHttpRequest: (message, httpRequest) => {
-        console.log(colors.white('[INFO ]  '), colors.bold(httpRequest.status + " ") + message + ' ' + JSON.stringify(httpRequest));
+    logHttpRequest: (message, httpRequest, errors) => {
+        let errMsg = '';
+        if (errors && errors.length) {
+            errMsg = `\n\t${errors.join('\n\t')}`;
+        }
+        console.log(`${colors.white('[INFO ]  ')} ${colors.bold(httpRequest.status)}  ${message} ${JSON.stringify(httpRequest)}${errMsg}`);
     }
 };
 
