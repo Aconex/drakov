@@ -122,7 +122,7 @@ const selectAndValidateResource = function (fixtureParsedUrl: ParsedUrl, fixture
             return contractResource;
         }
     }
-    //no match
+    logger.error(`No matching urls found in contract for "${fixtureUrl}`)
 };
 
 function validatePathParams(contractResource: Resource, reqPathParams: {}, fixtureParams: Array<Parameter>) {
@@ -156,6 +156,10 @@ function validateQueryParams(contractResource: Resource, fixtureParsedUrl: Parse
         } else if (reqValue === "") {
             // this is still a variable, not a value, so check the fixture parameters section type
             const fixtureParam = fixtureParams.filter(param => param.name === specParamName)[0];
+            if (!fixtureParam) {
+                logger.debug(`Optional parameter ${specParamName} omitted; allowing.`)
+                continue;
+            }
             if (fixtureParam.type !== specParam.type) {
                 errors.push(`For parameter '${specParamName}', contract listed type '${specParam.type}' but fixture listed type '${fixtureParam.type}'`);
             } else if (specParam.required && !fixtureParam.required) {
