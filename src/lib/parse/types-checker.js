@@ -60,11 +60,9 @@ const isString = (subject: any): boolean => {
     return typeof subject === "string";
 };
 
-exports.typeMatches = (subject: any, type: string): boolean => {
-    // allow types like array[string]
-    if (type.startsWith("array")) {
-        type = "array";
-    }
+
+let typeMatches = (subject: any, type: string): boolean => {
+
     switch (type) {
         case "array":
             return isArray(subject);
@@ -77,9 +75,25 @@ exports.typeMatches = (subject: any, type: string): boolean => {
         case "string":
             return isString(subject);
         default:
-            logger.warn(`Trying to do type check for unknown type ${type}. Allowing match.`)
+            logger.warn(`Trying to do type check for unknown type ${type}. Allowing match.`);
             return true;
     }
+};
+
+exports.headerTypeMatches = (subject: any, type: string): boolean => {
+    // header arrays are not surrounded by brackets, so until we try to validate individual elements, just pass
+    if (type.startsWith("array")) {
+        return true;
+    }
+    return typeMatches(subject, type);
+};
+
+exports.typeMatches = (subject: any, type: string): boolean => {
+    // allow types like array[string]
+    if (type.startsWith("array")) {
+        type = "array";
+    }
+    return typeMatches(subject, type);
 };
 
 const expectedTypes = [

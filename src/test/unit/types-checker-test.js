@@ -114,5 +114,11 @@ describe('type checker', () => {
         });
     });
 
+    describe('GIVEN the type is array for a header', () => {
+        it('WHEN checking for array IT returns true', () => {
+            assert.ok(types.headerTypeMatches( 'a,ab,c', 'array[string]'));
+        });
+    });
+
 });
 

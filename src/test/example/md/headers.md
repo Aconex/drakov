@@ -85,5 +85,6 @@ Check Cookie header
             string-key: (string)
             num-key: 123 (number)
             optional-key: optional (number, optional)
+            array-key: 1,3,5 (array[number])
 
 + Response 200

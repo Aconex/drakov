@@ -157,7 +157,7 @@ exports.matchesHeader = function (httpReq, specReq, ignoreHeaders) {
 
         const reqValue = httpReq.headers[headerName];
         if (specHeader.type) {
-            if (!types.typeMatches(reqValue, specHeader.type)) {
+            if (!types.headerTypeMatches(reqValue, specHeader.type)) {
                 logger.debug(`Matching by request header: For "${headerName}" expected type "${specHeader.type}" but got value "${reqValue}" ${'NOT_MATCHED'.red}`);
                 return false;
             } else {

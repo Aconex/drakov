@@ -85,6 +85,7 @@ describe('HEADERS', function () {
                 request.get('/type-headers')
                     .set('string-key','string')
                     .set('num-key', 123)
+                    .set('array-key', 'a,b,c')
                     .expect(200)
                     .end(helper.endCb(done));
             });

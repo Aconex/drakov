@@ -101,7 +101,7 @@ const compareFixtureAndContractHeaders = (fixtureHeaders: ?Array<HeaderDef>, con
                 return;
             }
         } else if (contract.type) {
-            if(!types.typeMatches(fixture.value, contract.type)) {
+            if(!types.headerTypeMatches(fixture.value, contract.type)) {
                 result.valid = false;
                 result.messages.push(`Header "${contract.name}" value does not match type: expected contract type "${contract.type}", but got value "${fixture.value}"`);
                 return;
