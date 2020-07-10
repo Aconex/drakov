@@ -36,7 +36,7 @@ exports.getRouteHandlers = function (parsedUrl, action, queryParams) {
                 logger.logHttpRequest(message, httpRequest);
 
                 this.response.headers.forEach(function (header) {
-                    res.set(header.name, header.value);
+                    res.setHeader(header.name, header.value);
                 });
 
                 res.status(+this.response.name);

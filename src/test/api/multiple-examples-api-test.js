@@ -92,7 +92,7 @@ describe('/api/multiple', function () {
                 .set('Content-type', 'application/json')
                 .send({'id': 2, 'title': 'hello'})
                 .expect(400)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json')
                 .end(helper.endCb(done));
         });
 
@@ -101,7 +101,7 @@ describe('/api/multiple', function () {
                 .set('Content-type', 'application/json')
                 .send({'id': 1, 'title': 'hello'})
                 .expect(201)
-                .expect('Content-type', 'application/json; charset=utf-8')
+                .expect('Content-type', 'application/json')
                 .end(helper.endCb(done));
         });
     });

@@ -46,8 +46,7 @@ describe('MSON-API', function () {
         });
     });
 
-    // this has never worked....express will override the content type
-    xdescribe('/api/charsetless', function () {
+    describe('/api/charsetless', function () {
         describe('GET', function () {
             it('should not include charset on the response`s content-type', function (done) {
                 request.get('/api/charsetless')
