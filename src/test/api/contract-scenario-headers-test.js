@@ -17,7 +17,7 @@ describe('Contract Scenarios Headers Validation', () => {
                 it('THEN it returns the correct response ', (done) => {
                     request.get('/headers')
                         .expect(200)
-                        .expect('"No Header"\n')
+                        .expect('"No Header"')
                         .end(done);
                 });
             });
@@ -27,7 +27,7 @@ describe('Contract Scenarios Headers Validation', () => {
                     request.get('/headers')
                         .set('id', 'header')
                         .expect(200)
-                        .expect('"Has Header"\n')
+                        .expect('"Has Header"')
                         .end(done);
                 });
             });
