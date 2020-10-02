@@ -5,8 +5,9 @@ var buildResponseBody = function (specBody) {
     switch (typeof specBody) {
         case 'boolean':
         case 'number':
-        case 'string':
             return Buffer.from(specBody);
+        case 'string':
+            return Buffer.from(specBody.trim());
         case 'object':
             return Buffer.from(JSON.stringify(specBody));
         default:
