@@ -27,18 +27,18 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.1.4",
-    "chokidar": "^1.6.1",
+    "chokidar": "^3.4.3",
     "colors": "^1.1.0",
     "drafter": "^1.2.0",
     "express": "^4.16.4",
     "glob": "^7.1.1",
     "http-shutdown": "^1.2.0",
-    "pug": "^2.0.4",
     "lodash": "^4.17.4",
     "path-to-regexp": "^1.7.0",
+    "pug": "^2.0.4",
     "qs": "^6.3.0",
     "tv4": "^1.1.9",
-    "yargs": "^6.6.0"
+    "yargs": "^16.1.0"
   },
   "devDependencies": {
     "grunt": "^1.0.3",
