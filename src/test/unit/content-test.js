@@ -310,7 +310,8 @@
                     'random-value': 'random',
                     'content-type': 'application/json',
                     'hello': 'World',
-                    'custom-header': 'test'
+                    'custom-header': 'test',
+                    'json-header': '{"key":"val"}',
                 }
             };
 
@@ -368,7 +369,8 @@
                     headers: [
                         {name: 'Content-Type', value: 'application/json'},
                         {name: 'Custom-header', value: 'test'},
-                        {name: 'Hello', value: 'World'}
+                        {name: 'Hello', value: 'World'},
+                        {name: 'json-header', jsonValue: {key: 'val'}}
                     ]
                 };
 
@@ -400,6 +402,7 @@
                         {name: 'Custom-header', value: 'test'},
                         {name: 'Hello', value: 'World'},
                         {name: 'some-another-header', value: 'some value', required: true},
+                        {name: 'json-header', jsonValue: {key: 'wrong'}},
                     ]
                 };
 

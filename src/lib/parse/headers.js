@@ -9,6 +9,7 @@ export type HeaderDef = {
     value: string,
     type: string,
     required?: boolean,
+    jsonValue?: any,
 };
 type Match = {
     groups: MatchGroups
@@ -28,42 +29,56 @@ export type HeaderValidation = {
 const regExp = /`?(?<value>[^`]*?)`?\s*\((?<type>[^,]*),?\s?(?<required>.*)\)/;
 
 const parseHeaderValue = (rawHeader: HeaderDef): HeaderDef => {
-    // $FlowFixMe - flow does not support match group names
-    let match: ?Match = regExp.exec(rawHeader.value);
-    if (match) {
-        let required: boolean;
-        switch (match.groups.required) {
-            case 'required':
-            case '':
-                required = true;
-                break;
-            case 'optional':
-                required = false;
-                break;
-            default:
-                throw new Error(`For header "${rawHeader.name}", unrecognized optionality: "${match.groups.required}"`);
-        }
-        let type = match.groups.type;
-        if (type && !types.isExpectedType(type)){
-            logger.warn(`For header "${rawHeader.name}" found unknown type: ${type}; type checking will be disabled for this header.`);
-            type = '';
-        }
-
-        return {
-            name: rawHeader.name,
-            value: match.groups.value,
-            type: type,
-            required: required,
-        };
-    }
-
-    return {
+    const result: HeaderDef = {
         name: rawHeader.name,
         value: rawHeader.value,
         type: '',
         required: true,
     };
+    // $FlowFixMe - flow does not support match group names
+    let match: ?Match = regExp.exec(rawHeader.value);
+    if (match) {
+        result.value = match.groups.value
+
+        switch (match.groups.required) {
+            case 'required':
+            case '':
+                result.required = true;
+                break;
+            case 'optional':
+                result.required = false;
+                break;
+            default:
+                throw new Error(`For header "${rawHeader.name}", unrecognized optionality: "${match.groups.required}"`);
+        }
+
+        let type = match.groups.type;
+        if (type && !types.isExpectedType(type)){
+            logger.warn(`For header "${rawHeader.name}" found unknown type: ${type}; type checking will be disabled for this header.`);
+            type = '';
+        }
+        result.type = type;
+    }
+
+    const jsonValue = parseJsonHeaderObject(result.value);
+    if (jsonValue) {
+        result.jsonValue = jsonValue;
+    }
+
+    return result;
 };
+
+const parseJsonHeaderObject = (str) => {
+    try {
+        const jsonValue = JSON.parse(str);
+        if (typeof jsonValue === 'object') {
+            return jsonValue;
+        }
+    } catch (e) {
+        // not a valid json - ignore
+    }
+    return '';
+}
 
 const compareFixtureAndContractHeaders = (fixtureHeaders: ?Array<HeaderDef>, contractHeaders: Array<HeaderDef>): HeaderValidation => {
     fixtureHeaders = fixtureHeaders || [];
@@ -121,5 +136,6 @@ const compareFixtureAndContractHeaders = (fixtureHeaders: ?Array<HeaderDef>, con
 
 module.exports = {
     parseHeaderValue,
+    parseJsonHeaderObject,
     compareFixtureAndContractHeaders,
 };

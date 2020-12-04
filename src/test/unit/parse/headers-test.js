@@ -128,6 +128,27 @@ describe('parseHeaderValue', () => {
             assert.deepEqual(headers.parseHeaderValue(rawHeader), expected);
         });
     });
+
+    describe('GIVEN a valid json object value', () => {
+        const rawHeader: HeaderDef = {
+            name: 'name',
+            value: '{"key1":"val1"} (string)',
+            type: '',
+        };
+        const expected: HeaderDef = {
+            name: 'name',
+            value: '{"key1":"val1"}',
+            type: 'string',
+            required: true,
+            jsonValue : {
+                key1: 'val1',
+            },
+        };
+
+        it('THEN it returns jsonValue property', () => {
+            assert.deepEqual(headers.parseHeaderValue(rawHeader), expected);
+        });
+    });
 });
 
 describe('compareFixtureAndContractHeaders', () => {
@@ -264,5 +285,28 @@ describe('compareFixtureAndContractHeaders', () => {
         });
 
     });
+});
 
+describe('parseJsonHeaderObject', () => {
+    describe('When string is a valid json object', () => {
+        const str = '{"key":"val"}'
+
+        it('then it returns parsed object', () => {
+            assert.deepStrictEqual(headers.parseJsonHeaderObject(str), JSON.parse(str));
+        });
+    });
+    describe('When string is not a valid json object', () => {
+        const str = '1'
+
+        it('then it returns empty', () => {
+            assert.deepStrictEqual(headers.parseJsonHeaderObject(str), '');
+        });
+    });
+    describe('When string is a malformed json', () => {
+        const str = '{"key":"val"'
+
+        it('then it returns empty', () => {
+            assert.deepStrictEqual(headers.parseJsonHeaderObject(str), '');
+        });
+    });
 });
