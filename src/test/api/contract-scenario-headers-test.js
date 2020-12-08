@@ -120,9 +120,13 @@ describe('Contract Scenarios Headers Validation', () => {
                     .expect(404)
                     .end(done);
             });
+
+            it('responds with 400 to a wrong json header', (done) => {
+                wrongJsonRequest()
+                    .expect(400)
+                    .end(done);
+            });
         });
-
-
     });
 });
 
@@ -132,31 +136,44 @@ function fullMatchRequest() {
         .set('stringRequired', 'a string')
         .set('numberRequired', '234')
         .set('stringOptional', 'also a string')
-        .set('value', 'some value');
+        .set('value', 'some value')
+        .set('jsonValue', JSON.stringify({key3: 'val3', key1: 'val1'}));
 }
 
 function onlyRequiredRequest() {
     return request.get('/header-types/only-required-match')
         .set('stringRequired', 'a string')
         .set('numberRequired', '234')
-        .set('value', 'some value');
+        .set('value', 'some value')
+        .set('jsonValue', JSON.stringify({key3: 'val3', key1: 'val1'}));
 }
 
 function missingRequiredRequest() {
     return request.get('/header-types/missing-required')
         .set('numberRequired', '234')
-        .set('value', 'some value');
+        .set('value', 'some value')
+        .set('jsonValue', JSON.stringify({key3: 'val3', key1: 'val1'}));
 }
 
 function wrongTypeRequest() {
     return request.get('/header-types/wrong-type')
         .set('stringRequired', 'a string')
         .set('numberRequired', '234')
-        .set('value', 'some value');
+        .set('value', 'some value')
+        .set('jsonValue', JSON.stringify({key3: 'val3', key1: 'val1'}));
 }
 
 function missingValueRequest() {
     return request.get('/header-types/missing-value')
         .set('stringRequired', 'a string')
         .set('numberRequired', '234');
+}
+
+function wrongJsonRequest() {
+    return request.get('/header-types/wrong-json')
+        .set('stringRequired', 'a string')
+        .set('numberRequired', '234')
+        .set('stringOptional', 'also a string')
+        .set('value', 'some value')
+        .set('jsonValue', JSON.stringify({key3: 'val3', key1: 'wrong'}));
 }

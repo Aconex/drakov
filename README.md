@@ -44,8 +44,20 @@ The format is based on the MSON format that apib uses:
 ```
     <header name>: `<example value>` (<type>, required | optional) - <description>
 ```
-Headers that have only an example value will be an exact match as drakov has always worked; otherwise, they will match
-as long as they are the proper type.
+Validation order:
+1. when header has a type in the spec the value is ignored and only type is compared with the request.
+```
+    x-user-id: 12345 (string) - matches x-user-id=whatever
+```
+2. when header has only value in the spec, and the value is a parsable json object, the resulting json is used for matching.
+Json matching allows backward compatible changes like field reordering and addition.
+```
+    x-user: {"id":"123"} - matches x-user={"new_field":"new_val","id":"123"}
+```
+3. when header has only value and is not a parsable json object the value is used for matching
+```
+    x-country-code: USA - matches x-country-code=USA
+```
 
 The headers still need to be in a pre-formatted block, with one header per line
 and must **not** have a list item marker (+ or -) in front, unlike parameters. This is to allow
