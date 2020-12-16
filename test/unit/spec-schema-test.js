@@ -24,11 +24,11 @@ describe('Spec Schema', function() {
 
     describe ('matchWithSchema', function() {
         it('Should return true when json is validated against schema', function () {
-            assert.equal(specSchema.matchWithSchema({id: 1}, schema), true);
+            assert.equal(specSchema.matchWithSchema({id: 1}, schema).valid, true);
         });
 
         it('Should return false when json is not validated against schema', function () {
-            assert.equal(specSchema.matchWithSchema({idea: 1}, schema), false);
+            assert.equal(specSchema.matchWithSchema({idea: 1}, schema).valid, false);
         });
     });
 

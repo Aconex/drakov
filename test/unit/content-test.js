@@ -257,7 +257,7 @@
                 };
 
                 it('should returns true', function () {
-                    assert.equal(content.matchesSchema(httpReq, specReq), true);
+                    assert.equal(content.matchesSchema(httpReq, specReq).valid, true);
                 });
 
                 it('should log to console that schema is matched', function () {
@@ -285,7 +285,7 @@
                 };
 
                 it('should returns fals', function () {
-                    assert.equal(content.matchesSchema(httpReq, specReq), false);
+                    assert.equal(content.matchesSchema(httpReq, specReq).valid, false);
                 });
 
                 it('should log to console that schema is not matched', function () {
