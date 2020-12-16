@@ -1,7 +1,7 @@
 # Drakov API Blueprint Mock Server
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Aconex/drakov?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-    
+
 [![npm version](https://badge.fury.io/js/drakov.svg)](http://badge.fury.io/js/drakov) [![Build Status](https://travis-ci.org/Aconex/drakov.svg)](https://travis-ci.org/Aconex/drakov)
 
 ![Drakov](drakov.png)
@@ -55,6 +55,11 @@ When flag `--debugMode` is set on Drakov's start up all mismatching requests wil
 - Server port is optional and defaults to **3000**
 - CORS headers are sent by default, you need to use the --disableCORS switch/property
 
+## Running with docker
+
+`docker run -v $PWD:/mock -p 3000 aconex/drakov -f <glob expression to your md files>`
+
+With the `-v $PWD:/mock` you bind the current working directory to the /mock directory inside the container. Then you specify the <glob expression to your md files> just like you would do using drakov if it were installed globally.
 
 ## Running with configuration file
 
